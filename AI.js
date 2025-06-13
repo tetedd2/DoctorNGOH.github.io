@@ -8,9 +8,12 @@ const URL = "https://teachablemachine.withgoogle.com/models/GAu0Um0vr/";
 
 let model, webcam, labelContainer, maxPredictions;
 let isPredicting = false; // สถานะเพื่อควบคุม loop การทำนาย
+let currentFacingMode = 'environment'; // กำหนดค่าเริ่มต้นเป็นกล้องหลัง
+
 const messageElement = document.getElementById('message');
 const startButton = document.getElementById('startButton');
 const stopButton = document.getElementById('stopButton');
+const switchCameraButton = document.getElementById('switchCameraButton'); // เพิ่มปุ่มสลับกล้อง
 const resultDisplayElement = document.getElementById('resultDisplay'); // เพิ่ม Element สำหรับแสดงข้อมูลเพิ่มเติม
 
 // *******************************************************************
@@ -26,6 +29,7 @@ async function init() {
     messageElement.className = 'message';
     startButton.disabled = true; // ปิดปุ่ม Start ชั่วคราว
     stopButton.disabled = true; // ปิดปุ่ม Stop ชั่วคราวในระหว่าง init
+    switchCameraButton.disabled = true; // ปิดปุ่มสลับกล้องชั่วคราว
     resultDisplayElement.innerHTML = ''; // ล้างข้อมูลผลลัพธ์เก่า
 
     // 1. โหลดโมเดล
@@ -44,12 +48,41 @@ async function init() {
     }
 
     // 2. ตั้งค่า Webcam
+    await setupWebcam();
+
+    // 3. เตรียมพื้นที่สำหรับแสดงผลลัพธ์การทำนาย
+    labelContainer = document.getElementById("label-container");
+    labelContainer.innerHTML = ''; // ล้างเนื้อหาเดิม (ถ้ามี)
+    for (let i = 0; i < maxPredictions; i++) { // สร้าง div สำหรับแต่ละ Class
+        labelContainer.appendChild(document.createElement("div"));
+    }
+
+    // *******************************************************************
+    // ** รีเซ็ตตัวแปรจับเวลาเมื่อเริ่มต้นใหม่ **
+    // *******************************************************************
+    predictionHistory = [];
+    // *******************************************************************
+
+    messageElement.textContent = 'พร้อมสำหรับการจำแนก!';
+    messageElement.className = 'message success';
+    startButton.disabled = true; // ปิดปุ่ม Start
+    stopButton.disabled = false; // เปิดปุ่ม Stop
+    switchCameraButton.disabled = false; // เปิดปุ่มสลับกล้อง
+}
+
+// ฟังก์ชันสำหรับตั้งค่าและเริ่มเว็บแคม
+async function setupWebcam() {
     const flip = false; // ปรับให้ไม่กลับด้าน (สำหรับกล้องหลัง)
     const constraints = {
         video: {
-            facingMode: 'environment' // 'environment' คือกล้องหลัง, 'user' คือกล้องหน้า
+            facingMode: currentFacingMode // ใช้ค่า currentFacingMode เพื่อกำหนดกล้อง
         }
     };
+
+    // ตรวจสอบว่ามี webcam เก่าอยู่หรือไม่ และหยุดมันก่อน
+    if (webcam && webcam.webcamStarted) {
+        webcam.stop();
+    }
 
     try {
         webcam = new tmImage.Webcam(200, 200, flip); // กว้าง, สูง, กลับด้าน
@@ -74,27 +107,13 @@ async function init() {
         }
         messageElement.className = 'message error';
         startButton.disabled = false; // เปิดปุ่ม Start กลับมา
+        stopButton.disabled = true; // ปิดปุ่ม Stop
+        switchCameraButton.disabled = true; // ปิดปุ่มสลับกล้อง
+        isPredicting = false; // หยุดการทำนายถ้ากล้องมีปัญหา
         return;
     }
-
-    // 3. เตรียมพื้นที่สำหรับแสดงผลลัพธ์การทำนาย
-    labelContainer = document.getElementById("label-container");
-    labelContainer.innerHTML = ''; // ล้างเนื้อหาเดิม (ถ้ามี)
-    for (let i = 0; i < maxPredictions; i++) { // สร้าง div สำหรับแต่ละ Class
-        labelContainer.appendChild(document.createElement("div"));
-    }
-
-    // *******************************************************************
-    // ** รีเซ็ตตัวแปรจับเวลาเมื่อเริ่มต้นใหม่ **
-    // *******************************************************************
-    predictionHistory = [];
-    // *****************************************************************ว**
-
-    messageElement.textContent = 'พร้อมสำหรับการจำแนก!';
-    messageElement.className = 'message success';
-    startButton.disabled = true; // ปิดปุ่ม Start
-    stopButton.disabled = false; // เปิดปุ่ม Stop
 }
+
 
 // Loop หลักสำหรับการทำนายผลอย่างต่อเนื่อง
 async function loop() {
@@ -176,7 +195,7 @@ async function predict() {
                         resultDisplayElement.innerHTML = "<h3>🚨 กรุณาถ่ายใหม่ 🚨</h3>";
                         stopCamera(); // เรียกฟังก์ชันหยุดการจำแนก
                     } else {
-                        // ถ้าเป็น Class อื่นๆ ที่เข้าเงื่อนไข 5 วินาที 90% แต่ไม่ใช่ D1/D2
+                        // ถ้าเป็น Class อื่นๆ ที่เข้าเงื่อนไข 5 วินาที 90%
                         resultDisplayElement.innerHTML = `<h4>💡 โมเดลมั่นใจใน "${topClassName}" มากกว่า 5 วินาที!</h4><p>ความน่าจะเป็น: ${ (topProbability * 100).toFixed(1)}%</p>`;
                         resultDisplayElement.className = 'info-message';
                     }
@@ -217,23 +236,47 @@ async function stopCamera() {
         }
     }
     labelContainer.innerHTML = ''; // ล้างผลการทำนาย
-    // resultDisplayElement.innerHTML = ''; // ไม่ล้างผลลัพธ์ D1/D2 ทิ้งทันที แต่ให้คงไว้
     messageElement.textContent = 'กล้องและโมเดลหยุดทำงานแล้ว'; // ข้อความสถานะหลัก
     messageElement.className = 'message';
     startButton.disabled = false; // เปิดปุ่ม Start
     stopButton.disabled = true; // ปิดปุ่ม Stop
-
-    // *******************************************************************
-    // ** รีเซ็ตตัวแปรจับเวลาเมื่อหยุดกล้อง **
-    // *******************************************************************
-    predictionHistory = [];
-    // *******************************************************************
+    switchCameraButton.disabled = true; // ปิดปุ่มสลับกล้องเมื่อหยุด
+    predictionHistory = []; // รีเซ็ตประวัติการทำนาย
 }
 
+// ฟังก์ชันสำหรับสลับกล้อง
+async function switchCamera() {
+    // สลับค่า facingMode
+    currentFacingMode = (currentFacingMode === 'user') ? 'environment' : 'user';
+
+    // หยุดการทำนายชั่วคราว
+    isPredicting = false;
+    messageElement.textContent = 'กำลังสลับกล้อง...';
+    messageElement.className = 'message';
+    startButton.disabled = true;
+    stopButton.disabled = true;
+    switchCameraButton.disabled = true;
+
+    // หยุดกล้องปัจจุบัน
+    if (webcam && webcam.webcamStarted) {
+        webcam.stop();
+    }
+    document.getElementById("webcam").innerHTML = ''; // ล้าง canvas กล้องเก่า
+
+    // ตั้งค่าและเริ่มเว็บแคมใหม่ด้วย facingMode ที่อัปเดต
+    await setupWebcam();
+
+    messageElement.textContent = 'พร้อมสำหรับการจำแนก!';
+    messageElement.className = 'message success';
+    startButton.disabled = true;
+    stopButton.disabled = false;
+    switchCameraButton.disabled = false;
+}
 
 // เพิ่ม Event Listener ให้กับปุ่ม
 startButton.addEventListener('click', init); // คลิก Start -> เรียก init()
 stopButton.addEventListener('click', stopCamera); // คลิก Stop -> เรียก stopCamera()
+switchCameraButton.addEventListener('click', switchCamera); // คลิก Switch Camera -> เรียก switchCamera()
 
 // จัดการเมื่อผู้ใช้ปิดหน้าเว็บ ให้หยุดกล้อง
 window.addEventListener('beforeunload', () => {

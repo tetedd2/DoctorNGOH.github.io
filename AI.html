@@ -56,6 +56,29 @@
             cursor: not-allowed;
         }
 
+        /* เพิ่ม Style สำหรับปุ่มสาเหตุและรักษา */
+        #causeButton {
+            background-color: #dc3545; /* สีแดง */
+        }
+
+        #causeButton:hover:not(:disabled) {
+            background-color: #c82333;
+        }
+
+        #treatmentButton {
+            background-color: #007bff; /* สีน้ำเงิน (หรือเปลี่ยนเป็นเขียวถ้าต้องการเขียวอีกเฉด) */
+        }
+         /* ถ้าต้องการสีเขียวเข้มสำหรับปุ่มรักษา ให้ใช้โค้ดนี้แทน */
+         /* #treatmentButton {
+            background-color: #28a745; 
+        } */
+
+        #treatmentButton:hover:not(:disabled) {
+            background-color: #0056b3;
+        }
+        /* จบ Style สำหรับปุ่มสาเหตุและรักษา */
+
+
         #webcam {
             width: 200px;
             height: 200px;
@@ -139,15 +162,48 @@
             border-color: #ffeeba;
             color: #856404;
         }
+
+        /* สำหรับซ่อนปุ่มเริ่มต้น */
+        #actionButtons {
+            margin-top: 15px;
+        }
+        #actionButtons button {
+            margin-bottom: 10px; /* เพิ่มระยะห่างด้านล่างระหว่างปุ่ม */
+        }
+        #actionButtons.hidden {
+            display: none;
+        }
+
+        /* Style สำหรับกลุ่มปุ่มสาเหตุ/รักษา */
+        #infoButtons {
+            margin-top: 15px;
+        }
+        #infoButtons button {
+            margin: 5px; /* ระยะห่างระหว่างปุ่ม */
+        }
+        #infoButtons.hidden {
+            display: none;
+        }
+
     </style>
 </head>
 <body>
     <div id="container">
         <h1>Doctor NGOH</h1>
         <div id="message" class="message">คลิก "เริ่มการจำแนก" เพื่อเริ่มต้น</div>
-        <button type="button" id="startButton">เริ่มการจำแนก</button>
-        <button type="button" id="stopButton" disabled>หยุดการจำแนก</button>
-        <button type="button" id="switchCameraButton" disabled>สลับกล้อง</button> <div id="webcam">
+        
+        <div id="actionButtons">
+            <button type="button" id="startButton">เริ่มการจำแนก</button>
+            <button type="button" id="stopButton" disabled>หยุดการจำแนก</button>
+            <button type="button" id="switchCameraButton" disabled>สลับกล้อง</button>
+        </div>
+
+        <div id="infoButtons" class="hidden">
+            <button type="button" id="causeButton">สาเหตุ</button>
+            <button type="button" id="treatmentButton">รักษา</button>
+        </div>
+        
+        <div id="webcam">
             <p>กล้องจะปรากฏที่นี่</p>
         </div>
         

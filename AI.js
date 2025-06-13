@@ -51,13 +51,7 @@ async function init() {
     // 2. ตั้งค่า Webcam
 const flip = false; // ปรับให้ไม่กลับด้าน (สำหรับกล้องหลัง)
 try {
-    // เพิ่ม constraints เพื่อเลือกกล้องหลัง
-    const constraints = {
-        video: {
-            facingMode: 'environment' // เลือกกล้องหลัง
-        }
-    };
-
+   
     webcam = new tmImage.Webcam(200, 200, flip); // กว้าง, สูง, กลับด้าน
     await webcam.setup(constraints); // ขออนุญาตเข้าถึงกล้องพร้อม constraints
     await webcam.play(); // เริ่มเล่นวิดีโอจากกล้อง

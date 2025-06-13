@@ -6,9 +6,11 @@ const URL = "https://teachablemachine.withgoogle.com/models/GAu0Um0vr/";
 // ถ้าคุณ Download โมเดลมาแล้ววางไว้ในโฟลเดอร์ my-model/:
 // const URL = "./my-model/";
 
-let model, webcam, labelContainer, maxPredictions;
+let model, labelContainer, maxPredictions;
 let isPredicting = false; // สถานะเพื่อควบคุม loop การทำนาย
 let currentFacingMode = 'environment'; // กำหนดค่าเริ่มต้นเป็นกล้องหลัง
+let videoElement; // จะใช้เก็บ video element แทน webcam ของ tmImage
+let stream; // เก็บ MediaStream object
 
 const messageElement = document.getElementById('message');
 const startButton = document.getElementById('startButton');
@@ -47,8 +49,8 @@ async function init() {
         return;
     }
 
-    // 2. ตั้งค่า Webcam
-    await setupWebcam();
+    // 2. ตั้งค่า Webcam (ใช้ getUserMedia แทน)
+    await setupCamera();
 
     // 3. เตรียมพื้นที่สำหรับแสดงผลลัพธ์การทำนาย
     labelContainer = document.getElementById("label-container");
@@ -70,28 +72,42 @@ async function init() {
     switchCameraButton.disabled = false; // เปิดปุ่มสลับกล้อง
 }
 
-// ฟังก์ชันสำหรับตั้งค่าและเริ่มเว็บแคม
-async function setupWebcam() {
-    const flip = false; // ปรับให้ไม่กลับด้าน (สำหรับกล้องหลัง)
+// ฟังก์ชันสำหรับตั้งค่าและเริ่มกล้องมือถือ (แทน tmImage.Webcam)
+async function setupCamera() {
+    // หยุด stream เก่าหากมีอยู่
+    if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+    }
+
     const constraints = {
         video: {
+            width: 200,
+            height: 200,
             facingMode: currentFacingMode // ใช้ค่า currentFacingMode เพื่อกำหนดกล้อง
         }
     };
 
-    // ตรวจสอบว่ามี webcam เก่าอยู่หรือไม่ และหยุดมันก่อน
-    if (webcam && webcam.webcamStarted) {
-        webcam.stop();
-    }
-
     try {
-        webcam = new tmImage.Webcam(200, 200, flip); // กว้าง, สูง, กลับด้าน
-        await webcam.setup(constraints); // ขออนุญาตเข้าถึงกล้องพร้อม constraints
-        await webcam.play(); // เริ่มเล่นวิดีโอจากกล้อง
+        stream = await navigator.mediaDevices.getUserMedia(constraints);
 
-        // เพิ่ม canvas ของ webcam ลงใน DOM
+        // สร้าง <video> element เพื่อแสดงผลจากกล้อง
+        videoElement = document.createElement('video');
+        videoElement.width = 200;
+        videoElement.height = 200;
+        videoElement.autoplay = true;
+        videoElement.playsInline = true; // สำคัญสำหรับ iOS
+        videoElement.srcObject = stream;
+
+        // รอให้วิดีโอโหลดและพร้อมเล่น
+        await new Promise(resolve => {
+            videoElement.onloadedmetadata = () => {
+                resolve();
+            };
+        });
+
+        // เพิ่ม video element ลงใน DOM
         document.getElementById("webcam").innerHTML = ''; // ล้าง div ก่อน
-        document.getElementById("webcam").appendChild(webcam.canvas);
+        document.getElementById("webcam").appendChild(videoElement);
 
         isPredicting = true; // เริ่มการทำนาย
         window.requestAnimationFrame(loop); // เริ่ม loop การทำนายผล
@@ -119,15 +135,20 @@ async function setupWebcam() {
 async function loop() {
     if (!isPredicting) return; // ถ้าไม่ได้อยู่ในโหมดทำนาย ให้หยุด loop
 
-    webcam.update(); // อัปเดตเฟรมจากกล้อง
+    // ใช้ videoElement เป็น input ให้กับโมเดล
     await predict(); // ทำนายผล
     window.requestAnimationFrame(loop); // เรียกตัวเองซ้ำเพื่อทำซ้ำ
 }
 
 // ฟังก์ชันทำนายผล
 async function predict() {
-    // ส่งเฟรมปัจจุบันจากกล้อง (webcam.canvas) เข้าสู่โมเดลเพื่อทำนายผล
-    const prediction = await model.predict(webcam.canvas);
+    // ส่งเฟรมปัจจุบันจาก videoElement เข้าสู่โมเดลเพื่อทำนายผล
+    // ตรวจสอบให้แน่ใจว่า videoElement พร้อมใช้งาน
+    if (!videoElement || videoElement.readyState !== videoElement.HAVE_ ENOUGH_DATA) {
+        // อาจจะยังโหลดไม่เสร็จ หรือไม่มีข้อมูลพอ
+        return;
+    }
+    const prediction = await model.predict(videoElement); // ใช้ videoElement ตรงๆ แทน webcam.canvas
 
     // เรียงลำดับผลลัพธ์ตามความน่าจะเป็นจากมากไปน้อย
     prediction.sort((a, b) => b.probability - a.probability);
@@ -227,13 +248,16 @@ async function predict() {
 // ฟังก์ชันสำหรับหยุดการทำงานของกล้องและการทำนาย
 async function stopCamera() {
     isPredicting = false; // หยุด loop การทำนาย (สำคัญมาก)
-    if (webcam) {
-        webcam.stop(); // หยุดกล้องจริง ๆ
-        // ล้าง canvas ของกล้อง
-        const webcamDiv = document.getElementById("webcam");
-        if (webcamDiv) {
-            webcamDiv.innerHTML = '<p>กล้องหยุดทำงานแล้ว</p>'; // เพิ่มข้อความแจ้งสถานะ
-        }
+    if (stream) {
+        stream.getTracks().forEach(track => track.stop()); // หยุด track ของกล้องทั้งหมด
+    }
+    if (videoElement) {
+        videoElement.srcObject = null; // ตัดการเชื่อมต่อ stream
+    }
+    // ล้าง canvas ของกล้อง
+    const webcamDiv = document.getElementById("webcam");
+    if (webcamDiv) {
+        webcamDiv.innerHTML = '<p>กล้องหยุดทำงานแล้ว</p>'; // เพิ่มข้อความแจ้งสถานะ
     }
     labelContainer.innerHTML = ''; // ล้างผลการทำนาย
     messageElement.textContent = 'กล้องและโมเดลหยุดทำงานแล้ว'; // ข้อความสถานะหลัก
@@ -258,13 +282,16 @@ async function switchCamera() {
     switchCameraButton.disabled = true;
 
     // หยุดกล้องปัจจุบัน
-    if (webcam && webcam.webcamStarted) {
-        webcam.stop();
+    if (stream) {
+        stream.getTracks().forEach(track => track.stop());
     }
-    document.getElementById("webcam").innerHTML = ''; // ล้าง canvas กล้องเก่า
+    if (videoElement) {
+        videoElement.srcObject = null;
+        document.getElementById("webcam").innerHTML = ''; // ล้าง video element เก่า
+    }
 
-    // ตั้งค่าและเริ่มเว็บแคมใหม่ด้วย facingMode ที่อัปเดต
-    await setupWebcam();
+    // ตั้งค่าและเริ่มกล้องใหม่ด้วย facingMode ที่อัปเดต
+    await setupCamera();
 
     messageElement.textContent = 'พร้อมสำหรับการจำแนก!';
     messageElement.className = 'message success';
@@ -280,7 +307,5 @@ switchCameraButton.addEventListener('click', switchCamera); // คลิก Swit
 
 // จัดการเมื่อผู้ใช้ปิดหน้าเว็บ ให้หยุดกล้อง
 window.addEventListener('beforeunload', () => {
-    if (webcam) {
-        webcam.stop();
-    }
+    stopCamera(); // เรียก stopCamera เพื่อหยุดกล้องและปล่อยทรัพยากร
 });

@@ -102,7 +102,6 @@ try {
     messageElement.className = 'message success';
     startButton.disabled = true; // ปิดปุ่ม Start
     stopButton.disabled = false; // เปิดปุ่ม Stop
-}
 
 // Loop หลักสำหรับการทำนายผลอย่างต่อเนื่อง
 async function loop() {

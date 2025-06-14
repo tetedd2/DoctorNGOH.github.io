@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Teachable Machine Image Model</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script> 
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script> 
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -35,9 +35,46 @@
             box-sizing: border-box;
         }
 
+        /* ปุ่มทั่วไป */
         button {
-            background-color: #28a745;
-            color: white;
+            background-color: transparent;
+            color: inherit;
+            padding: 7px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin: 10px 5px;
+            transition: background-color 0.3s ease;
+        }
+        /* ขยายรูปภาพในปุ่ม "สาเหตุ" */
+        #causeButton img {
+            width: 150px;
+            height: 150px;
+            transition: all 0.3s ease;
+        }
+
+        #causeButton:hover img {
+            width: 160px;
+            height: 160px;
+        }
+
+        /* ขยายรูปภาพในปุ่ม "รักษา" */
+        #treatmentButton img {
+            width: 150px;
+            height: 150px;
+            transition: all 0.3s ease;
+        }
+
+        #treatmentButton:hover img {
+            width: 160px;
+            height: 160px;
+        }
+
+        /* ปุ่มทั่วไป */
+        button {
+            background-color: transparent;
+            color: inherit;
             padding: 12px 25px;
             border: none;
             border-radius: 8px;
@@ -47,37 +84,12 @@
             transition: background-color 0.3s ease;
         }
 
-        button:hover:not(:disabled) {
-            background-color: #218838;
-        }
-
-        button:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-        }
-
-        /* เพิ่ม Style สำหรับปุ่มสาเหตุและรักษา */
-        #causeButton {
-            background-color: #dc3545; /* สีแดง */
-        }
-
-        #causeButton:hover:not(:disabled) {
-            background-color: #c82333;
-        }
-
+        /* ปุ่มสาเหตุ (#causeButton) */
+        #causeButton,
         #treatmentButton {
-            background-color: #007bff; /* สีน้ำเงิน (หรือเปลี่ยนเป็นเขียวถ้าต้องการเขียวอีกเฉด) */
+            background-color: transparent;
+            border: none;
         }
-          /* ถ้าต้องการสีเขียวเข้มสำหรับปุ่มรักษา ให้ใช้โค้ดนี้แทน */
-          /* #treatmentButton {
-            background-color: #28a745; 
-        } */
-
-        #treatmentButton:hover:not(:disabled) {
-            background-color: #0056b3;
-        }
-        /* จบ Style สำหรับปุ่มสาเหตุและรักษา */
-
 
         #webcam {
             width: 200px;
@@ -108,7 +120,7 @@
         }
 
         #label-container .highlight {
-            background-color: #d4edda; /* Light green for highlight */
+            background-color: #d4edda;
             border: 2px solid #28a745;
             color: #155724;
         }
@@ -139,12 +151,12 @@
             background-color: #f0f8ff;
             border: 1px solid #cce5ff;
             text-align: left;
-            min-height: 80px; /* เพิ่มความสูงขั้นต่ำ */
+            min-height: 80px;
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
-        
+
         #resultDisplay h4 {
             margin-top: 0;
             color: #0056b3;
@@ -163,53 +175,81 @@
             color: #856404;
         }
 
-        /* สำหรับซ่อนปุ่มเริ่มต้น */
         #actionButtons {
             margin-top: 15px;
         }
+
         #actionButtons button {
-            margin-bottom: 10px; /* เพิ่มระยะห่างด้านล่างระหว่างปุ่ม */
+            margin-bottom: 10px;
         }
+
         #actionButtons.hidden {
             display: none;
         }
 
-        /* Style สำหรับกลุ่มปุ่มสาเหตุ/รักษา */
         #infoButtons {
             margin-top: 15px;
         }
+
         #infoButtons button {
-            margin: 5px; /* ระยะห่างระหว่างปุ่ม */
+            margin: 5px;
         }
+
         #infoButtons.hidden {
             display: none;
         }
+        /* ปรับขนาดรูปภาพในปุ่ม */
+    .btn-icon {
+    width: 140px;
+    height: 140px;
+    margin-right: 5px;
+    vertical-align: middle;
+    transition: all 0.3s ease; /* เพิ่ม transition */
+}
 
+.btn-icon:hover {
+    width: 150px;
+    height: 150px;
+}
     </style>
 </head>
 <body>
     <div id="container">
-        <h1>Doctor NGOH</h1>
-        
+        <h1>
+            <img src="1.png" alt="Logo" style="width: 220px; vertical-align: middle;">
+        </h1>
+
         <div id="webcam">
             <p>กล้องจะปรากฏที่นี่</p>
         </div>
-        
+
         <div id="message" class="message">คลิก "เริ่มการจำแนก" เพื่อเริ่มต้น</div>
-        
+
         <div id="actionButtons">
-            <button type="button" id="startButton">เริ่มการจำแนก</button>
-            <button type="button" id="stopButton" disabled>หยุดการจำแนก</button>
-            <button type="button" id="switchCameraButton" disabled>สลับกล้อง</button>
+            <button type="button" id="startButton">
+    <img src="7.png" alt="เริ่มการจำแนก" class="btn-icon">
+</button>
+               <button type="button" id="stopButton" disabled>
+        <img src="9.png" alt="หยุดการจำแนก" class="btn-icon">
+    </button>
+    <button type="button" id="switchCameraButton" disabled>
+        <img src="10.png" alt="สลับกล้อง" class="btn-icon">
+
+    </button>
         </div>
 
+        <!-- ปุ่มสาเหตุและรักษา -->
         <div id="infoButtons" class="hidden">
-            <button type="button" id="causeButton">สาเหตุ</button>
-            <button type="button" id="treatmentButton">รักษา</button>
+            <button type="button" id="causeButton" aria-label="แสดงสาเหตุ">
+                <img src="3.png" alt="สาเหตุ">
+            </button>
+            <button type="button" id="treatmentButton" aria-label="แสดงวิธีรักษา">
+                <img src="4.png" alt="รักษา">
+            </button>
         </div>
-        
+
         <div id="label-container"></div>
-        
+
         <div id="resultDisplay">
             <p>ผลลัพธ์การจำแนกจะแสดงที่นี่</p>
         </div>

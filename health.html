@@ -3,16 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>การรักษาโรคจุดราขาว</title>
+    <title>การรักษาโรคใบไหม้</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        h1 { color: #333; }
-        p { line-height: 1.6; }
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            display: flex; /* ใช้ flexbox เพื่อจัดวางปุ่ม */
+            flex-direction: column; /* วางองค์ประกอบเป็นแนวตั้ง */
+            align-items: center; /* จัดกึ่งกลางแนวนอน */
+            justify-content: center; /* จัดกึ่งกลางแนวตั้ง */
+            min-height: 90vh; /* ให้ body มีความสูงเกือบเต็มหน้าจอ */
+        }
+        h1 { 
+            color: #333; 
+            margin-bottom: 20px; /* เพิ่มระยะห่างด้านล่าง */
+        }
+        p { 
+            line-height: 1.6; 
+            max-width: 600px; /* จำกัดความกว้างของข้อความ */
+            text-align: justify; /* จัดข้อความให้ชิดขอบสองข้าง */
+            margin-bottom: 10px; /* ระยะห่างด้านล่างข้อความ */
+        }
+        ul {
+            list-style-type: disc; /* ใช้ bullet point */
+            margin-left: 20px; /* เยื้องเข้ามา */
+            max-width: 600px; /* จำกัดความกว้าง */
+            margin-bottom: 20px; /* ระยะห่างด้านล่าง */
+        }
+        li {
+            margin-bottom: 5px; /* ระยะห่างระหว่างรายการ */
+        }
+        button, .back-button { /* รวม style ของปุ่ม */
+            background-color: #007bff; /* สีน้ำเงิน */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px; /* ระยะห่างระหว่างปุ่ม */
+            text-decoration: none; /* ลบเส้นใต้สำหรับลิงก์ */
+            display: inline-block; /* ทำให้ลิงก์มีลักษณะเหมือนปุ่ม */
+        }
+        button:hover, .back-button:hover {
+            background-color: #0056b3; /* สีน้ำเงินเข้มขึ้นเมื่อโฮเวอร์ */
+        }
     </style>
 </head>
 <body>
-    <h1>การรักษาโรคจุดราขาว</h1>
-    <p>การรักษาโรคจุดราขาวสามารถทำได้หลายวิธี:</p>
+    <h1>การรักษาโรคใบไหม้</h1>
+    <p>การรักษาโรคใบไหม้สามารถทำได้หลายวิธี:</p>
     <ul>
         <li>**การตัดแต่ง:** ตัดแต่งใบที่เป็นโรคทิ้ง และกำจัดวัชพืชรอบๆ เพื่อเพิ่มการถ่ายเทอากาศ</li>
         <li>**สารชีวภัณฑ์:** ใช้เชื้อราไตรโคเดอร์มา (Trichoderma harzianum) หรือสารสกัดจากพืชบางชนิด</li>
@@ -20,6 +60,10 @@
         <li>**ปรับสภาพแวดล้อม:** ลดความชื้นในแปลงปลูก และเพิ่มแสงแดด</li>
     </ul>
     <p>ควรปรึกษาผู้เชี่ยวชาญด้านพืชหรือเกษตรกรในพื้นที่เพื่อการรักษาที่เหมาะสมที่สุด</p>
+    
+    <a href="AI.html" class="back-button">ย้อนกลับไปหน้ากล้อง</a>
+    
     <button onclick="window.close()">ปิดหน้านี้</button>
+
 </body>
 </html>

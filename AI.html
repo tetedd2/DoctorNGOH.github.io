@@ -31,8 +31,8 @@
             border-radius: 50px;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
             text-align: center;
-            width: 90%;
-            max-width: 840px;
+            width:100%;
+            max-width: 340px;
             box-sizing: border-box;
         }
 
@@ -44,7 +44,7 @@
             border-radius: 8px;
             cursor: pointer;
             font-size: 1.1em;
-            margin: 40px 350px;
+            margin: 10px 90px;
             transition: background-color 0.3s ease, transform 0.3s ease;
             display: flex;
             align-items: center;
@@ -64,7 +64,7 @@
             border-radius: 8px;
             cursor: pointer;
             font-size: 1.1em;
-            margin: 40px 350px;
+            margin: 10px 90px;
             transition: background-color 0.3s ease, transform 0.3s ease;
             display: flex;
             align-items: center;
@@ -86,7 +86,7 @@
             object-fit: contain;
             transition: all 0.3s ease;
         }
-
+       
         /* เอฟเฟกต์เมื่อเม้าชี้ */
         button:hover {
             transform: scale(1.05);
@@ -111,7 +111,7 @@
 
         #webcam {
             width: 200px;
-            height: 400px;
+            height:200px;
             border: 2px solid #ddd;
             border-radius: 8px;
             overflow: hidden;
@@ -211,16 +211,46 @@
             margin: 5px;
         }
         #infoButtons {
-            margin-left:410px;
+            margin-left:10px;
         }
 
         #infoButtons button {
-            margin-right:  150px;
+            margin-right:  50%
         }
 
         #infoButtons.hidden {
             display: none;
         }
+        #infoButtons {
+    display: flex;
+    flex-direction: column; /* จัดให้ปุ่มอยู่ในแนว坚 */
+    justify-content: center; /* จัดกลางแนวนอน */
+    align-items: center; /* จัดกลางแนว坚 */
+    margin-top: 10px; /* ระยะห่างจากส่วนบน */
+}
+#infoButtons button {
+    margin: 5px 0; /* ระยะห่างระหว่างปุ่มในแนว坚 */
+    width: 50px; /* ความกว้างของปุ่ม */
+    height: 40px; /* ความสูงของปุ่ม */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+     margin: 20px;/* ระยะห่างระหว่างปุ่มในแนว坚 */
+}
+#infoButtons {
+    display: flex;
+    flex-direction: column; /* จัดปุ่มในแนว坚 */
+    justify-content: center; /* จัดกลางแนวนอน */
+    align-items: center; /* จัดกลางแนว坚 */
+    margin-top: 10px; /* ระยะห่างจากส่วนบน */
+  margin: 40%;* ระยะห่างระหว่างปุ่มในแนว坚 */
+}
+/* ปรับขนาดรูปภาพในปุ่ม */
+#infoButtons button img {
+    width: 250px;ปภาพ */
+    height:450px;ดรูปภาพ */
+    object-fit;contain;
+}
     </style>
 </head>
 <body>

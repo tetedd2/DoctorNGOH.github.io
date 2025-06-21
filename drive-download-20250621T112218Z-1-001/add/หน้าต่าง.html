@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ทดสอบเปิดกล้องด้วย JavaScript</title>
+    <link rel="stylesheet" href="style.css"> <!-- เราจะสร้างไฟล์นี้ทีหลัง (ถ้าต้องการ) -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f0f0f0;
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        video {
+            border: 5px solid #333;
+            border-radius: 10px;
+            background-color: #000;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        /* ซ่อน canvas ที่ใช้สำหรับถ่ายภาพ */
+        canvas {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>เปิดกล้องด้วย JavaScript ใน VS Code</h1>
+
+    <!-- แท็กวิดีโอสำหรับแสดงภาพจากกล้อง -->
+    <video id="webcam" width="640" height="480" autoplay></video>
+    
+    <!-- ปุ่มสำหรับสั่งถ่ายภาพ -->
+    <button id="snapButton">ถ่ายภาพ</button>
+
+    <!-- Canvas ใช้สำหรับวาดภาพจากวิดีโอเพื่อบันทึก -->
+    <canvas id="canvas"></canvas>
+
+    <!-- เชื่อมต่อไฟล์ JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>

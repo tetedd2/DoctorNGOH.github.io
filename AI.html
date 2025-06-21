@@ -68,8 +68,8 @@
         #treatmentButton {
             background-color: #007bff; /* สีน้ำเงิน (หรือเปลี่ยนเป็นเขียวถ้าต้องการเขียวอีกเฉด) */
         }
-         /* ถ้าต้องการสีเขียวเข้มสำหรับปุ่มรักษา ให้ใช้โค้ดนี้แทน */
-         /* #treatmentButton {
+          /* ถ้าต้องการสีเขียวเข้มสำหรับปุ่มรักษา ให้ใช้โค้ดนี้แทน */
+          /* #treatmentButton {
             background-color: #28a745; 
         } */
 
@@ -190,6 +190,11 @@
 <body>
     <div id="container">
         <h1>Doctor NGOH</h1>
+        
+        <div id="webcam">
+            <p>กล้องจะปรากฏที่นี่</p>
+        </div>
+        
         <div id="message" class="message">คลิก "เริ่มการจำแนก" เพื่อเริ่มต้น</div>
         
         <div id="actionButtons">
@@ -201,10 +206,6 @@
         <div id="infoButtons" class="hidden">
             <button type="button" id="causeButton">สาเหตุ</button>
             <button type="button" id="treatmentButton">รักษา</button>
-        </div>
-        
-        <div id="webcam">
-            <p>กล้องจะปรากฏที่นี่</p>
         </div>
         
         <div id="label-container"></div>

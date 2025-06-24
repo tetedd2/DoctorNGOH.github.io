@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ระบบ AI ของฉัน</title>
+  <style>
+    /* Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f7f6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 20px;
+      padding: 40px 20px;
+    }
+
+    .box-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      width: 100%;
+      max-width: 340px;
+    }
+
+    .box {
+      background-color: white;
+      padding: 50px;
+      border-radius: 50px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 100%;
+      max-width: 340px;
+    }
+
+    #weatherBox {
+      background-color: #e0f7ff;
+      border-left: 4px solid #007bff;
+      padding: 20px;
+      width: 100%;
+      max-width: 340px;
+      text-align: center;
+    }
+
+    #weatherInfo {
+      margin-top: 10px;
+      font-size: 16px;
+      color: #555;
+    }
+
+    /* ป้ายข้อความสวัสดีผู้ใช้ */
+    .greeting-box {
+      position: fixed; /* ให้อยู่มุมซ้ายบนเสมอ */
+      top: 20px;
+      left: 20px;
+      background-color: #fffbe8;
+      border-left: 4px solid #f1c40f;
+      padding: 10px 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      font-size: 16px;
+      font-weight: bold;
+      color: #333;
+      pointer-events: none; /* ห้ามคลิก */
+    }
+
+    .greeting-box p {
+      margin: 0;
+    }
+
+    /* Container ปุ่มด้านล่าง */
+    .button-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px; /* ระยะห่างระหว่างปุ่ม */
+      width: 100%;
+      max-width: 600px;
+      margin-top: auto;
+      margin-bottom: 30px;
+      padding-bottom: 8px;
+    }
+
+    /* สไตล์ปุ่ม */
+    .btn {
+      background-color: white;
+      color: #333;
+      padding: 0; /* ลบ padding เดิมเพื่อควบคุมขนาด */
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: bold;
+      text-decoration: none;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      flex: 1 1 auto;
+      min-width: 90px;
+      max-width: 120px;
+      height: 70px; /* กำหนดความสูงของปุ่มให้ใหญ่ขึ้น */
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    /* ปรับขนาดรูปให้เต็มปุ่ม */
+    .btn img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* ขยายรูปภาพให้เต็มปุ่ม */
+      vertical-align: middle;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn.home {
+      background-color: #e74c3c;
+    }
+
+    .btn.ai {
+      background-color: #2ecc71;
+    }
+
+    .btn.plant {
+      background-color: #007bff;
+    }
+
+    .btn.menu {
+      background-color: #ff9900;
+    }
+
+    /* Responsive for mobile portrait mode */
+    @media (max-width: 600px) {
+      .btn {
+        min-width: 70px;
+        max-width: 100px;
+        height: 50px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ป้ายข้อความแสดงชื่อ -->
+  <div class="greeting-box" id="greetingBox">
+    <p>🧑‍🌾 <span id="greetingText">สวัสดี</span></p>
+  </div>
+
+  <!-- กล่องข้อมูล -->
+  <div class="box-container">
+    <div class="box" id="priceBox">
+      <h2>💰 ราคาผลไม้</h2>
+      <p>กำลังโหลด...</p>
+    </div>
+    <div class="box" id="newsBox">
+      <h2>📰 ข่าวสาร</h2>
+      <p>กำลังโหลด...</p>
+    </div>
+
+    <!-- กล่องสภาพอากาศ -->
+    <div id="weatherBox" class="box">
+      <h2>🌤️ สภาพอากาศ</h2>
+      <div id="weatherInfo">
+        <p>กำลังโหลด...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ปุ่มแนวนอน -->
+  <div class="button-container">
+    <a href="Home999.html" class="btn home">
+      <img src="60.png" alt="Home" />
+    </a>
+    <a href="Home.html" class="btn ai">
+      <img src="61.png" alt="AI" />
+    </a>
+    <a href="Home555.html" class="btn plant">
+      <img src="62.png" alt="วิธีปลูก" />
+    </a>
+    <a href="menu.html" class="btn menu">
+      <img src="63.png" alt="MENU" />
+    </a>
+  </div>
+
+  <!-- Script Files -->
+  <script src="script.js"></script>
+  <script src="server.py"></script>
+  <script src="name.js"></script>
+
+</body>
+</html>

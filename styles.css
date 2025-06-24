@@ -1,0 +1,138 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #6A5ACD; /* สีม่วง */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 40px;
+  padding: 30px 20px;
+  color: #fff;
+}
+
+/* Container กล่องสองช่อง */
+.box-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 360px;
+}
+
+/* กล่องข้อมูล */
+.box {
+  width: 100%;
+  max-width: 360px;
+  height: 150px;
+  border: 2px solid #ffffffcc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+  background-color: rgba(255, 255, 255, 0.1); /* พื้นหลังโปร่งใส */
+  border-radius: 15px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+  -webkit-backdrop-filter: blur(10px); /* รองรับ Safari */
+  backdrop-filter: blur(10px); /* สร้างเอฟเฟกต์ Glassmorphism */
+  transition: transform 0.3s ease;
+}
+
+/* Hover effect สำหรับกล่อง */
+.box:hover {
+  transform: translateY(-5px);
+}
+
+/* Container ปุ่ม */
+.button-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 30px;
+}
+
+.btn {
+  background-color: white;
+  color: #333;
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  text-decoration: none;
+  flex: 1 1 calc(50% - 10px); /* แบ่งเป็น 2 ปุ่มในแถวเดียวบนมือถือ */
+  text-align: center;
+  white-space: nowrap;
+}
+
+.btn:hover {
+  transform: scale(1.03);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.btn:active {
+  transform: scale(0.99);
+}
+
+/* สีปุ่ม */
+.btn.home {
+  background-color: #e74c3c; /* สีแดง */
+}
+
+.btn.ai {
+  background-color: #2ecc71; /* สีเขียว */
+}
+
+.btn.plant {
+  background-color: #007bff; /* สีฟ้า */
+}
+
+.btn.menu {
+  background-color: #ff9900; /* สีส้ม */
+}
+
+/* ปุ่มทั้งหมด */
+.btn {
+  color: white;
+  border: none;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* เมื่อกล่องพยากรณ์อากาศโหลดเสร็จแล้ว */
+#weatherInfo {
+  text-align: center;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  line-height: 1.5;
+}
+
+#weatherInfo h3 {
+  margin-bottom: 10px;
+}
+
+/* Responsive Layout */
+@media (min-width: 600px) {
+  .button-container {
+    flex-wrap: nowrap;
+    justify-content: center;
+  }
+
+  .btn {
+    flex: 1;
+    min-width: 100px;
+  }
+}

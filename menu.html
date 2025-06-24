@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ระบบ AI ของฉัน</title>
+  <style>
+    /* Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Helvetica Neue', sans-serif;
+      background-color: white;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      gap: 50px;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #333;
+      font-size: 24px;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    /* ปุ่มแนวตั้งด้านบน */
+    .button-container-top {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      width: 100%;
+      max-width: 250px;
+    }
+
+    .btn-top {
+      background-color: orange;
+      color: white;
+      padding: 16px 24px;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .btn-top:nth-child(1) {
+      background-color: purple;
+    }
+
+    .btn-top:nth-child(2) {
+      background-color: green;
+    }
+
+    .btn-top:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-top:active {
+      transform: scale(0.98);
+    }
+
+    /* ปุ่มแนวนอนด้านล่าง */
+    .button-container-bottom {
+      display: flex;
+      width: 100%;
+      max-width: 400px;
+      margin-bottom: 50px;
+      gap: 0; /* ลบระยะห่างระหว่างปุ่ม */
+    }
+
+    .btn-bottom {
+      background-color: white;
+      color: #333;
+      padding: 0;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      text-decoration: none;
+      flex: 1;
+      text-align: center;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 60px; /* กำหนดความสูงของปุ่ม */
+      width: 100px; /* กำหนดความกว้างของปุ่ม */
+      overflow: hidden; /* ปิดการ滚动 ทำให้รูปภาพภายในไม่เกินขอบปุ่ม */
+    }
+
+    .btn-bottom img {
+      width: 100%; /* ขยายรูปภาพให้เต็มความกว้าง */
+      height: 100%; /* ขยายรูปภาพให้เต็มความสูง */
+      object-fit: cover; /* ทำให้รูปภาพครอบคลุมพื้นที่โดยไม่เกิน */
+    }
+
+    .btn-bottom:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-bottom:active {
+      transform: scale(0.98);
+    }
+
+    .btn-bottom.home {
+      background-color: #e74c3c;
+      color: white;
+    }
+
+    .btn-bottom.ai {
+      background-color: #2ecc71;
+      color: white;
+    }
+
+    .btn-bottom.plant {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .btn-bottom.menu {
+      background-color: #ff9900;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ข้อความหัวเรื่อง -->
+  <h1>กรุณาเลือกระบบ AI ที่ต้องการใช้งาน</h1>
+
+  <!-- กล่องปุ่มบน (แนวตั้ง) -->
+  <div class="button-container-top">
+    <a href="menu1.html" class="btn-top">บัญชี</a>
+    <a href="menu2.html" class="btn-top">คู่มือ</a>
+  </div>
+
+  <!-- กล่องปุ่มล่าง (แนวนอน) -->
+  <div class="button-container-bottom">
+    <a href="Home999.html" class="btn-bottom home">
+      <img src="60.png" alt="Home" />
+    </a>
+    <a href="Home.html" class="btn-bottom ai">
+      <img src="61.png" alt="AI" />
+    </a>
+    <a href="Home555.html" class="btn-bottom plant">
+      <img src="62.png" alt="วิธีปลูก" />
+    </a>
+    <a href="menu.html" class="btn-bottom menu">
+      <img src="63.png" alt="MENU" />
+    </a>
+  </div>
+
+</body>
+</html>

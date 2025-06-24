@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>กรอกข้อมูล</title>
+  <style>
+    /* Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f7f6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 30px 0;
+    }
+
+    .form-container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    h2 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      text-align: left;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"] {
+      width: 100%;
+      padding: 10px 12px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    button.submit-btn {
+      background-color: #007bff;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    button.submit-btn:hover {
+      background-color: #0056b3;
+    }
+
+    /* กล่องแสดงผลข้อมูล */
+    .result-display {
+      margin-top: 30px;
+      background-color: #e9f7ef;
+      padding: 20px;
+      border-left: 4px solid #007bff;
+      border-radius: 10px;
+      text-align: left;
+      display: none;
+    }
+
+    .result-display h3 {
+      margin-top: 0;
+      color: #0056b3;
+    }
+
+    .result-display p {
+      margin: 5px 0;
+      color: #333;
+    }
+
+    /* Container สำหรับปุ่มแนวนอน */
+    .button-container {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      max-width: 600px;
+      margin-top: auto;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .btn {
+      background-color: white;
+      color: #333;
+      padding: 16px 24px;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: bold;
+      text-decoration: none;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      flex: 1;
+      min-width: 120px;
+      cursor: pointer;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn.home {
+      background-color: #e74c3c;
+      color: white;
+    }
+    .btn.ai {
+      background-color: #2ecc71;
+      color: white;
+    }
+    .btn.plant {
+      background-color: #007bff;
+      color: white;
+    }
+    .btn.menu {
+      background-color: #ff9900;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ฟอร์มกรอกข้อมูล -->
+  <div class="form-container">
+    <h2>กรอกข้อมูลของคุณ</h2>
+    <form id="dataForm">
+      <label for="name">ชื่อ:</label>
+      <input type="text" id="name" name="name" placeholder="กรุณากรอกชื่อ">
+
+      <label for="email">อีเมล:</label>
+      <input type="email" id="email" name="email" placeholder="กรุณากรอกอีเมล">
+
+      <label for="phone">เบอร์โทรศัพท์:</label>
+      <input type="tel" id="phone" name="phone" placeholder="กรุณากรอกเบอร์โทร">
+
+      <button type="submit" class="submit-btn">ส่งข้อมูล</button>
+    </form>
+
+    <!-- แสดงผลลัพธ์ -->
+    <div id="output" class="result-display">
+      <h3>ข้อมูลที่คุณกรอก:</h3>
+      <p><strong>ชื่อ:</strong> <span id="outputName">-</span></p>
+      <p><strong>อีเมล:</strong> <span id="outputEmail">-</span></p>
+      <p><strong>เบอร์โทรศัพท์:</strong> <span id="outputPhone">-</span></p>
+    </div>
+  </div>
+
+  <!-- ปุ่มด้านล่าง -->
+  <div class="button-container">
+    <a href="Home999.html" class="btn home">HOME</a>
+    <a href="Home.html" class="btn ai">AI</a>
+    <a href="Home555.html" class="btn plant">วิธีปลูก</a>
+    <a href="#" class="btn menu">MENU</a>
+  </div>
+
+  <script>
+    const form = document.getElementById('dataForm');
+    const output = document.getElementById('output');
+    const outputName = document.getElementById('outputName');
+    const outputEmail = document.getElementById('outputEmail');
+    const outputPhone = document.getElementById('outputPhone');
+
+    // ฟังก์ชันแสดงผลข้อมูล
+    function showResult() {
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+
+      outputName.textContent = name || '-';
+      outputEmail.textContent = email || '-';
+      outputPhone.textContent = phone || '-';
+
+      // ซ่อนฟอร์ม
+      form.style.display = 'none';
+      // แสดงผลลัพธ์
+      output.style.display = 'block';
+    }
+
+    // เมื่อกดส่งข้อมูล
+    form.addEventListener('submit', function(event) {
+      event.preventDefault(); // ปิดการโหลดใหม่
+      showResult();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>กรอกชื่อ</title>
+  <style>
+    /* Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f7f6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 30px 0;
+    }
+
+    .form-container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    h2 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      text-align: left;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px 12px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    button.submit-btn {
+      background-color: #007bff;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    button.submit-btn:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ฟอร์มกรอกชื่อ -->
+  <div class="form-container">
+    <h2>กรอกชื่อของคุณ</h2>
+    <form id="nameForm">
+      <label for="username">ชื่อ:</label>
+      <input type="text" id="username" name="username" placeholder="กรุณากรอกชื่อ">
+
+      <button type="submit" class="submit-btn">ส่งข้อมูล</button>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById('nameForm');
+
+    // เมื่อกดส่งฟอร์ม
+    form.addEventListener('submit', function(event) {
+      event.preventDefault(); // ป้องกันการโหลดใหม่
+
+      // รับค่าชื่อ
+      const username = document.getElementById('username').value.trim();
+
+      if (username === '') {
+        alert('กรุณากรอกชื่อ');
+        return;
+      }
+
+      // ส่งค่าชื่อไปยัง Home999.html ผ่าน URL 参数
+      window.location.href = `Home999.html?name=${encodeURIComponent(username)}`;
+    });
+  </script>
+</body>
+</html>

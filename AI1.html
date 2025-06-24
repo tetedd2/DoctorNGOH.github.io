@@ -1,231 +1,67 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Teachable Machine Image Model</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>     
-    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>     
-
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html,
         body {
+            height: 100%;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        #container {
+            flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            background-color: #f4f7f6;
-            color: #333;
+            justify-content: flex-start;
+            padding: 10px;
+            overflow-y: auto;
         }
-
-        h1 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-        }
-
-        #container {
-            background-color: #ffffff;
-            padding: 50px;
-            border-radius: 50px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            width: 100%;
-            max-width: 340px;
-            box-sizing: border-box;
-        }
-
-        button {
-            background-color: transparent;
-            color: inherit;
-            padding: 0;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1.1em;
-            margin: 10px auto;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 210px;
-            height: 60px;
-            overflow: hidden;
-        }
-
-        button img {
-            width: 200px;
-            height: 200px;
-            object-fit: contain;
-            transition: transform 0.3s ease;
-        }
-
-        #infoButtons {
-            background-color: transparent;
-            color: inherit;
-            padding: 0;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1.1em;
-            margin: 10px 90px;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: auto;
-            width: auto;
-            width: 70px;
-            height: 200px;
-        }
-
-        #infoButtons button {
-            margin: 3px;
-        }
-
-        button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        button:active {
-            transform: scale(0.98);
-            box-shadow: 0 8px 9px rgba(0, 0, 0, 0.2);
-        }
-
-        button:hover img {
-            transform: scale(1.1);
-        }
-
-        button:active img {
-            transform: scale(0.98);
-        }
-
+        
         #webcam {
             width: 200px;
             height: 200px;
             border: 2px solid #ddd;
             border-radius: 8px;
-            overflow: hidden;
-            margin: 25px auto;
             background-color: #eee;
             display: flex;
             align-items: center;
             justify-content: center;
             color: #666;
             font-style: italic;
+            margin: 20px 0;
         }
-
-        #label-container {
-            display: none;
-        }
-
-        #label-container div {
-            margin: 8px 0;
-            padding: 10px;
-            background-color: #e9ecef;
-            border-radius: 9px;
-            font-weight: bold;
-            text-align: left;
-            position: relative;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        #label-container .highlight {
-            background-color: #d4edda;
-            border: 3px solid #28a745;
-            color: #155724;
-        }
-
+        
         #message {
-            margin-top: 20px;
+            margin: 10px;
             padding: 10px;
             border-radius: 6px;
-            font-weight: bold;
             background-color: #e0f2f7;
             color: #007bff;
+            font-weight: bold;
+            text-align: center;
         }
-
-        #message.error {
-            background-color: #f8d7da;
-            color: #dc3545;
-        }
-
-        #message.success {
-            background-color: #d4edda;
-            color: #28a745;
-        }
-
-        #resultDisplay {
-            margin-top: 25px;
-            padding: 15px;
-            border-radius: 58px;
-            background-color: #f0f8ff;
-            border: 1px solid #cce5ff;
-            text-align: left;
-            min-height: 80px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        #resultDisplay h4 {
-            margin-top: 0;
-            color: #0056b3;
-            font-size: 1.2em;
-        }
-
-        #resultDisplay p {
-            margin-bottom: 0;
-            color: #555;
-            line-height: 1.5;
-        }
-
-        #actionButtons {
-            margin-top: 10px;
-        }
-
-        #actionButtons button {
-            margin-bottom: 10px;
-        }
-
-        #actionButtons.hidden {
-            display: none;
-        }
-
-        #infoButtons {
-            margin-top: 10px;
-        }
-
+        
+        #actionButtons button,
         #infoButtons button {
-            margin: 5px;
-        }
-
-        #infoButtons {
-            margin-left: 10px;
-        }
-
-        #infoButtons button {
-            margin-right: 50%
-        }
-
-        #infoButtons.hidden {
-            display: none;
-        }
-
-        #infoButtons {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin-top: 20px;
-        }
-
-        #infoButtons button {
-            width: 210px;
+            width: 350px;
             height: 60px;
             margin: 10px auto;
             overflow: hidden;
@@ -236,103 +72,70 @@
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.3s ease;
         }
-
+        
         #infoButtons button img {
-            width: 200px;
-            height: 200px;
+            width: 120px;
+            height: 120px;
             object-fit: contain;
             transition: transform 0.3s ease;
         }
-
-        #infoButtons button:hover img {
+        
+        button:hover img {
             transform: scale(1.1);
         }
-
-        #infoButtons button:active img {
+        
+        button:active img {
             transform: scale(0.98);
         }
-
- /* Container ปุ่มด้านล่าง */
-.button-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px; /* ระยะห่างระหว่างปุ่ม */
-  width: 100%;
-  max-width: 600px;
-  margin-top: auto;
-  margin-bottom: 30px;
-  padding-bottom: 8px;
-}
-
-/* สไตล์ปุ่ม */
-.btn {
-  background-color: white;
-  color: #333;
-  padding: 8px 12px; /* ลด padding ลง */
-  border-radius: 8px; /* ลดความโค้งมนของปุ่ม */
-  font-size: 14px; /* ลดขนาดฟอนต์ */
-  font-weight: bold;
-  text-decoration: none;
-  text-align: center;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-  flex: 1 1 auto;
-  min-width: 70px; /* กำหนดขนาดขั้นต่ำของปุ่ม */
-  max-width: 100px; /* กำหนดขนาดสูงสุดของปุ่ม */
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-}
-
-.btn:active {
-  transform: scale(0.98);
-}
-
-.btn.home {
-  background-color: #e74c3c;
-  color: white;
-}
-
-.btn.ai {
-  background-color: #2ecc71;
-  color: white;
-}
-
-.btn.plant {
-  background-color: #007bff;
-  color: white;
-}
-
-.btn.menu {
-  background-color: #ff9900;
-  color: white;
-}
-
-/* Responsive for mobile portrait mode */
-@media (max-width: 600px) {
-  .btn {
-    font-size: 12px;
-    padding: 6px 10px;
-    min-width: 60px;
-    max-width: 90px;
-  }
-}
+        
+        #label-container {
+            display: none;
+        }
+        
+        #resultDisplay {
+            margin: 10px;
+            padding: 10px;
+            border-radius: 20px;
+            background-color: #f0f8ff;
+            border: 1px solid #cce5ff;
+            text-align: center;
+        }
+        
+        .button-container-bottom {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            background-color: #fff;
+            padding: 8px 0;
+            box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-bottom {
+            background-color: transparent;
+            border: none;
+            flex: 1;
+            max-width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .btn-bottom img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+        
+        #infoButtons.hidden {
+            display: none;
+        }
     </style>
 </head>
+
 <body>
     <div id="container">
-        <h1>
-            <img src="2.png" alt="Logo" style="width: 220px; vertical-align: middle;">
-        </h1>
-
         <div id="webcam">
             <p>กล้องจะปรากฏที่นี่</p>
         </div>
@@ -351,47 +154,59 @@
             </button>
         </div>
 
-        <!-- ปุ่มสาเหตุและรักษา -->
-        <div id="infoButtons">
-            <button type="button" id="causeButton" aria-label="แสดงสาเหตุ">
+        <div id="infoButtons" class="hidden">
+            <button type="button" id="causeButton">
                 <img src="3.png" alt="สาเหตุ">
             </button>
-            <button type="button" id="treatmentButton" aria-label="แสดงวิธีรักษา">
+            <button type="button" id="treatmentButton">
                 <img src="4.png" alt="รักษา">
             </button>
         </div>
 
-        <!-- ซ่อนส่วนนี้ -->
         <div id="label-container"></div>
 
         <div id="resultDisplay">
             <p>ผลลัพธ์การจำแนกจะแสดงที่นี่</p>
         </div>
+    </div>
 
-        <!-- กล่องปุ่มแนวนอน (ด้านล่างของหน้าเว็บ) -->
-  <div class="button-container">
-    <a href="Home999.html" class="btn home">HOME</a>
-    <a href="Home.html" class="btn ai">AI</a>
-    <a href="Home555.html" class="btn plant">วิธีปลูก</a>
-    <a href="menu.html" class="btn menu">MENU</a>
-  </div>
+    <div class="button-container-bottom">
+        <a href="Home999.html" class="btn-bottom">
+            <img src="60.png" alt="Home" />
+        </a>
+        <a href="Home.html" class="btn-bottom">
+            <img src="61.png" alt="AI" />
+        </a>
+        <a href="Home555.html" class="btn-bottom">
+            <img src="62.png" alt="วิธีปลูก" />
+        </a>
+        <a href="menu.html" class="btn-bottom">
+            <img src="63.png" alt="MENU" />
+        </a>
+    </div>
 
-    <!-- AI.js จะต้องเขียนเองหรือโหลดจากไฟล์จริง -->
     <script src="AI1.js"></script>
     <script>
-        // ตรวจสอบว่า AI.js ถูกโหลดหรือไม่
         if (typeof tmImage === 'undefined') {
-            console.error('AI.js ไม่ถูกโหลด กรุณาตรวจสอบเส้นทางไฟล์');
+            console.error('AI.js ไม่ถูกโหลด');
         } else {
-            console.log('AI.js ถูกโหลดเรียบร้อยแล้ว');
+            console.log('AI.js โหลดแล้ว');
         }
 
-        // เรียกใช้ฟังก์ชัน init() จาก AI.js
         if (typeof init === 'function') {
             init();
-        } else {
-            console.error('ฟังก์ชัน init() ไม่ถูกกำหนดใน AI.js');
         }
+
+        // ตัวอย่างการซ่อนปุ่มสาเหตุ/รักษา หากไม่ใช่ D2 D3 D4
+        function showInfoButtonsIfNeeded(predictedLabel) {
+            const infoSection = document.getElementById('infoButtons');
+            const show = ['D2', 'D3', 'D4'].includes(predictedLabel);
+            infoSection.classList.toggle('hidden', !show);
+        }
+
+        // ตัวอย่างการใช้ (ให้คุณเรียกเมื่อจำแนกได้):
+        // showInfoButtonsIfNeeded('D2');
     </script>
 </body>
+
 </html>

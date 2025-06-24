@@ -1,209 +1,321 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ระบบ AI ของฉัน</title>
-  <style>
-    /* Reset */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f4f7f6;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      gap: 20px;
-      padding: 40px 20px;
-    }
-
-    .box-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      justify-content: center;
-      width: 100%;
-      max-width: 340px;
-    }
-
-    .box {
-      background-color: white;
-      padding: 50px;
-      border-radius: 50px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-      text-align: center;
-      width: 100%;
-      max-width: 340px;
-    }
-
-    #weatherBox {
-      background-color: #e0f7ff;
-      border-left: 4px solid #007bff;
-      padding: 20px;
-      width: 100%;
-      max-width: 340px;
-      text-align: center;
-    }
-
-    #weatherInfo {
-      margin-top: 10px;
-      font-size: 16px;
-      color: #555;
-    }
-
-    /* ป้ายข้อความสวัสดีผู้ใช้ */
-    .greeting-box {
-      position: fixed; /* ให้อยู่มุมซ้ายบนเสมอ */
-      top: 20px;
-      left: 20px;
-      background-color: #fffbe8;
-      border-left: 4px solid #f1c40f;
-      padding: 10px 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      z-index: 1000;
-      font-size: 16px;
-      font-weight: bold;
-      color: #333;
-      pointer-events: none; /* ห้ามคลิก */
-    }
-
-    .greeting-box p {
-      margin: 0;
-    }
-
-    /* Container ปุ่มด้านล่าง */
-    .button-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 16px; /* ระยะห่างระหว่างปุ่ม */
-      width: 100%;
-      max-width: 600px;
-      margin-top: auto;
-      margin-bottom: 30px;
-      padding-bottom: 8px;
-    }
-
-    /* สไตล์ปุ่ม */
-    .btn {
-      background-color: white;
-      color: #333;
-      padding: 0; /* ลบ padding เดิมเพื่อควบคุมขนาด */
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: bold;
-      text-decoration: none;
-      text-align: center;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s ease;
-      flex: 1 1 auto;
-      min-width: 90px;
-      max-width: 120px;
-      height: 70px; /* กำหนดความสูงของปุ่มให้ใหญ่ขึ้น */
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-    }
-
-    /* ปรับขนาดรูปให้เต็มปุ่ม */
-    .btn img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover; /* ขยายรูปภาพให้เต็มปุ่ม */
-      vertical-align: middle;
-    }
-
-    .btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-    }
-
-    .btn:active {
-      transform: scale(0.98);
-    }
-
-    .btn.home {
-      background-color: #e74c3c;
-    }
-
-    .btn.ai {
-      background-color: #2ecc71;
-    }
-
-    .btn.plant {
-      background-color: #007bff;
-    }
-
-    .btn.menu {
-      background-color: #ff9900;
-    }
-
-    /* Responsive for mobile portrait mode */
-    @media (max-width: 600px) {
-      .btn {
-        min-width: 70px;
-        max-width: 100px;
-        height: 50px;
-      }
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ระบบ AI ของฉัน</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 40px 20px 0;
+        }
+        
+        .box-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            width: 100%;
+            max-width: 340px;
+        }
+        
+        .box {
+            background-color: white;
+            padding: 30px;
+            border-radius: 30px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 340px;
+        }
+        
+        #weatherBox {
+            background-color: #e0f7ff;
+            border-left: 4px solid #007bff;
+        }
+        
+        #weatherInfo {
+            margin-top: 10px;
+            font-size: 16px;
+            color: #555;
+        }
+        
+        .greeting-box {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: #fffbe8;
+            border-left: 4px solid #f1c40f;
+            padding: 10px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            pointer-events: none;
+        }
+        /* ปุ่มล่างสไตล์ใหม่ */
+        
+        .button-container-bottom {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+        }
+        
+        .btn-bottom {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: black;
+            font-size: 12px;
+            font-weight: bold;
+            width: 70px;
+        }
+        
+        .btn-bottom img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            margin-bottom: 5px;
+        }
+        
+        .btn-bottom span {
+            display: block;
+        }
+        
+        @media (max-width: 600px) {
+            .btn-bottom {
+                font-size: 11px;
+            }
+            .btn-bottom img {
+                width: 28px;
+                height: 28px;
+            }
+        }
+        
+        .btn-bottom {
+            background-color: white;
+            color: #333;
+            padding: 0;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
+        }
+        
+        .btn-bottom img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .btn-bottom:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-bottom:active {
+            transform: scale(0.98);
+        }
+        
+        .btn-bottom.home {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .btn-bottom.ai {
+            background-color: #2ecc71;
+            color: white;
+        }
+        
+        .btn-bottom.plant {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .btn-bottom.menu {
+            background-color: #ff9900;
+            color: white;
+        }
+        
+        #newsBox ul.feed {
+            list-style: none;
+            padding: 0;
+            margin-top: 10px;
+        }
+        
+        #newsBox li {
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        #newsBox a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        #newsBox .feedDate {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        @media (max-width: 600px) {
+            .button-container-bottom {
+                flex-wrap: wrap;
+            }
+            .btn-bottom {
+                flex-basis: calc(25% - 10px);
+            }
+        }
+    </style>
 </head>
+
 <body>
-
-  <!-- ป้ายข้อความแสดงชื่อ -->
-  <div class="greeting-box" id="greetingBox">
-    <p>🧑‍🌾 <span id="greetingText">สวัสดี</span></p>
-  </div>
-
-  <!-- กล่องข้อมูล -->
-  <div class="box-container">
-    <div class="box" id="priceBox">
-      <h2>💰 ราคาผลไม้</h2>
-      <p>กำลังโหลด...</p>
-    </div>
-    <div class="box" id="newsBox">
-      <h2>📰 ข่าวสาร</h2>
-      <p>กำลังโหลด...</p>
+    <!-- ป้ายชื่อ -->
+    <div class="greeting-box" id="greetingBox">
+        <p>🧑‍🌾 <span id="greetingText">สวัสดี</span></p>
     </div>
 
-    <!-- กล่องสภาพอากาศ -->
-    <div id="weatherBox" class="box">
-      <h2>🌤️ สภาพอากาศ</h2>
-      <div id="weatherInfo">
-        <p>กำลังโหลด...</p>
-      </div>
+    <!-- กล่องข้อมูล -->
+    <div class="box-container">
+        <div class="box" id="priceBox">
+            <h2>💰 ราคาผลไม้</h2>
+            <p>กำลังโหลด...</p>
+        </div>
+
+        <div class="box" id="newsBox">
+            <h2>📰 ข่าวสารเกษตร</h2>
+            <div id="newsContent">กำลังโหลดข่าว...</div>
+        </div>
+
+        <div id="weatherBox" class="box">
+            <h2>🌤️ สภาพอากาศ</h2>
+            <div id="weatherInfo">
+                <p>กำลังโหลด...</p>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <!-- ปุ่มแนวนอน -->
-  <div class="button-container">
-    <a href="Home999.html" class="btn home">
-      <img src="60.png" alt="Home" />
-    </a>
-    <a href="Home.html" class="btn ai">
-      <img src="61.png" alt="AI" />
-    </a>
-    <a href="Home555.html" class="btn plant">
-      <img src="62.png" alt="วิธีปลูก" />
-    </a>
-    <a href="menu.html" class="btn menu">
-      <img src="63.png" alt="MENU" />
-    </a>
-  </div>
+    <!-- ปุ่มล่าง -->
+    <div class="button-container-bottom">
+        <a href="Home999.html" class="btn-bottom">
+            <img src="60.png" alt="Home">
 
-  <!-- Script Files -->
-  <script src="script.js"></script>
-  <script src="server.py"></script>
-  <script src="name.js"></script>
+        </a>
+        <a href="Home.html" class="btn-bottom">
+            <img src="61.png" alt="AI">
 
+        </a>
+        <a href="Home555.html" class="btn-bottom">
+            <img src="62.png" alt="วิธีปลูก">
+
+        </a>
+        <a href="menu.html" class="btn-bottom">
+            <img src="63.png" alt="เมนู">
+
+        </a>
+    </div>
+
+
+    <!-- JavaScript -->
+    <script>
+        // โหลดข่าวจาก ThaiPBS
+        async function loadRSS() {
+            const rssUrl = "https://www.thaipbs.or.th/agriculture/feed";
+            const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+
+            try {
+                const res = await fetch(apiUrl);
+                const data = await res.json();
+
+                if (!data.items || data.items.length === 0) {
+                    document.getElementById("newsContent").innerText = "ไม่พบข่าวในขณะนี้";
+                    return;
+                }
+
+                let html = "<ul class='feed'>";
+                data.items.slice(0, 5).forEach(item => {
+                    html += `
+            <li>
+              <a href="${item.link}" target="_blank">${item.title}</a><br>
+              <span class="feedDate">${new Date(item.pubDate).toLocaleDateString('th-TH')}</span>
+            </li>`;
+                });
+                html += "</ul>";
+                document.getElementById("newsContent").innerHTML = html;
+            } catch (err) {
+                document.getElementById("newsContent").innerText = "เกิดข้อผิดพลาดในการโหลดข่าว";
+                console.error("โหลดข่าวล้มเหลว:", err);
+            }
+        }
+
+        // จำลองราคาผลไม้แบบเรียลไทม์
+        function fetchFruitPricesRealtime() {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    resolve({
+                        "เงาะ": (30 + Math.random() * 10).toFixed(2) + " บาท/กก.",
+                        "มังคุด": (40 + Math.random() * 10).toFixed(2) + " บาท/กก.",
+                        "ทุเรียน": (140 + Math.random() * 20).toFixed(2) + " บาท/กก."
+                    });
+                }, 500);
+            });
+        }
+
+        async function loadFruitPricesRealtime() {
+            try {
+                const prices = await fetchFruitPricesRealtime();
+                let html = "<ul style='list-style:none;padding:0;'>";
+                for (const [fruit, price] of Object.entries(prices)) {
+                    html += `<li><strong>${fruit}</strong>: ${price}</li>`;
+                }
+                html += "</ul>";
+                document.querySelector("#priceBox p").innerHTML = html;
+            } catch (err) {
+                document.querySelector("#priceBox p").innerText = "ไม่สามารถโหลดราคาผลไม้ได้";
+                console.error(err);
+            }
+        }
+
+        // เรียกใช้เมื่อโหลดหน้า
+        loadRSS();
+        loadFruitPricesRealtime();
+        setInterval(loadFruitPricesRealtime, 60000); // อัปเดตทุก 1 นาที
+    </script>
+    <script src="name.js"></script>
+    <script src="script.js"></script>
 </body>
+
 </html>

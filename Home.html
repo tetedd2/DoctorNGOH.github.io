@@ -50,7 +50,8 @@
             color: white;
             padding: 0;
             /* ลบ padding เพื่อให้รูปภาพเต็มปุ่ม */
-            font-size: 18px;
+            font-size: 16px;
+            /* ลดขนาด font */
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -62,6 +63,10 @@
             justify-content: center;
             overflow: hidden;
             /* ปิดการ滚动 ทำให้ไม่เห็นขอบปุ่ม */
+            height: 150px;
+            /* กำหนดความสูงของปุ่ม */
+            width: 150px;
+            /* กำหนดความกว้างของปุ่ม */
         }
         
         .btn-top img {
@@ -74,26 +79,26 @@
         }
         
         .btn-top:nth-child(1) {
-            background-color: rgb(255, 255, 255);
-            border: 4px solid rgb(255, 255, 255);
+            background-color: orange;
+            border: 4px solid red;
             /* กรอบสีแดง */
         }
         
         .btn-top:nth-child(2) {
-            background-color: rgb(255, 255, 255);
+            background-color: purple;
             border-radius: 0;
             /* ไม่มีขอบโค้งมน */
         }
         
         .btn-top:nth-child(3) {
-            background-color: rgb(255, 255, 255);
+            background-color: green;
             border-radius: 12px;
             /* ขอบโค้งมน */
         }
         
         .btn-top:nth-child(4) {
-            background-color: rgb(255, 255, 255);
-            border: 4px dashed rgb(255, 255, 255);
+            background-color: blue;
+            border: 4px dashed brown;
             /* กรอบแบบเส้นประสีน้ำตาล */
         }
         
@@ -114,8 +119,8 @@
             width: 100%;
             max-width: 400px;
             margin-bottom: 50px;
-            justify-content: center;
-            /* จัดกลางแนวนอน */
+            justify-content: space-between;
+            /* กระจายปุ่มให้แนบขอบจอ */
         }
         
         .btn-bottom {
@@ -143,6 +148,10 @@
             /* ลบขอบโค้ง */
             box-shadow: none;
             /* ลบเงา */
+            height: 50px;
+            /* ลดขนาดความสูงของปุ่ม */
+            width: calc(25% - 10px);
+            /* แบ่งพื้นที่เป็น 4 ส่วน */
         }
         
         .btn-bottom img {
@@ -182,6 +191,28 @@
             background-color: #ff9900;
             color: white;
         }
+        /* Responsive Design */
+        
+        @media (max-width: 600px) {
+            .button-container-top {
+                grid-template-columns: 1fr;
+                /* 1 คอลัมน์ เมื่อหน้าจอแคบ */
+            }
+            .btn-top {
+                height: 120px;
+                /* ลดขนาดความสูงของปุ่มสำหรับมือถือ */
+                width: 120px;
+                /* ลดขนาดความกว้างของปุ่มสำหรับมือถือ */
+            }
+            .button-container-bottom {
+                flex-wrap: wrap;
+                /* ทำให้ปุ่มด้านล่างสามารถ-wrapping ได้ */
+            }
+            .btn-bottom {
+                flex-basis: calc(25% - 10px);
+                /* แบ่งพื้นที่เป็น 4 ส่วน */
+            }
+        }
     </style>
 </head>
 
@@ -194,19 +225,19 @@
     <div class="button-container-top">
         <a href="AI1.html" class="btn-top">
             <img src="102.png" alt="รำบุญ" />
-
+            <span>รำบุญ</span>
         </a>
         <a href="AI2.html" class="btn-top">
             <img src="100.png" alt="มังคุด" />
-
+            <span>มังคุด</span>
         </a>
         <a href="AI3.html" class="btn-top">
             <img src="101.png" alt="ทุเรียน" />
-
+            <span>ทุเรียน</span>
         </a>
         <a href="#" class="btn-top">
             <img src="103.png" alt="การปลูก" />
-
+            <span>การปลูก</span>
         </a>
     </div>
 

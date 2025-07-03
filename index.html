@@ -7,55 +7,41 @@
     <title>Teachable Machine Image Model</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background-color: #f4f7f6;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            background-color: #f4f7f6;
-            color: #333;
+            flex-direction: column;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
-        h1 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-        }
-        
-        #container {
-            background-color: #ffffff;
-            padding: 50px;
-            border-radius: 50px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            width: 90%;
-            max-width: 840px;
-            box-sizing: border-box;
-        }
-        
+
         .logo {
-            max-width: 250px;
+            width: 400px;
+            max-width: 400px;
             height: auto;
+        }
+
+        .status-text {
+            font-size: 20px;
+            color: #333;
+            margin-top: 20px;
         }
     </style>
 </head>
 
 <body>
-    <div id="container">
-        <h1>
+    <!-- โลโก้ตรงกลางจอ -->
+    <img src="777.png" alt="โลโก้" class="logo">
+    <div class="status-text">กำลังเริ่มระบบ...</div>
 
-            <!-- ข้อความแสดงสถานะ -->
-            <p style="font-size: 18px;">กำลังเริ่มระบบ...</p>
-    </div>
-
-    <!-- JavaScript สำหรับตั้งเวลา -->
+    <!-- JavaScript สำหรับเปลี่ยนหน้า -->
     <script>
-        // ตั้งเวลาสองวินาที
-        setTimeout(function() {
-            // เปลี่ยนหน้าไปยัง login.html
+        setTimeout(function () {
             window.location.href = "login.html";
-        }, 2000); // 2000 มิลลิวินาที = 2 วินาที
+        }, 2000);
     </script>
 </body>
 

@@ -13,15 +13,16 @@
         }
         
         body {
-            font-family: 'Helvetica Neue', sans-serif;
-            background-color: white;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            padding: 20px;
-        }
+    font-family: 'Helvetica Neue', sans-serif;
+    background-color: white;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* จัดแนวนอนตรงกลาง */
+    justify-content: center; /* จัดแนวตั้งตรงกลาง */
+    padding: 20px;
+    margin: 0;
+   }
         
         h1 {
             font-size: 20px;
@@ -30,13 +31,13 @@
             margin-bottom: 20px;
         }
         /* กลุ่มปุ่มพืช */
-        
+
         .button-container-top {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 15px;
             width: 100%;
-            max-width: 400px;
+            max-width: 500px;
         }
         
         .btn-top {
@@ -46,7 +47,7 @@
             text-align: center;
             cursor: pointer;
             transition: transform 0.2s ease;
-            height: 140px;
+            height: 200px;
             position: relative;
         }
         
@@ -80,41 +81,174 @@
         /* ปุ่มด้านล่าง */
         
         .button-container-bottom {
+    position: fixed;
+    bottom: 0;
+    left: 0; /* ตั้งค่าใหม่ */
+    width: 100%; /* ให้เต็มหน้าจอ */
+    display: flex;
+    justify-content: space-around; /* กระจายปุ่มให้เท่าๆ กัน */
+    gap: 10px; /* ระยะห่างระหว่างปุ่ม */
+    background-color: white;
+    padding: 8px 0;
+    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+        .btn-top {
+            background-color: orange;
+            padding: 0; /* ลบ-padding เดิม */
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center; /* ปรับให้ข้อความอยู่ตรงกลาง */
+            position: relative;
             display: flex;
-            justify-content: space-around;
-            gap: 10px;
-            width: 100%;
-            max-width: 400px;
-            margin-top: 30px;
+            align-items: center;
+            justify-content: center; /* ทำให้ไอคอนและข้อความอยู่ตรงกลาง */
+            width: 100%; /* กำหนดขนาดปุ่ม */
+            height: 200px; /* กำหนดขนาดปุ่ม */
+        }
+        
+        .btn-top:nth-child(1) {
+            background-color: rgb(255, 255, 255);
+        }
+        
+        .btn-top:nth-child(2) {
+            background-color: rgb(255, 255, 255);
+        }
+        
+        .btn-top:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(255, 255, 255, 0.15);
+        }
+        
+        .btn-top:active {
+            transform: scale(0.98);
+        }
+        
+        .btn-top img {
+            width: 100%; /* กำหนดขนาดรูปภาพ */
+            height: 100%; /* กำหนดขนาดรูปภาพ */
+            object-fit: cover; /* ทำให้รูปภาพเต็มพื้นที่โดยไม่บิดเบี้ยว */
+            border-radius: 6px;
+        }
+        /* ปุ่มแนวนอนด้านล่าง ติดขอบล่างหน้าจอ */
+        
+        .button-container-bottom {
+    position: fixed;
+    bottom: 0;
+    left: 0; /* ตั้งค่าใหม่ */
+    width: 100%; /* ให้เต็มหน้าจอ */
+    display: flex;
+    justify-content: space-around; /* กระจายปุ่มให้เท่าๆ กัน */
+    gap: 10px; /* ระยะห่างระหว่างปุ่ม */
+    background-color: white;
+    padding: 8px 0;
+    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.btn-bottom {
+    background-color: transparent; /* ทำให้พื้นหลังโปร่งใส */
+    border: none;                 /* ลบขอบ */
+    cursor: pointer;
+    flex: 1;                     /* ขยายปุ่มให้เต็มพื้นที่ */
+    height: 60px;                /* กำหนดความสูงของปุ่ม */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 0;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: none;             /* ลบเงา */
+}
+
+.btn-bottom img {
+    width: 80px;                 /* ปรับขนาดไอคอนให้เหมาะสม */
+    height: auto;
+    object-fit: contain;
+    display: block;
+}
+
+.btn-bottom:hover {
+    transform: scale(1.05);
+}
+
+.btn-bottom:active {
+    transform: scale(0.98);
+}
+        /* สีปุ่มล่าง */
+        
+        .btn-bottom.home {
+            background-color: #ffffff;
+        }
+        
+        .btn-bottom.ai {
+            background-color: #ffffff;
+        }
+        
+        .btn-bottom.plant {
+            background-color: #ffffff;
+        }
+        
+        .btn-bottom.menu {
+            background-color: #ffffff;
         }
         
         .btn-bottom {
-            flex: 1;
-            max-width: 60px;
-            height: 60px;
-            background-color: transparent;
-            border: none;
+            background-color: white;
+            color: #333;
             padding: 0;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
         }
         
         .btn-bottom img {
             width: 100%;
-            height: auto;
-            object-fit: contain;
+            height: 100%;
+            object-fit: cover;
         }
-        /* Responsive */
         
-        @media (max-width: 480px) {
-            .button-container-top {
-                gap: 12px;
-            }
-            .btn-top {
-                border-radius: 14px;
-            }
-            .btn-bottom {
-                max-width: 50px;
-                height: 50px;
-            }
+        .btn-bottom:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-bottom:active {
+            transform: scale(0.98);
+        }
+        
+        .btn-bottom.home {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .btn-bottom.ai {
+            background-color: #2ecc71;
+            color: white;
+        }
+        
+        .btn-bottom.plant {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .btn-bottom.menu {
+            background-color: #ff9900;
+            color: white;
         }
     </style>
 </head>
@@ -125,16 +259,16 @@
 
     <div class="button-container-top">
         <a href="AI1.html" class="btn-top">
-            <img src="102.png" alt="เงาะ" />
+            <img src="2000.png" alt="เงาะ" />
         </a>
         <a href="AI2.html" class="btn-top">
-            <img src="100.png" alt="มังคุด" />
+            <img src="9999.png" alt="มังคุด" />
         </a>
         <a href="AI3.html" class="btn-top">
-            <img src="101.png" alt="ทุเรียน" />
+            <img src="4000.png" alt="ทุเรียน" />
         </a>
         <a href="#" class="btn-top">
-            <img src="103.png" alt="กำลังพัฒนา" />
+            <img src="5000.png" alt="กำลังพัฒนา" />
         </a>
     </div>
 
@@ -149,10 +283,9 @@
             <img src="62.png" alt="วิธีปลูก" />
         </a>
         <a href="menu.html" class="btn-bottom">
-            <img src="63.png" alt="MENU" />
+            <img src="1000.png" alt="MENU" />
         </a>
     </div>
-
 </body>
 
 </html>

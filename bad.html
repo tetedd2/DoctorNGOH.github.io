@@ -1,103 +1,112 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> สาเหตุของโรคใบไหม้ </title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background-color: #f4f7f6;
-            position: relative;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>สาเหตุของโรคใบไหม้</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-        h1 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 20px;
-        }
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f4f7f6;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      position: relative;
+    }
 
-        /* รูปภาพเนื้อหา */
-        .content-image {
-            max-width: 25%;
-            height: auto;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
+    h1 {
+      color: #333;
+      text-align: center;
+      margin: 20px;
+    }
 
-        /* ปุ่มย้อนกลับ (มุมซ้ายบน) */
-        .back-button {
-            position: absolute;
-            top: 40px;
-            left: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: white;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            text-decoration: none;
-            border: none;
-            cursor: pointer;
-            background-color: transparent;
-        }
+    /* รูปภาพขยายเต็มจอโดยเว้นขอบ 20px */
+    .content-image {
+      width: calc(100% - 40px); /* ลบซ้าย-ขวา 20px */
+      max-height: calc(100vh - 120px); /* เว้นหัว + ปุ่ม */
+      margin: 20px;
+      object-fit: contain;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
 
-        .back-button img {
-            width: 60px;
-            height: 60px;
-            transition: transform 0.2s ease;
-        }
-        .back-button img:hover {
-            transform: scale(1.1);
-        }
+    /* ปุ่มย้อนกลับไปหน้ากล้อง (ซ้ายบน) */
+    .back-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
 
-        /* ปุ่มปิดหน้าเว็บ (มุมขวาบน) */
-        .close-button {
-            position: absolute;
-            top: 40px;
-            right: 40px;
-            background-color: transparent;
-            border: none;
-            cursor: pointer;
-        }
+    .back-button img {
+      width: 50px;
+      height: 50px;
+      transition: transform 0.2s ease;
+    }
 
-        .close-button img {
-            width: 60px;
-            height: 60px;
-            transition: transform 0.2s ease;
-        }
+    .back-button img:hover {
+      transform: scale(1.1);
+    }
 
-        .close-button img:hover {
-            transform: scale(1.1);
-        }
-    </style>
+    /* ปุ่มย้อนกลับหน้าก่อน (ขวาบน) */
+    .close-button {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .close-button img {
+      width: 50px;
+      height: 50px;
+      transition: transform 0.2s ease;
+    }
+
+    .close-button img:hover {
+      transform: scale(1.1);
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 18px;
+      }
+      .content-image {
+        margin-top: 60px;
+      }
+    }
+  </style>
 </head>
 <body>
 
-    <!-- หัวข้อ -->
-    <h1>สาเหตุของโรคใบไหม้</h1>
+  <!-- ปุ่มย้อนกลับไปกล้อง -->
+  <a href="AI1.html" class="back-button">
+    <img src="home.png" alt="กลับหน้ากล้อง" />
+  </a>
 
-    <!-- รูปภาพแทนเนื้อหา -->
-    <img src="12.png" alt="สาเหตุของโรคใบไหม้" class="content-image">
+  <!-- ปุ่มย้อนกลับหน้าก่อน -->
+  <button onclick="history.back()" class="close-button">
+    <img src="11.png" alt="ย้อนกลับ" />
+  </button>
 
-    <!-- ปุ่มย้อนกลับ -->
-    <a href="AI1.html" class="back-button">
-        <img src="home.png" alt="ย้อนกลับไปหน้ากล้อง">
-    </a>
+  <!-- หัวข้อ -->
+  <h1>สาเหตุของโรคใบไหม้</h1>
 
-    <!-- ปุ่มปิดหน้าเว็บ -->
-    <button onclick="window.close()" class="close-button">
-        <img src="11.png" alt="ปิดหน้านี้">
-    </button>
+  <!-- รูปภาพเนื้อหา -->
+  <img src="001.png" alt="สาเหตุของโรคใบไหม้" class="content-image" />
 
 </body>
 </html>

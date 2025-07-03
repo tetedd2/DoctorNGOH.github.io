@@ -5,13 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>กรอกข้อมูล</title>
   <style>
-    /* Reset */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #f4f7f6;
@@ -23,7 +17,6 @@
       gap: 20px;
       padding: 30px 0;
     }
-
     .form-container {
       background-color: white;
       padding: 30px;
@@ -33,30 +26,17 @@
       max-width: 400px;
       text-align: center;
     }
-
-    h2 {
-      color: #333;
-      margin-bottom: 20px;
-    }
-
-    label {
-      display: block;
-      text-align: left;
-      margin-bottom: 6px;
-      font-weight: bold;
-    }
-
-    input[type="text"],
-    input[type="email"],
-    input[type="tel"] {
+    h2 { color: #333; margin-bottom: 20px; }
+    .input-group { margin-bottom: 16px; text-align: left; }
+    .input-group label { display: block; margin-bottom: 6px; font-weight: bold; }
+    .input-group input[type="text"], .input-group input[type="email"], .input-group input[type="tel"], .input-group textarea {
       width: 100%;
       padding: 10px 12px;
-      margin-bottom: 15px;
       border: 1px solid #ccc;
       border-radius: 8px;
       font-size: 16px;
+      margin-bottom: 0;
     }
-
     button.submit-btn {
       background-color: #007bff;
       color: white;
@@ -68,12 +48,7 @@
       transition: all 0.3s ease;
       width: 100%;
     }
-
-    button.submit-btn:hover {
-      background-color: #0056b3;
-    }
-
-    /* กล่องแสดงผลข้อมูล */
+    button.submit-btn:hover { background-color: #0056b3; }
     .result-display {
       margin-top: 30px;
       background-color: #e9f7ef;
@@ -83,75 +58,182 @@
       text-align: left;
       display: none;
     }
+    .result-display h3 { margin-top: 0; color: #0056b3; }
+    .result-display p { margin: 5px 0; color: #333; }
+   .button-container-bottom {
+    position: fixed;
+    bottom: 0;
+    left: 0; /* ตั้งค่าใหม่ */
+    width: 100%; /* ให้เต็มหน้าจอ */
+    display: flex;
+    justify-content: space-around; /* กระจายปุ่มให้เท่าๆ กัน */
+    gap: 10px; /* ระยะห่างระหว่างปุ่ม */
+    background-color: white;
+    padding: 8px 0;
+    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
 
-    .result-display h3 {
-      margin-top: 0;
-      color: #0056b3;
-    }
+        .btn-top {
+            background-color: orange;
+            padding: 0; /* ลบ-padding เดิม */
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center; /* ปรับให้ข้อความอยู่ตรงกลาง */
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center; /* ทำให้ไอคอนและข้อความอยู่ตรงกลาง */
+            width: 100%; /* กำหนดขนาดปุ่ม */
+            height: 200px; /* กำหนดขนาดปุ่ม */
+        }
+        
+        .btn-top:nth-child(1) {
+            background-color: rgb(255, 255, 255);
+        }
+        
+        .btn-top:nth-child(2) {
+            background-color: rgb(255, 255, 255);
+        }
+        
+        .btn-top:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(255, 255, 255, 0.15);
+        }
+        
+        .btn-top:active {
+            transform: scale(0.98);
+        }
+        
+        .btn-top img {
+            width: 100%; /* กำหนดขนาดรูปภาพ */
+            height: 100%; /* กำหนดขนาดรูปภาพ */
+            object-fit: cover; /* ทำให้รูปภาพเต็มพื้นที่โดยไม่บิดเบี้ยว */
+            border-radius: 6px;
+        }
+        /* ปุ่มแนวนอนด้านล่าง ติดขอบล่างหน้าจอ */
+        
+        .button-container-bottom {
+    position: fixed;
+    bottom: 0;
+    left: 0; /* ตั้งค่าใหม่ */
+    width: 100%; /* ให้เต็มหน้าจอ */
+    display: flex;
+    justify-content: space-around; /* กระจายปุ่มให้เท่าๆ กัน */
+    gap: 10px; /* ระยะห่างระหว่างปุ่ม */
+    background-color: white;
+    padding: 8px 0;
+    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
 
-    .result-display p {
-      margin: 5px 0;
-      color: #333;
-    }
+.btn-bottom {
+    background-color: transparent; /* ทำให้พื้นหลังโปร่งใส */
+    border: none;                 /* ลบขอบ */
+    cursor: pointer;
+    flex: 1;                     /* ขยายปุ่มให้เต็มพื้นที่ */
+    height: 60px;                /* กำหนดความสูงของปุ่ม */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 0;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: none;             /* ลบเงา */
+}
 
-    /* Container สำหรับปุ่มแนวนอน */
-    .button-container {
-      display: flex;
-      gap: 15px;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-      max-width: 600px;
-      margin-top: auto;
-      padding: 20px;
-      box-sizing: border-box;
-    }
+.btn-bottom img {
+    width: 80px;                 /* ปรับขนาดไอคอนให้เหมาะสม */
+    height: auto;
+    object-fit: contain;
+    display: block;
+}
 
-    .btn {
-      background-color: white;
-      color: #333;
-      padding: 16px 24px;
-      border-radius: 12px;
-      font-size: 18px;
-      font-weight: bold;
-      text-decoration: none;
-      text-align: center;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s ease;
-      flex: 1;
-      min-width: 120px;
-      cursor: pointer;
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-    }
+.btn-bottom:hover {
+    transform: scale(1.05);
+}
 
-    .btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-    }
-
-    .btn:active {
-      transform: scale(0.98);
-    }
-
-    .btn.home {
-      background-color: #e74c3c;
-      color: white;
-    }
-    .btn.ai {
-      background-color: #2ecc71;
-      color: white;
-    }
-    .btn.plant {
-      background-color: #007bff;
-      color: white;
-    }
-    .btn.menu {
-      background-color: #ff9900;
-      color: white;
-    }
+.btn-bottom:active {
+    transform: scale(0.98);
+}
+        /* สีปุ่มล่าง */
+        
+        .btn-bottom.home {
+            background-color: #ffffff;
+        }
+        
+        .btn-bottom.ai {
+            background-color: #ffffff;
+        }
+        
+        .btn-bottom.plant {
+            background-color: #ffffff;
+        }
+        
+        .btn-bottom.menu {
+            background-color: #ffffff;
+        }
+        
+        .btn-bottom {
+            background-color: white;
+            color: #333;
+            padding: 0;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
+        }
+        
+        .btn-bottom img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .btn-bottom:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-bottom:active {
+            transform: scale(0.98);
+        }
+        
+        .btn-bottom.home {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .btn-bottom.ai {
+            background-color: #2ecc71;
+            color: white;
+        }
+        
+        .btn-bottom.plant {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .btn-bottom.menu {
+            background-color: #ff9900;
+            color: white;
+        }
   </style>
+  <!-- Firebase JS SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
@@ -159,15 +241,22 @@
   <div class="form-container">
     <h2>กรอกข้อมูลของคุณ</h2>
     <form id="dataForm">
-      <label for="name">ชื่อ:</label>
-      <input type="text" id="name" name="name" placeholder="กรุณากรอกชื่อ">
-
-      <label for="email">อีเมล:</label>
-      <input type="email" id="email" name="email" placeholder="กรุณากรอกอีเมล">
-
-      <label for="phone">เบอร์โทรศัพท์:</label>
-      <input type="tel" id="phone" name="phone" placeholder="กรุณากรอกเบอร์โทร">
-
+      <div class="input-group">
+        <label for="name">ชื่อ:</label>
+        <input type="text" id="name" name="name" placeholder="กรุณากรอกชื่อ" required>
+      </div>
+      <div class="input-group">
+        <label for="email">อีเมล:</label>
+        <input type="email" id="email" name="email" placeholder="กรุณากรอกอีเมล" required>
+      </div>
+      <div class="input-group">
+        <label for="phone">เบอร์โทรศัพท์:</label>
+        <input type="tel" id="phone" name="phone" placeholder="กรุณากรอกเบอร์โทร" required>
+      </div>
+      <div class="input-group">
+        <label for="feedback">ข้อเสนอแนะ:</label>
+        <textarea id="feedback" name="feedback" rows="3" placeholder="กรุณากรอกข้อความ"></textarea>
+      </div>
       <button type="submit" class="submit-btn">ส่งข้อมูล</button>
     </form>
 
@@ -177,44 +266,75 @@
       <p><strong>ชื่อ:</strong> <span id="outputName">-</span></p>
       <p><strong>อีเมล:</strong> <span id="outputEmail">-</span></p>
       <p><strong>เบอร์โทรศัพท์:</strong> <span id="outputPhone">-</span></p>
+      <p><strong>ข้อเสนอแนะ:</strong> <span id="outputFeedback">-</span></p>
     </div>
   </div>
 
   <!-- ปุ่มด้านล่าง -->
-  <div class="button-container">
-    <a href="Home999.html" class="btn home">HOME</a>
-    <a href="Home.html" class="btn ai">AI</a>
-    <a href="Home555.html" class="btn plant">วิธีปลูก</a>
-    <a href="#" class="btn menu">MENU</a>
+  <div class="button-container-bottom">
+    <a href="Home999.html" class="btn-bottom home">
+        <img src="60.png" alt="Home" />
+    </a>
+    <a href="Home.html" class="btn-bottom ai">
+        <img src="61.png" alt="AI" />
+    </a>
+    <a href="Home555.html" class="btn-bottom plant">
+        <img src="62.png" alt="วิธีปลูก" />
+    </a>
+    <a href="menu.html" class="btn-bottom menu">
+        <img src="1000.png" alt="MENU" />
+    </a>
   </div>
 
   <script>
-    const form = document.getElementById('dataForm');
-    const output = document.getElementById('output');
-    const outputName = document.getElementById('outputName');
-    const outputEmail = document.getElementById('outputEmail');
-    const outputPhone = document.getElementById('outputPhone');
+    // === Firebase config ของคุณ (แก้ storageBucket ตามตัวอย่างที่แจ้ง) ===
+    const firebaseConfig = {
+      apiKey: "AIzaSyAowHiXhDQH4Bmj3pEVq5LTEJCaIYh1jdo",
+      authDomain: "feedback-10052.firebaseapp.com",
+      projectId: "feedback-10052",
+      storageBucket: "feedback-10052.appspot.com", // <- .appspot.com!
+      messagingSenderId: "587873358995",
+      appId: "1:587873358995:web:9abc1e9c574270596be966",
+      measurementId: "G-GL7PET0XL5"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-    // ฟังก์ชันแสดงผลข้อมูล
-    function showResult() {
+    // ส่งข้อมูลฟอร์มเข้า Firestore (collection = feedback, ฟิลด์ = ภาษาไทย)
+    document.getElementById("dataForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+
+      // รับค่าจากฟอร์ม
       const name = document.getElementById('name').value.trim();
       const email = document.getElementById('email').value.trim();
       const phone = document.getElementById('phone').value.trim();
+      const feedback = document.getElementById('feedback').value.trim();
 
-      outputName.textContent = name || '-';
-      outputEmail.textContent = email || '-';
-      outputPhone.textContent = phone || '-';
+      try {
+        // ส่งเข้า Firestore (ฟิลด์ชื่อไทย)
+        await db.collection("feedback").add({
+          "ชื่อ": name,
+          "email": email,
+          "phone": phone,
+          "ข้อเสนอแนะ": feedback,
+          "timestamp": firebase.firestore.FieldValue.serverTimestamp()
+        });
 
-      // ซ่อนฟอร์ม
-      form.style.display = 'none';
-      // แสดงผลลัพธ์
-      output.style.display = 'block';
-    }
+        // แสดงผลลัพธ์บนหน้าเว็บ
+        document.getElementById("outputName").textContent = name || "-";
+        document.getElementById("outputEmail").textContent = email || "-";
+        document.getElementById("outputPhone").textContent = phone || "-";
+        document.getElementById("outputFeedback").textContent = feedback || "-";
+        document.getElementById("output").style.display = "block";
 
-    // เมื่อกดส่งข้อมูล
-    form.addEventListener('submit', function(event) {
-      event.preventDefault(); // ปิดการโหลดใหม่
-      showResult();
+        // รีเซ็ตฟอร์ม
+        document.getElementById("dataForm").reset();
+
+        alert("ส่งข้อมูลสำเร็จ ขอบคุณสำหรับข้อเสนอแนะ!");
+      } catch (error) {
+        alert("เกิดข้อผิดพลาด: " + error.message);
+        console.error("Error adding document: ", error);
+      }
     });
   </script>
 </body>

@@ -46,7 +46,7 @@ function takePicture() {
     // สร้างลิงก์สำหรับดาวน์โหลดภาพ
     const link = document.createElement('a');
     link.href = imageDataUrl;
-    link.download = snapshot-${new Date().getTime()}.png; // ตั้งชื่อไฟล์
+    link.download = `snapshot-${new Date().getTime()}.png`; // ตั้งชื่อไฟล์
     
     // สั่งให้เบราว์เซอร์คลิกลิงก์นี้เพื่อดาวน์โหลดไฟล์
     document.body.appendChild(link);

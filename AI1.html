@@ -294,20 +294,17 @@
     <div id="container">
         <div id="webcam"><p>กล้องจะปรากฏที่นี่</p></div>
         <div id="message" class="message">คลิก "เริ่มการจำแนก" เพื่อเริ่มต้น</div>
-        <label class="custom-file-upload">
-    <input type="file" id="uploadImage" accept="image/*" />
-    <img src="041.png" alt="เลือกรูป" />
+       
     
 </label>
 
         <div id="actionButtons">
-            <button type="button" id="startButton"><img src="7.png" alt="เริ่มการจำแนก"></button>
-            <button type="button" id="stopButton" disabled><img src="9.png" alt="หยุดการจำแนก"></button>
-            <button type="button" id="switchCameraButton" disabled><img src="10.png" alt="สลับกล้อง"></button>
-        </div>
-        <div id="infoButtons" class="hidden vertical">
-            <button type="button" id="causeButton"><img src="3.png" alt="สาเหตุ"></button>
-            <button type="button" id="treatmentButton"><img src="4.png" alt="รักษา"></button>
+           <input type="file" id="uploadImage" accept="image/*" capture="environment" />
+<button id="startButton">📷 เริ่มกล้อง</button>
+<button id="stopButton">⛔ หยุดกล้อง</button>
+<button id="switchCameraButton">🔄 สลับกล้อง</button>
+<button id="startUpload">🖼 วิเคราะห์ภาพที่อัปโหลด</button>
+
         </div>
         <div id="label-container"></div>
         <div id="resultDisplay"><p>ผลลัพธ์การจำแนกจะแสดงที่นี่</p></div>

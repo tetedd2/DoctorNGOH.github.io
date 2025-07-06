@@ -1,5 +1,5 @@
 // AI1.js - เวอร์ชันรวมปุ่มสาเหตุ/รักษา + ระบบกล้อง + ระบบจำแนก
-const URL = "https://teachablemachine.withgoogle.com/models/2W4npTTEM/";
+const URL = "https://teachablemachine.withgoogle.com/models/6HxInDCGD/";
 let model, labelContainer, maxPredictions;
 let isPredicting = false;
 let currentFacingMode = 'environment';
@@ -161,11 +161,15 @@ async function predict() {
 
 function handleFinalResult(className) {
     let resultText = {
-        'A1': '✅ ปลอดเชื้อโรค ✅',
-        'A2': '🚨 ใบไหม้ 🚨',
-        'A3': '🚨 เพลี้ยไฟ 🚨',
-        'A4': '🚨 ใบจุดขาว 🚨',
-        'A5': '🚨 กรุณาถ่ายใหม่ 🚨',
+        'V1': '🚨 เป็นโรคใบไหม้ 🚨',
+        'V2': '🚨 เป็นโรคใบหอยหาก 🚨',
+        'V3': '✅ ปลอดเชื้อโรค ✅',
+        'V4': '✅ พร้อมทานรสชาติหวาน ✅',
+        'V5': '🕐 รอต่อสัก 2-3 วัน 🕐',
+        'V6': '✅ เก็บขายได้ราคาดี ✅',
+        'V7': '🚨 เพลี้ยไฟ 🚨',
+        'V8': '🚨 หนอนกิน 🚨',
+        'V9': '🚨 กรุณาถ่ายใหม่ 🚨'
         
     }[className] || `💡 ตรวจพบ: ${className}`;
 
@@ -173,7 +177,7 @@ function handleFinalResult(className) {
     resultDisplayElement.className = 'important-message';
 
     // ✅ ใช้ toggleInfoButtons หรือปรับ style ตรง ๆ ก็ได้
-    const shouldShowInfoButtons = ['A2', 'A3', 'A4'].includes(className);
+    const shouldShowInfoButtons = ['V1', 'V2', 'V7', 'V8'].includes(className);
     document.getElementById("actionButtons").style.display = shouldShowInfoButtons ? 'none' : 'block';
     document.getElementById("infoButtons").style.display = shouldShowInfoButtons ? 'flex' : 'none';
 
@@ -233,34 +237,30 @@ switchCameraButton.addEventListener('click', switchCamera);
 // ปุ่ม "สาเหตุ" และ "วิธีรักษา" เปลี่ยนหน้าต่างเดิม
 causeButton.addEventListener('click', () => {
     const resultText = resultDisplayElement.querySelector('h3')?.textContent.trim() || '';
-    let url = 'bad.html';
+    let href = 'bad5.html';
 
-    if (resultText.includes('ใบไหม้')) {
-        url = 'bad7.html';
+    if (resultText.includes('เป็นโรคใบไหม้')) {
+        href = 'bad5.html';
     } else if (resultText.includes('เพลี้ยไฟ')) {
-        url = 'bad8.html';
-    } else if (resultText.includes('ราขาว')) {
-        url = 'bad10.html';
+        href = 'bad6.html';
     }
 
     const diseaseName = resultText.replace(/[🚨✅]/g, '').trim();
-    window.location.href = `${url}?disease=${encodeURIComponent(diseaseName)}`;
+    window.location.href = `${href}?disease=${encodeURIComponent(diseaseName)}`;
 });
 
 treatmentButton.addEventListener('click', () => {
     const resultText = resultDisplayElement.querySelector('h3')?.textContent.trim() || '';
-    let url = 'health.html';
+    let href = 'health10.html';
 
-    if (resultText.includes('ใบไหม้')) {
-        url = 'health9.html';
+    if (resultText.includes('เป็นโรคใบไหม้')) {
+        href = 'health10.html';
     } else if (resultText.includes('เพลี้ยไฟ')) {
-        url = 'health11.html';
-    } else if (resultText.includes('ราขาว')) {
-        url = 'health8.html';
-    } 
+        href = 'health11.html';
+    }
 
     const diseaseName = resultText.replace(/[🚨✅]/g, '').trim();
-    window.location.href = `${url}?disease=${encodeURIComponent(diseaseName)}`;
+    window.location.href = `${href}?disease=${encodeURIComponent(diseaseName)}`;
 });
 
 window.addEventListener('DOMContentLoaded', () => {

@@ -1,4 +1,3 @@
-// AI1.js - เวอร์ชันรวมปุ่มสาเหตุ/รักษา + ระบบกล้อง + ระบบจำแนก
 const URL = "https://teachablemachine.withgoogle.com/models/l_zvMSkA3/";
 let model, labelContainer, maxPredictions;
 let isPredicting = false;
@@ -14,21 +13,41 @@ const actionButtonsDiv = document.getElementById('actionButtons');
 const infoButtonsDiv = document.getElementById('infoButtons');
 const causeButton = document.getElementById('causeButton');
 const treatmentButton = document.getElementById('treatmentButton');
+const confirmButton = document.getElementById('confirmButton'); // ปุ่มยืนยัน
 
+let selectedImage = null; // ใช้เก็บรูปภาพที่ผู้ใช้เลือก
 let predictionHistory = [];
 const REQUIRED_CONSISTENCY_TIME_MS = 2000;
 const REQUIRED_PROBABILITY = 0.9;
 
-function toggleInfoButtons(show) {
-    infoButtonsDiv.classList.toggle('hidden', !show);
-    actionButtonsDiv.classList.toggle('hidden', show);
-}
-
+// ฟังก์ชันแสดงข้อความ
 function showMessage(text, type = '') {
     messageElement.textContent = text;
     messageElement.className = `message ${type}`.trim();
 }
 
+function stopCamera() {
+    isPredicting = false;
+    if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+    }
+    if (videoElement) {
+        videoElement.srcObject = null;
+    }
+    const webcamDiv = document.getElementById("webcam");
+    if (webcamDiv) {
+        webcamDiv.innerHTML = '<p>กล้องหยุดทำงานแล้ว</p>';
+    }
+    showMessage('กล้องและโมเดลหยุดทำงานแล้ว');
+    if (labelContainer) labelContainer.innerHTML = '';
+    startButton.disabled = false;
+    stopButton.disabled = true;
+    switchCameraButton.disabled = true;
+    predictionHistory = [];
+}
+
+
+// ฟังก์ชันแสดงข้อผิดพลาด
 function showError(text) {
     showMessage(text, 'error');
     startButton.disabled = false;
@@ -36,128 +55,71 @@ function showError(text) {
     switchCameraButton.disabled = true;
 }
 
+async function setupCamera() {
+    const constraints = {
+        audio: false,
+        video: {
+            facingMode: currentFacingMode
+        }
+    };
+    videoElement = document.createElement('video');
+    stream = await navigator.mediaDevices.getUserMedia(constraints);
+    videoElement.srcObject = stream;
+    await videoElement.play();
+
+    const webcamDiv = document.getElementById("webcam");
+    webcamDiv.innerHTML = '';
+    webcamDiv.appendChild(videoElement);
+}
+
+
 async function init() {
-    showMessage('กำลังโหลดโมเดลและตั้งค่ากล้อง...');
+    showMessage('กำลังโหลดโมเดล...');
     startButton.disabled = true;
     stopButton.disabled = true;
     switchCameraButton.disabled = true;
-    toggleInfoButtons(false);
-    resultDisplayElement.innerHTML = '';
-    predictionHistory = [];
-
-    async function predict() {
-    if (!videoElement || videoElement.readyState < 2) return;
-    const prediction = await model.predict(videoElement);
-    prediction.sort((a, b) => b.probability - a.probability);
-    const top = prediction[0];
-    const currentTime = Date.now();
-    if (top.probability > 0.7) {
-        predictionHistory.push({ className: top.className, probability: top.probability, time: currentTime });
-    } else {
-        predictionHistory = [];
-    }
-    predictionHistory = predictionHistory.filter(p => currentTime - p.time <= REQUIRED_CONSISTENCY_TIME_MS);
-
-    const consistent = predictionHistory.length > 0 &&
-        predictionHistory.every(p => p.className === top.className && p.probability >= REQUIRED_PROBABILITY) &&
-        (predictionHistory[predictionHistory.length - 1].time - predictionHistory[0].time >= REQUIRED_CONSISTENCY_TIME_MS);
-
-    if (consistent) {
-        handleFinalResult(top.className); // ส่ง className ไปยัง handleFinalResult
-    } else {
-        showResultHint(top);
-    }
-}
 
     try {
         model = await tmImage.load(`${URL}model.json`, `${URL}metadata.json`);
         maxPredictions = model.getTotalClasses();
+        showMessage('โมเดลพร้อมใช้งาน!', 'success');
     } catch (error) {
         showError(`เกิดข้อผิดพลาดในการโหลดโมเดล: ${error.message}`);
         return;
     }
 
     await setupCamera();
-
-    labelContainer = document.getElementById("label-container");
-    labelContainer.innerHTML = '';
-    for (let i = 0; i < maxPredictions; i++) {
-        labelContainer.appendChild(document.createElement("div"));
-    }
-
-    showMessage('พร้อมสำหรับการจำแนก!', 'success');
     stopButton.disabled = false;
     switchCameraButton.disabled = false;
 }
 
-async function setupCamera() {
-    if (stream) stream.getTracks().forEach(track => track.stop());
+// ฟังก์ชันเริ่มต้นการจำแนกเมื่อกดปุ่มยืนยัน
+async function startClassification() {
+    if (!selectedImage) {
+        showError("กรุณาเลือกรูปภาพก่อน");
+        return;
+    }
 
-    const constraints = {
-        video: { width: { ideal: 320 }, height: { ideal: 240 }, facingMode: currentFacingMode }
-    };
+    showMessage("กำลังวิเคราะห์ภาพ...");
+    resultDisplayElement.innerHTML = "";
 
     try {
-        stream = await navigator.mediaDevices.getUserMedia(constraints);
+        if (!model) {
+            showMessage("กำลังโหลดโมเดล...");
+            model = await tmImage.load(`${URL}model.json`, `${URL}metadata.json`);
+            maxPredictions = model.getTotalClasses();
+            showMessage("โมเดลพร้อมใช้งาน!", "success");
+        }
 
-        videoElement = document.createElement('video');
-        videoElement.setAttribute('playsinline', true);
-        videoElement.muted = true;
-        videoElement.autoplay = true;
-        videoElement.srcObject = stream;
-
-        const webcamDiv = document.getElementById("webcam");
-        webcamDiv.innerHTML = '';
-        webcamDiv.appendChild(videoElement);
-
-        await new Promise((resolve) => {
-            videoElement.onloadedmetadata = () => resolve(videoElement.play());
-            setTimeout(resolve, 3000);
-        });
-
-        isPredicting = true;
-        window.requestAnimationFrame(loop);
-    } catch (error) {
-        let msg = error.name === 'NotAllowedError' ? 'ไม่ได้รับอนุญาตให้เข้าถึงกล้อง' :
-                  error.name === 'NotFoundError' ? 'ไม่พบกล้องในอุปกรณ์' :
-                  'เกิดข้อผิดพลาดในการเปิดกล้อง';
-        showError(msg);
-    }
-}
-
-async function loop() {
-    if (!isPredicting) return;
-    await predict();
-    window.requestAnimationFrame(loop);
-}
-
-async function predict() {
-    if (!videoElement || videoElement.readyState < 2) return;
-
-    const prediction = await model.predict(videoElement);
-    prediction.sort((a, b) => b.probability - a.probability);
-
-    const top = prediction[0];
-    const currentTime = Date.now();
-
-    if (top.probability > 0.7) {
-        predictionHistory.push({ className: top.className, probability: top.probability, time: currentTime });
-    } else {
-        predictionHistory = [];
-    }
-
-    predictionHistory = predictionHistory.filter(p => currentTime - p.time <= REQUIRED_CONSISTENCY_TIME_MS);
-
-    const consistent = predictionHistory.length > 0 &&
-        predictionHistory.every(p => p.className === top.className && p.probability >= REQUIRED_PROBABILITY) &&
-        (predictionHistory[predictionHistory.length - 1].time - predictionHistory[0].time >= REQUIRED_CONSISTENCY_TIME_MS);
-
-    if (consistent) {
+        const prediction = await model.predict(selectedImage);
+        prediction.sort((a, b) => b.probability - a.probability);
+        const top = prediction[0];
         handleFinalResult(top.className);
-    } else {
-        showResultHint(top);
+    } catch (err) {
+        showError("เกิดข้อผิดพลาดในการวิเคราะห์ภาพ: " + err.message);
     }
 }
+
 
 function handleFinalResult(className) {
     let resultText = {
@@ -206,6 +168,32 @@ function showResultHint(top) {
     const remaining = Math.max(0, Math.ceil((REQUIRED_CONSISTENCY_TIME_MS - timeElapsed) / 1000));
     resultDisplayElement.innerHTML = `กำลังรอการยืนยัน "${top.className}" (${(top.probability * 100).toFixed(1)}%)<br>ต้องมั่นใจต่อเนื่องอีกประมาณ ${remaining} วินาที`;
     resultDisplayElement.className = 'info-message';
+}
+
+async function startClassification() {
+    if (!selectedImage || !selectedImage.complete) {
+        showError("กรุณาเลือกรูปภาพก่อน และรอให้โหลดจนเสร็จ");
+        return;
+    }
+
+    showMessage("กำลังวิเคราะห์ภาพ...");
+    resultDisplayElement.innerHTML = "";
+
+    try {
+        if (!model) {
+            showMessage("กำลังโหลดโมเดล...");
+            model = await tmImage.load(`${URL}model.json`, `${URL}metadata.json`);
+            maxPredictions = model.getTotalClasses();
+            showMessage("โมเดลพร้อมใช้งาน!", "success");
+        }
+
+        const prediction = await model.predict(selectedImage);
+        prediction.sort((a, b) => b.probability - a.probability);
+        const top = prediction[0];
+        handleFinalResult(top.className);
+    } catch (err) {
+        showError("เกิดข้อผิดพลาดในการวิเคราะห์ภาพ: " + err.message);
+    }
 }
 
 async function stopCamera() {
@@ -324,6 +312,23 @@ function handleClassificationResult(label) {
     }
 }
 
+function handleImageUpload(file) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        const image = new Image();
+        image.onload = () => {
+            const webcamDiv = document.getElementById("webcam");
+            webcamDiv.innerHTML = ''; // ล้างภาพเก่าออก
+            webcamDiv.appendChild(image); // แสดงภาพใหม่
+
+            selectedImage = image; // กำหนดภาพที่เลือกไว้เพื่อ predict
+            confirmButton.disabled = false; // เปิดปุ่มยืนยัน
+            showMessage('พร้อมจำแนก กด "ยืนยัน" เพื่อเริ่ม', 'info');
+        };
+        image.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
 
 // เมื่อโหลดหน้าเว็บ
 window.addEventListener('DOMContentLoaded', () => {
@@ -333,42 +338,27 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 window.addEventListener('beforeunload', stopCamera);
-// วิเคราะห์ภาพจากไฟล์ที่อัปโหลด
-// วิเคราะห์ภาพจากไฟล์ที่อัปโหลด (สามารถอัปโหลดหลายครั้งได้)
+
+// ฟังก์ชันการเลือกภาพจากอัลบั้ม
 function handleImageUpload(file) {
     const reader = new FileReader();
-    reader.onload = async function (e) {
+    reader.onload = function (e) {
         const image = new Image();
         image.src = e.target.result;
 
-        showMessage('กำลังวิเคราะห์ภาพ...');
-        resultDisplayElement.innerHTML = '';
+        // แสดงภาพที่เลือกในกรอบ
+        const webcamDiv = document.getElementById("webcam");
+        webcamDiv.innerHTML = ''; // ลบเนื้อหาก่อนหน้า
+        webcamDiv.appendChild(image); // แสดงภาพที่เลือก
 
-        image.onload = async function () {
-            if (!model) {
-                try {
-                    showMessage('กำลังโหลดโมเดล...');
-                    model = await tmImage.load(`${URL}model.json`, `${URL}metadata.json`);
-                    maxPredictions = model.getTotalClasses();
-                    showMessage('โมเดลพร้อมใช้งาน!', 'success');
-                } catch (err) {
-                    showError('ไม่สามารถโหลดโมเดลได้: ' + err.message);
-                    return;
-                }
-            }
-
-            try {
-                const prediction = await model.predict(image);
-                prediction.sort((a, b) => b.probability - a.probability);
-                const top = prediction[0];
-                handleFinalResult(top.className);
-            } catch (err) {
-                showError('เกิดข้อผิดพลาดในการวิเคราะห์ภาพ: ' + err.message);
-            }
-        };
+        selectedImage = image; // เก็บภาพที่เลือก
+        confirmButton.disabled = false; // เปิดปุ่มยืนยัน
     };
     reader.readAsDataURL(file);
 }
+
+// ฟังก์ชันเมื่อกดปุ่มยืนยัน
+confirmButton.addEventListener('click', startClassification);
 
 // 📁 กดเลือกจากอัลบั้ม
 document.getElementById("selectImage").addEventListener("change", function (event) {
@@ -384,7 +374,8 @@ document.getElementById("captureImage").addEventListener("change", function (eve
     event.target.value = "";
 });
 
-
-
-
-
+// กรณีที่ต้องการปุ่มยืนยันแยกต่างหาก
+function toggleInfoButtons(show) {
+    infoButtonsDiv.classList.toggle('hidden', !show);
+    actionButtonsDiv.classList.toggle('hidden', show);
+}

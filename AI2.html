@@ -11,7 +11,7 @@
         html, body {
             height: 100%;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f6;
+            background-color: #ffffff;
             color: #272727;
             display: flex;
             flex-direction: column;
@@ -27,18 +27,25 @@
             overflow-y: auto;
         }
         #webcam {
-            width: 200px;
-            height: 200px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            background-color: #eee;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #adacac;
-            font-style: italic;
-            margin: 20px 0;
-        }
+    width: 210px;
+    height: 400px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background-color: #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #adacac;
+    font-style: italic;
+    margin: 20px 0;
+}
+
+#webcam img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* ทำให้รูปเต็มพื้นที่โดยไม่บิดเบี้ยว */
+}
+
         #message {
             margin: 10px;
             padding: 10px;
@@ -48,7 +55,7 @@
             font-weight: bold;
             text-align: center;
         }
-        #actionButtons button, #infoButtons button {
+        #infoButtons button {
             width: 210px;
             height: 60px;
             margin: 10px auto;
@@ -58,10 +65,23 @@
             overflow: hidden;
             border-radius: 8px;
         }
-        #actionButtons button img, #infoButtons button img {
+        #infoButtons button img {
             width: 200px;
             object-fit: contain;
         }
+
+
+        #actionButtons button {
+            width: 0px;
+            height: 0px;
+            margin: 0px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+        
         button:hover img { transform: scale(1.1); }
         button:active img { transform: scale(0.98); }
         #infoButtons.vertical {
@@ -124,7 +144,7 @@
         
         .btn-top:hover {
             transform: scale(1.05);
-            box-shadow: 0 6px 16px rgba(255, 255, 255, 0.15);
+            box-shadow: 0 6px 16px rgb(255, 255, 255);
         }
         
         .btn-top:active {
@@ -203,7 +223,7 @@
         
         .btn-bottom {
             background-color: white;
-            color: #333;
+            color: #fff9f9;
             padding: 0;
             font-size: 14px;
             font-weight: bold;
@@ -257,57 +277,94 @@
         @media (max-width: 600px) {
             .btn-bottom { flex-basis: calc(25% - 10px); }
         }
-        #imageUpload {
-            margin: 10px 0;
-            padding: 5px;
-        }
-
-        .custom-file-upload {
-    width: 210px;
-            height: 60px;
-            margin: 10px auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            border-radius: 8px;
+        
+        .custom-button {
+  display: inline-block;
+  text-align: center;
+  font-size: 16px;
+  color: white;
+  background-color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 210px;
+  height: 60px;
+  position: relative;
+  overflow: hidden;
 }
 
-.custom-file-upload:hover {
-    background-color: #f0f0f0;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+.custom-button:hover {
+  background-color: #ffffff;
 }
 
-.custom-file-upload img {
-    width: 240px;
-    height: 240px;
-    object-fit: contain;
+/* ปุ่มถ่ายรูป */
+.capture-button {
+  background-image: url('7.png');
+  background-size: cover; /* รูปภาพจะขยายให้เต็มปุ่ม */
+  background-position: center; /* จัดตำแหน่งรูปให้ตรงกลาง */
+  background-repeat: no-repeat;
+  padding: 0; /* ปิดการใช้ padding เพื่อให้รูปเต็มปุ่ม */
+  color: white;
 }
 
-.custom-file-upload input[type="file"] {
-    display: none;
+/* ปุ่มเลือกรูปจากอัลบั้ม */
+.select-button {
+  background-image: url('181.png');
+  background-size: cover; /* รูปภาพจะขยายให้เต็มปุ่ม */
+  background-position: center; /* จัดตำแหน่งรูปให้ตรงกลาง */
+  background-repeat: no-repeat;
+  padding: 0; /* ปิดการใช้ padding เพื่อให้รูปเต็มปุ่ม */
+  color: white;
 }
+
+/* ปุ่มยืนยัน */
+.confirm-button {
+  background-image: url('191.png');
+  background-size: cover; /* รูปภาพจะขยายให้เต็มปุ่ม */
+  background-position: center; /* จัดตำแหน่งรูปให้ตรงกลาง */
+  background-repeat: no-repeat;
+  padding: 0; /* ปิดการใช้ padding เพื่อให้รูปเต็มปุ่ม */
+  color: white;
+}
+
 
     </style>
 </head>
 <body>
     <div id="container">
-        <div id="webcam"><p>กล้องจะปรากฏที่นี่</p></div>
+        <div id="webcam">
+  <p>รูปจะปรากฏที่นี้</p>
+</div>
+
         <div id="message" class="message">คลิก "เริ่มการจำแนก" เพื่อเริ่มต้น</div>
-        <label class="custom-file-upload">
-    <input type="file" id="uploadImage" accept="image/*" />
-    <img src="041.png" alt="เลือกรูป" />
+        <!-- ปุ่มเลือกรูปจากอัลบั้ม -->
+<!-- ปุ่มเลือกรูปจากอัลบั้ม -->
+<input type="file" id="captureImage" accept="image/*" capture="environment" style="display:none;" />
+<button onclick="document.getElementById('captureImage').click()" class="custom-button capture-button"> </button>
+
+<input type="file" id="selectImage" accept="image/*" style="display:none;" />
+<button onclick="document.getElementById('selectImage').click()" class="custom-button select-button"></button>
+
+<!-- ปุ่มยืนยันการจำแนก -->
+<button id="confirmButton" onclick="startClassification()" disabled class="custom-button confirm-button"></button>
+
+
+
+
     
 </label>
 
         <div id="actionButtons">
-            <button type="button" id="startButton"><img src="7.png" alt="เริ่มการจำแนก"></button>
-            <button type="button" id="stopButton" disabled><img src="9.png" alt="หยุดการจำแนก"></button>
-            <button type="button" id="switchCameraButton" disabled><img src="10.png" alt="สลับกล้อง"></button>
+            <button type="button" id="startButton"><img src="1234.png" alt="เริ่มการจำแนก"></button>
+            <button type="button" id="stopButton" disabled><img src="1234.png" alt="หยุดการจำแนก"></button>
+            <button type="button" id="switchCameraButton" disabled><img src="1234.png" alt="สลับกล้อง"></button>
         </div>
-        <div id="infoButtons" class="hidden vertical">
-            <button type="button" id="causeButton"><img src="3.png" alt="สาเหตุ"></button>
-            <button type="button" id="treatmentButton"><img src="4.png" alt="รักษา"></button>
+       <div id="infoButtons" class="hidden vertical">
+    <button id="causeButton">ดูสาเหตุ</button>
+    <button id="treatmentButton">ดูวิธีรักษา</button>
+</div>
+
         </div>
         <div id="label-container"></div>
         <div id="resultDisplay"><p>ผลลัพธ์การจำแนกจะแสดงที่นี่</p></div>
@@ -318,6 +375,6 @@
         <a href="Home555.html" class="btn-bottom"><img src="62.png" alt="วิธีปลูก" /></a>
         <a href="menu.html" class="btn-bottom"><img src="1000.png" alt="MENU" /></a>
     </div>
-    <script src="AI1.js"></script>
+    <script src="AI2.js"></script>
 </body>
 </html>

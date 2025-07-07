@@ -431,8 +431,8 @@ document.getElementById("selectImage").addEventListener("change", function (even
     if (file) handleImageUpload(file);
     event.target.value = ""; // อนุญาตให้เลือกรูปเดิมซ้ำได้
     // ซ่อนปุ่มเลือกภาพเมื่อเลือกรูปแล้ว
-    toggleVisibility("selectImage", false);
-    toggleVisibility("captureImage", false);
+    toggleVisibility("selectImage", true);
+    toggleVisibility("captureImage", true);
     toggleVisibility("confirmButton", true);
 });
 
@@ -442,8 +442,8 @@ document.getElementById("captureImage").addEventListener("change", function (eve
     if (file) handleImageUpload(file);
     event.target.value = "";
     // ซ่อนปุ่มถ่ายภาพเมื่อถ่ายแล้ว
-    toggleVisibility("selectImage", false);
-    toggleVisibility("captureImage", false);
+    toggleVisibility("selectImage", true);
+    toggleVisibility("captureImage", true);
     toggleVisibility("confirmButton", true);
 });
 // กรณีที่ต้องการปุ่มยืนยันแยกต่างหาก

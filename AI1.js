@@ -408,6 +408,7 @@ async function startClassification() {
         prediction.sort((a, b) => b.probability - a.probability);
         const top = prediction[0];
         handleFinalResult(top.className);
+        
     } catch (err) {
         showError("เกิดข้อผิดพลาดในการวิเคราะห์ภาพ: " + err.message);
     }
@@ -415,7 +416,7 @@ async function startClassification() {
     // ซ่อนปุ่มเลือกภาพและถ่ายภาพเมื่อเริ่มการจำแนก
     toggleVisibility("selectImage", false);
     toggleVisibility("captureImage", false);
-    toggleVisibility("startButton", false);
+    toggleVisibility("startButton", true);
     toggleVisibility("confirmButton", false);
 
     // แสดงปุ่ม actionButtons หลังจากจำแนกเสร็จ
@@ -431,8 +432,8 @@ document.getElementById("selectImage").addEventListener("change", function (even
     if (file) handleImageUpload(file);
     event.target.value = ""; // อนุญาตให้เลือกรูปเดิมซ้ำได้
     // ซ่อนปุ่มเลือกภาพเมื่อเลือกรูปแล้ว
-    toggleVisibility("selectImage", true);
-    toggleVisibility("captureImage", true);
+    toggleVisibility("selectImage", false);
+    toggleVisibility("captureImage", false);
     toggleVisibility("confirmButton", true);
 });
 
@@ -442,8 +443,8 @@ document.getElementById("captureImage").addEventListener("change", function (eve
     if (file) handleImageUpload(file);
     event.target.value = "";
     // ซ่อนปุ่มถ่ายภาพเมื่อถ่ายแล้ว
-    toggleVisibility("selectImage", true);
-    toggleVisibility("captureImage", true);
+    toggleVisibility("selectImage", false);
+    toggleVisibility("captureImage", false);
     toggleVisibility("confirmButton", true);
 });
 // กรณีที่ต้องการปุ่มยืนยันแยกต่างหาก

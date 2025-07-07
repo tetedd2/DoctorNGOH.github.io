@@ -430,23 +430,21 @@ confirmButton.addEventListener('click', startClassification);
 document.getElementById("selectImage").addEventListener("change", function (event) {
     const file = event.target.files[0];
     if (file) handleImageUpload(file);
-    event.target.value = ""; // อนุญาตให้เลือกรูปเดิมซ้ำได้
-    // ซ่อนปุ่มเลือกภาพเมื่อเลือกรูปแล้ว
+    event.target.value = "";
     toggleVisibility("selectImage", false);
     toggleVisibility("captureImage", false);
     toggleVisibility("confirmButton", true);
 });
-
-// 📷 กดถ่ายภาพจากกล้อง
 document.getElementById("captureImage").addEventListener("change", function (event) {
     const file = event.target.files[0];
     if (file) handleImageUpload(file);
     event.target.value = "";
-    // ซ่อนปุ่มถ่ายภาพเมื่อถ่ายแล้ว
     toggleVisibility("selectImage", false);
     toggleVisibility("captureImage", false);
     toggleVisibility("confirmButton", true);
 });
+confirmButton.addEventListener('click', startClassification);
+
 // กรณีที่ต้องการปุ่มยืนยันแยกต่างหาก
 function toggleInfoButtons(show) {
     infoButtonsDiv.classList.toggle('hidden', !show);

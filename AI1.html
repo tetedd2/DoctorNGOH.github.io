@@ -340,11 +340,18 @@
         <div id="message" class="message">คลิก "เริ่มการจำแนก" เพื่อเริ่มต้น</div>
         <!-- ปุ่มเลือกรูปจากอัลบั้ม -->
 <!-- ปุ่มเลือกรูปจากอัลบั้ม -->
-<input type="file" id="captureImage" accept="image/*" capture="environment" style="display:none;" />
-<button onclick="document.getElementById('captureImage').click()" class="custom-button capture-button"> </button>
+<!-- ปุ่มถ่ายภาพ -->
+<input type="file" id="captureImage" accept="image/*" capture="environment" style="display:none;">
+<label for="captureImage" class="custom-button capture-button">
+  <img src="7.png"> วินิจฉัยโรค
+</label>
 
-<input type="file" id="selectImage" accept="image/*" style="display:none;" />
-<button onclick="document.getElementById('selectImage').click()" class="custom-button select-button"></button>
+<input type="file" id="selectImage" accept="image/*" style="display:none;">
+<label for="selectImage" class="custom-button select-button">
+  <img src="181.png"> อัปโหลดรูปภาพ
+</label>
+
+
 
 <!-- ปุ่มยืนยันการจำแนก -->
 <button id="confirmButton" onclick="startClassification()" disabled class="custom-button confirm-button"></button>

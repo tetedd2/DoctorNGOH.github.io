@@ -120,6 +120,46 @@ async function startClassification() {
     }
 }
 
+// ฟังก์ชันซ่อนและแสดงปุ่ม
+function toggleVisibility(buttonId, shouldShow) {
+    const button = document.getElementById(buttonId);
+    if (button) {
+        button.style.display = shouldShow ? 'block' : 'none';
+    }
+}
+
+// ฟังก์ชันเริ่มต้นการจำแนกเมื่อกดปุ่มยืนยัน
+async function startClassification() {
+    if (!selectedImage) {
+        showError("กรุณาเลือกรูปภาพก่อน");
+        return;
+    }
+
+    showMessage("กำลังวิเคราะห์ภาพ...");
+    resultDisplayElement.innerHTML = "";
+
+    try {
+        if (!model) {
+            showMessage("กำลังโหลดโมเดล...");
+            model = await tmImage.load(`${URL}model.json`, `${URL}metadata.json`);
+            maxPredictions = model.getTotalClasses();
+            showMessage("โมเดลพร้อมใช้งาน!", "success");
+        }
+
+        const prediction = await model.predict(selectedImage);
+        prediction.sort((a, b) => b.probability - a.probability);
+        const top = prediction[0];
+        handleFinalResult(top.className);
+    } catch (err) {
+        showError("เกิดข้อผิดพลาดในการวิเคราะห์ภาพ: " + err.message);
+    }
+
+    // ซ่อนปุ่มเลือกภาพและถ่ายภาพเมื่อเริ่มการจำแนก
+    toggleVisibility("selectImage", false);
+    toggleVisibility("captureImage", false);
+    toggleVisibility("startButton", false);
+    toggleVisibility("confirmButton", false);
+    }
 
 function handleFinalResult(className) {
     let resultText = {
@@ -339,22 +379,47 @@ window.addEventListener('DOMContentLoaded', () => {
 
 window.addEventListener('beforeunload', stopCamera);
 
-// ฟังก์ชันการเลือกภาพจากอัลบั้ม
-function handleImageUpload(file) {
-    const reader = new FileReader();
-    reader.onload = function (e) {
-        const image = new Image();
-        image.src = e.target.result;
+function toggleVisibility(buttonId, shouldShow) {
+    const button = document.getElementById(buttonId);
+    if (button) {
+        button.style.display = shouldShow ? 'block' : 'none';
+    }
+}
 
-        // แสดงภาพที่เลือกในกรอบ
-        const webcamDiv = document.getElementById("webcam");
-        webcamDiv.innerHTML = ''; // ลบเนื้อหาก่อนหน้า
-        webcamDiv.appendChild(image); // แสดงภาพที่เลือก
+// ฟังก์ชันเริ่มต้นการจำแนกเมื่อกดปุ่มยืนยัน
+async function startClassification() {
+    if (!selectedImage) {
+        showError("กรุณาเลือกรูปภาพก่อน");
+        return;
+    }
 
-        selectedImage = image; // เก็บภาพที่เลือก
-        confirmButton.disabled = false; // เปิดปุ่มยืนยัน
-    };
-    reader.readAsDataURL(file);
+    showMessage("กำลังวิเคราะห์ภาพ...");
+    resultDisplayElement.innerHTML = "";
+
+    try {
+        if (!model) {
+            showMessage("กำลังโหลดโมเดล...");
+            model = await tmImage.load(`${URL}model.json`, `${URL}metadata.json`);
+            maxPredictions = model.getTotalClasses();
+            showMessage("โมเดลพร้อมใช้งาน!", "success");
+        }
+
+        const prediction = await model.predict(selectedImage);
+        prediction.sort((a, b) => b.probability - a.probability);
+        const top = prediction[0];
+        handleFinalResult(top.className);
+    } catch (err) {
+        showError("เกิดข้อผิดพลาดในการวิเคราะห์ภาพ: " + err.message);
+    }
+
+    // ซ่อนปุ่มเลือกภาพและถ่ายภาพเมื่อเริ่มการจำแนก
+    toggleVisibility("selectImage", false);
+    toggleVisibility("captureImage", false);
+    toggleVisibility("startButton", false);
+    toggleVisibility("confirmButton", false);
+
+    // แสดงปุ่ม actionButtons หลังจากจำแนกเสร็จ
+    toggleVisibility("actionButtons", true);
 }
 
 // ฟังก์ชันเมื่อกดปุ่มยืนยัน
@@ -365,6 +430,10 @@ document.getElementById("selectImage").addEventListener("change", function (even
     const file = event.target.files[0];
     if (file) handleImageUpload(file);
     event.target.value = ""; // อนุญาตให้เลือกรูปเดิมซ้ำได้
+    // ซ่อนปุ่มเลือกภาพเมื่อเลือกรูปแล้ว
+    toggleVisibility("selectImage", false);
+    toggleVisibility("captureImage", false);
+    toggleVisibility("confirmButton", true);
 });
 
 // 📷 กดถ่ายภาพจากกล้อง
@@ -372,8 +441,11 @@ document.getElementById("captureImage").addEventListener("change", function (eve
     const file = event.target.files[0];
     if (file) handleImageUpload(file);
     event.target.value = "";
+    // ซ่อนปุ่มถ่ายภาพเมื่อถ่ายแล้ว
+    toggleVisibility("selectImage", false);
+    toggleVisibility("captureImage", false);
+    toggleVisibility("confirmButton", true);
 });
-
 // กรณีที่ต้องการปุ่มยืนยันแยกต่างหาก
 function toggleInfoButtons(show) {
     infoButtonsDiv.classList.toggle('hidden', !show);

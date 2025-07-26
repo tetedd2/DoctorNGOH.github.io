@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>รายละเอียดบทเรียน – บทที่ 2 การออมเงิน</title>
+  <link rel="stylesheet" href="theme-darkmode.css" />
+  <script async src="https://www.tiktok.com/embed.js"></script>
+  <style>
+    body { margin:0; font-family:'Segoe UI',sans-serif; background-color:#eaf4f4; }
+    .header { background-color:#009688; color:white; padding:20px; text-align:center; }
+    .container { padding:20px; max-width:800px; margin:0 auto; }
+    .lesson-title { color:#004d40; font-size:1.7rem; margin-bottom:18px; }
+    .lesson-content { font-size:1.07rem; color:#444; line-height:1.9; margin-bottom:24px; }
+    .pagination { text-align:center; margin:28px 0 10px 0; }
+    .page-btn { display:inline-block; background:#009688; color:#fff; padding:8px 20px; border-radius:7px; text-decoration:none; margin:0 12px; transition:background 0.2s; }
+    .page-btn:disabled, .disabled { background:#ccc !important; color:#888; pointer-events:none; }
+    .back-btn { margin-top:30px; display:inline-block; background:#009688; color:#fff; padding:10px 18px; border-radius:8px; text-decoration:none; transition:background 0.2s; }
+    .back-btn:hover { background:#00796b; }
+    .quiz-label { font-weight:bold; margin-top:1.5em; display:block; }
+    .quiz-input { width:100%; padding:9px; border-radius:6px; border:1px solid #bbb; margin-bottom:7px; }
+    .save-btn { background:#009688; color:#fff; border:none; border-radius:7px; padding:10px 20px; margin-top:15px; cursor:pointer; }
+    .save-btn:hover { background:#00796b; }
+    .quiz-status { margin-left:16px; color:#388e3c; font-weight:bold; }
+    table { border-collapse:collapse; width:100%; margin:18px 0; }
+    th, td { border:1px solid #bbb; padding:10px; }
+    th { background:#eee; }
+    ul, ol { margin-bottom:1em; }
+    .block { background:#fffde7; border-left:6px solid #fbc02d; margin:14px 0 18px 0; padding:10px 20px; border-radius:6px; }
+    .highlight { background:#e3f2fd; border-left:6px solid #42a5f5; padding:8px 15px; border-radius:6px; margin:14px 0; }
+    .video-container { margin: 24px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .video-wrapper { position: relative; width: 100%; padding-bottom: 56.25%; height: 0; }
+    .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+  </style>
+</head>
+<body>
+  <div class="header"><h1>รายละเอียดบทเรียน: การออมเงิน</h1></div>
+  <div class="container">
+    <div id="lessonDetails"></div>
+    <div class="pagination" id="pagination"></div>
+    <a href="lesson.html" class="back-btn">⬅ กลับสู่รายการบทเรียน</a>
+  </div>
+  <script>
+    const lessonId = 2;
+    const urlParams = new URLSearchParams(window.location.search);
+    const pageNow = Number(urlParams.get("page")||1);
+
+    const pages = [
+      {
+        title: "บทที่ 2: ความหมาย บทบาท และจิตวิทยาการออม (หน้า 1/6)",
+        content: `
+          <div>
+            <b>การออม</b> คือ การกันเงินส่วนหนึ่งไว้ใช้ในอนาคต เพื่อเป้าหมายและความมั่นคง หลักคิดของการออมไม่ใช่แค่ “เก็บเงิน” แต่คือการสร้างวินัยทางการเงินและการควบคุมความต้องการของตัวเอง<br>
+            <ul>
+              <li><b>บทบาทของการออม:</b> ลดความเสี่ยงชีวิต เช่น เจ็บป่วย อุบัติเหตุ ตกงาน</li>
+              <li>ช่วยบรรลุเป้าหมายต่างๆ เช่น ซื้อของใหญ่ เที่ยว เรียนต่อ หรือใช้ลงทุน</li>
+              <li>สร้างนิสัยรับผิดชอบ เห็นคุณค่าของเงิน และรู้จัก “อดเปรี้ยวไว้กินหวาน”</li>
+            </ul>
+            <div class="block"><b>ทฤษฎีจิตวิทยา:</b> คนที่รู้จักออมจะมีความมั่นใจในอนาคต ลดความเครียดจากการไม่มีเงินสำรอง</div>
+          </div>
+        `
+      },
+      {
+        title: "บทที่ 2: เทคนิค เครื่องมือ และรูปแบบการออม (หน้า 2/6)",
+        content: `
+          <div>
+            <b>เทคนิคการออม</b> มีหลายวิธี ลองเลือกที่เหมาะกับตัวเอง<br>
+            <ul>
+              <li>ออมก่อนใช้: เมื่อได้เงินให้หักเก็บทันที เช่น 10% ของค่าขนม/เงินเดือน</li>
+              <li>แบ่งเป้าหมาย: แยกเป้าใหญ่เป็นเป้าย่อย (เช่น รายวัน รายเดือน)</li>
+              <li>ใช้บัญชีแยก: เปิดบัญชีธนาคารเฉพาะไว้สำหรับออม</li>
+            </ul>
+            <div class="block"><b>ตัวอย่าง:</b> ออมผ่านกระปุกกับเพื่อน ใครแงะก่อนถือว่าแพ้ ต้องซื้อขนมให้กลุ่ม</div>
+            <h3 style="margin-top: 2em; color: #00796b;">🎬 วิดีโอสอนเรื่องการออมเงิน</h3>
+            <div class="video-container">
+              <div class="video-wrapper">
+                <iframe src="https://www.youtube.com/embed/OUO2unyOv78" title="YouTube video player" allowfullscreen></iframe>
+              </div>
+            </div>
+            <p><b>ตัวอย่างจาก TikTok: เทคนิคเก็บเงินง่ายๆ</b></p>
+            <div class="video-container">
+              <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@krusandrafp/video/7346851600122236165" data-video-id="7346851600122236165" style="max-width: 605px;min-width: 325px;">
+                <section>
+                  <a target="_blank" title="@krusandrafp" href="https://www.tiktok.com/@krusandrafp?refer=embed">@krusandrafp</a>
+                  <p>3 เทคนิคเก็บเงินง่ายๆ สำหรับคนเก็บเงินไม่เก่ง 😍🥰😘</p>
+                  <a target="_blank" title="♬ เสียงต้นฉบับ  - KrusandraFP" href="https://www.tiktok.com/music/เสียงต้นฉบับ-7346851659725835014?refer=embed">♬ เสียงต้นฉบับ  - KrusandraFP</a>
+                </section>
+              </blockquote>
+            </div>
+          </div>
+        `
+      },
+      {
+        title: "บทที่ 2: การตั้งเป้าหมาย การวางแผน และการติดตามผล (หน้า 3/6)",
+        content: `
+          <div>
+            <b>ตั้งเป้าหมายการออม</b> คือ หัวใจของความสำเร็จ<br>
+            <ul>
+              <li>ตั้งเป้าแบบ SMART (Specific, Measurable, Achievable, Relevant, Time-bound): เช่น “ออม 1,200 บาท ใน 3 เดือน เพื่อซื้อหนังสือ”</li>
+              <li>เขียนเป้าให้ชัด ลงกระดาษหรือบันทึกในมือถือ</li>
+            </ul>
+          </div>
+        `
+      },
+      {
+        title: "บทที่ 2: อุปสรรค ปัญหา และวิธีเอาชนะ (หน้า 4/6)",
+        content: `
+          <div>
+            <b>อุปสรรคที่พบบ่อย</b> ในการออม เช่น<br>
+            <ol>
+              <li>ใจอ่อน ใช้เงินหมดก่อนออม</li>
+              <li>ลืมออม/ผลัดวันประกันพรุ่ง</li>
+              <li>รายได้ไม่แน่นอน</li>
+            </ol>
+          </div>
+        `
+      },
+      {
+        title: "บทที่ 2: แรงบันดาลใจและการออมยุคใหม่ (หน้า 5/6)",
+        content: `
+          <div>
+            <b>ยุคดิจิทัล</b> เปิดทางให้ “การออม” ง่ายขึ้น ไม่ว่าจะใช้ e-Wallet, บัญชีแยก หรือเทคนิคลงทุนอัตโนมัติ<br>
+            <ul>
+              <li>แอปธนาคารทุกแห่งมีฟีเจอร์ “ออมอัตโนมัติ”</li>
+              <li>เทคนิคออมเหรียญ: หยอดเหรียญ 10 ทุกครั้งที่เจอ</li>
+            </ul>
+          </div>
+        `
+      },
+      {
+        title: "บทที่ 2: แบบฝึกหัดท้ายบท (หน้า 6/6)",
+        content: `
+          <form id="quizForm">
+            <label class="quiz-label">1. เล่าประสบการณ์ออมเงินที่ประทับใจของคุณ</label>
+            <textarea class="quiz-input" id="q1" rows="2"></textarea>
+            <label class="quiz-label">2. อุปสรรคที่เคยเจอในการออมและคุณแก้ไขอย่างไร?</label>
+            <textarea class="quiz-input" id="q2" rows="2"></textarea>
+            <label class="quiz-label">3. ตั้งเป้าหมายการออมของคุณในปีนี้</label>
+            <textarea class="quiz-input" id="q3" rows="2"></textarea>
+            <button type="button" class="save-btn" id="saveBtn">บันทึกคำตอบ</button>
+            <span id="quizStatus" class="quiz-status" style="display:none;">บันทึกแล้ว!</span>
+          </form>
+          <div style="margin-top:16px;">
+            <button id="doneBtn" class="save-btn" style="background:#388e3c;">เรียนจบบทนี้</button>
+            <span id="doneStatus" class="quiz-status"></span>
+          </div>
+        `
+      }
+    ];
+
+    let page = Math.min(Math.max(pageNow,1), pages.length);
+    let html = `<div class="lesson-title">${pages[page-1].title}</div>
+                <div class="lesson-content">${pages[page-1].content}</div>`;
+    document.getElementById("lessonDetails").innerHTML = html;
+
+    let pag = "";
+    if (page > 1) pag += `<a class="page-btn" href="lesson-detail2.html?page=${page-1}">หน้าก่อนหน้า</a>`;
+    if (page < pages.length) pag += `<a class="page-btn" href="lesson-detail2.html?page=${page+1}">หน้าถัดไป</a>`;
+    document.getElementById("pagination").innerHTML = pag;
+
+    if (page === pages.length) {
+      setTimeout(() => {
+        ["q1","q2","q3"].forEach(qid=>{
+          let v = localStorage.getItem(`MoneySkillz-lesson${lessonId}-quiz-${qid}`)||"";
+          let el = document.getElementById(qid);
+          if(el) el.value = v;
+        });
+        const saveBtn = document.getElementById("saveBtn");
+        const quizStatus = document.getElementById("quizStatus");
+        if(saveBtn){
+          saveBtn.onclick = ()=>{
+            ["q1","q2","q3"].forEach(qid=>{
+              let el = document.getElementById(qid);
+              if(el) localStorage.setItem(`MoneySkillz-lesson${lessonId}-quiz-${qid}`, el.value.trim());
+            });
+            quizStatus.style.display = "inline";
+            setTimeout(()=>{ quizStatus.style.display = "none"; }, 1500);
+            checkDoneStatus();
+          }
+        }
+        const doneBtn = document.getElementById("doneBtn");
+        const doneStatus = document.getElementById("doneStatus");
+        function checkDoneStatus(){
+          let ready = ["q1","q2","q3"].every(qid=>{
+            let el = document.getElementById(qid);
+            return el && el.value.trim();
+          });
+          if(localStorage.getItem(`MoneySkillz-lesson${lessonId}-done`)==="yes"){
+            doneStatus.innerHTML = "คุณเรียนจบบทนี้แล้ว!";
+            doneBtn.disabled = true;
+            doneBtn.style.background="#ccc";
+          }else{
+            doneStatus.innerHTML = "";
+            doneBtn.disabled = !ready;
+            doneBtn.style.background = ready ? "#388e3c" : "#bbb";
+          }
+        }
+        ["q1","q2","q3"].forEach(qid=>{
+          let el = document.getElementById(qid);
+          if(el) el.oninput = checkDoneStatus;
+        });
+        checkDoneStatus();
+
+        doneBtn.onclick = ()=>{
+          localStorage.setItem(`MoneySkillz-lesson${lessonId}-done`, "yes");
+          checkDoneStatus();
+        }
+      }, 200);
+    }
+  </script>
+  <script src="darkmode-toggle.js"></script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-const URL = "https://teachablemachine.withgoogle.com/models/3O9JIdn-U/";
+const URL = "https://teachablemachine.withgoogle.com/models/gxiST-jOa/";
 let model, labelContainer, maxPredictions;
 let isPredicting = false;
 let currentFacingMode = 'environment';

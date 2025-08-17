@@ -1,4 +1,4 @@
-const URL = "https://teachablemachine.withgoogle.com/models/3O9JIdn-U/";
+const URL = "https://teachablemachine.withgoogle.com/models/KlId9NUm6/";
 let model, labelContainer, maxPredictions;
 let isPredicting = false;
 let currentFacingMode = 'environment';
@@ -121,20 +121,19 @@ async function startClassification() {
 }
 
 
- function handleFinalResult(className) {
-  // … โค้ดเดิมสำหรับแสดงข้อความ …
+function handleFinalResult(className) {
   let resultText = {
-    'D1': '✅ ปลอดเชื้อโรค ✅',
-    'D2': '🚨 เป็นโรคจุดขาว 🚨',
-    'D3': '🚨 เป็นโรคสนิม 🚨',
-    'D4': '🚨 เป็นโรคใบไหม้ 🚨',
-    'D5': '🚨 กรุณาถ่ายใหม่ 🚨',
-    'D6': '🚨 เอ๊ะ ยังไม่สุกน่ะ 🚨',
-    'D7': '🕐 รอต่อสัก 2-3 วัน 🕐',
-    'D8': '✅ พร้อมทานรสชาติหวาน ✅'
-  }[className] || `💡 ตรวจพบ: ${className}`;
+         
+        'C4': '✅ ปลอดเชื้อโรค ✅',
+        'C2': '🚨 โรคใบไหม้ 🚨',
+        'C5': '🚨 ไรแดง 🚨',
+        'C3': '🚨 โรคเพลี้ยไก่แจ้ 🚨',
+        'C1': '🚨 กรุณาถ่ายใหม่ 🚨',
+  
 
-  const shouldShowInfoButtons = ['D2','D3','D4','D11'].includes(className);
+   }[className] || `💡 ตรวจพบ: ${className}`;
+
+  const shouldShowInfoButtons = ["C2", "C3",  "C5"].includes(className);
   document.getElementById('actionButtons').style.display = shouldShowInfoButtons ? 'none' : 'block';
   document.getElementById('infoButtons').style.display   = shouldShowInfoButtons ? 'flex' : 'none';
 
@@ -144,7 +143,7 @@ async function startClassification() {
 
   // —— เพิ่มโค้ดนี้ ——  
   // กำหนดกลุ่มโรคที่ต้องการให้ซ่อนปุ่ม  
-  const diseasesToHideButtons = ['D2','D3','D4','D11'];  
+  const diseasesToHideButtons = ["C2", "C3", "C4", "C5"];  
   if (diseasesToHideButtons.includes(className)) {
     // ซ่อนปุ่มยืนยัน (diagnose)
     confirmButton.style.display = 'none';
@@ -284,7 +283,7 @@ function toggleButtons(className) {
     const infoButtons = document.querySelectorAll('#infoButtons button');
 
     // ตรวจสอบว่า.className ตรงกับ D4, D2, D3 หรือ D11
-    if (['D11', 'D2', 'D3', 'D4'].includes(className)) {
+    if (["C2", "C5", "C3"].includes(className)) {
         actionButtons.forEach(button => button.style.display = 'none');
         infoButtons.forEach(button => button.style.display = 'block');
     } else {
@@ -299,33 +298,37 @@ causeButton.addEventListener('click', () => {
     const resultText = resultDisplayElement.querySelector('h3, p')?.textContent.trim() || '';
     let url = 'bad.html'; // ค่าเริ่มต้น
 
-    if (resultText.includes('เป็นโรคจุดขาว')) {
-        url = 'bad11.html';
-    } else if (resultText.includes('สนิม')) {
-        url = 'bad3.html';
-    } else if (resultText.includes('ใบไหม้')) {
-        url = 'bad.html';
-    } 
+   if (resultText.includes('โรคใบไหม้')) {
+        href = 'bad7.html';
+    } else if (resultText.includes('โรคไรแดง')) {
+        href = 'bad8.html';
+    } else if (resultText.includes('โรคเพลี้ยไก่แจ้')) {
+        href = 'bad9.html';
+    } else if (resultText.includes('โรคราแป้ง')) {
+        href = 'bad10.html';    
+    }
 
     const diseaseName = resultText.replace(/[🚨✅]/g, '').trim();
-    window.location.href = `${url}?disease=${encodeURIComponent(diseaseName)}`;
+    window.location.href = `${href}?disease=${encodeURIComponent(diseaseName)}`;
 });
 
-// Event listener for treatmentButton
 treatmentButton.addEventListener('click', () => {
     const resultText = resultDisplayElement.querySelector('h3, p')?.textContent.trim() || '';
     let url = 'health.html'; // ค่าเริ่มต้น
 
-    if (resultText.includes('เป็นโรคจุดขาว')) {
-        url = 'health2.html';
-    } else if (resultText.includes('สนิม')) {
-        url = 'health3.html';
-    } else if (resultText.includes('ใบไหม้')) {
-        url = 'health.html';
+
+   if (resultText.includes('โรคใบไหม้')) {
+        href = 'health7.html';
+    } else if (resultText.includes('โรคไรแดง')) {
+        href = 'health5.html';
+    } else if (resultText.includes('โรคเพลี้ยไก่แจ้')) {
+        href = 'health6.html';
+    } else if (resultText.includes('โรคราแป้ง')) {
+        href = 'health8.html';    
     }
 
     const diseaseName = resultText.replace(/[🚨✅]/g, '').trim();
-    window.location.href = `${url}?disease=${encodeURIComponent(diseaseName)}`;
+    window.location.href = `${href}?disease=${encodeURIComponent(diseaseName)}`;
 });
 
 function handleClassificationResult(label) {
@@ -333,22 +336,22 @@ function handleClassificationResult(label) {
     const resultMessage = document.getElementById("resultMessage");
 
     // รายชื่อโรคที่จะแสดงปุ่ม
-   const showButtonsFor = ["D2", "D3", "D4", "D11"];
+   const showButtonsFor = ["C2", "C3",  "C5"];
 
     if (showButtonsFor.includes(label)) {
         // ตั้งชื่อโรคให้ตรงตาม label
         let name = "";
         switch (label) {
-            case "D2":
-                name = "เป็นโรคจุดขาว";
-                break;
-            case "D3":
-                name = "โรคใบสนิม";
-                break;
-            case "D4":
+            case "C2":
                 name = "โรคใบไหม้";
                 break;
-    
+            case "C3":
+                name = "โรคเพลี้ยไก่แจ้";
+                break;
+           
+            case "C5":
+                name = "ใบสนิม";
+                break;
         }
 
         resultMessage.textContent = `🚨 เป็น${name} (${label}) 🚨`;

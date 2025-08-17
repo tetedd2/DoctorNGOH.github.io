@@ -1,4 +1,4 @@
-const URL = "https://teachablemachine.withgoogle.com/models/3O9JIdn-U/";
+const URL = "https://teachablemachine.withgoogle.com/models/XVl8fpp5o/";
 let model, labelContainer, maxPredictions;
 let isPredicting = false;
 let currentFacingMode = 'environment';
@@ -124,17 +124,13 @@ async function startClassification() {
  function handleFinalResult(className) {
   // … โค้ดเดิมสำหรับแสดงข้อความ …
   let resultText = {
-    'D1': '✅ ปลอดเชื้อโรค ✅',
-    'D2': '🚨 เป็นโรคจุดขาว 🚨',
-    'D3': '🚨 เป็นโรคสนิม 🚨',
-    'D4': '🚨 เป็นโรคใบไหม้ 🚨',
-    'D5': '🚨 กรุณาถ่ายใหม่ 🚨',
-    'D6': '🚨 เอ๊ะ ยังไม่สุกน่ะ 🚨',
-    'D7': '🕐 รอต่อสัก 2-3 วัน 🕐',
-    'D8': '✅ พร้อมทานรสชาติหวาน ✅'
+    'V2': '🚨 เป็นโรคใบไหม้ 🚨',
+        'V3': '✅ ปลอดเชื้อโรค ✅',
+        'V1': '🚨 กรุณาถ่ายใหม่ 🚨'
+
   }[className] || `💡 ตรวจพบ: ${className}`;
 
-  const shouldShowInfoButtons = ['D2','D3','D4','D11'].includes(className);
+  const shouldShowInfoButtons = ['V2'].includes(className);
   document.getElementById('actionButtons').style.display = shouldShowInfoButtons ? 'none' : 'block';
   document.getElementById('infoButtons').style.display   = shouldShowInfoButtons ? 'flex' : 'none';
 
@@ -144,7 +140,7 @@ async function startClassification() {
 
   // —— เพิ่มโค้ดนี้ ——  
   // กำหนดกลุ่มโรคที่ต้องการให้ซ่อนปุ่ม  
-  const diseasesToHideButtons = ['D2','D3','D4','D11'];  
+  const diseasesToHideButtons = ['V2',];  
   if (diseasesToHideButtons.includes(className)) {
     // ซ่อนปุ่มยืนยัน (diagnose)
     confirmButton.style.display = 'none';
@@ -284,7 +280,7 @@ function toggleButtons(className) {
     const infoButtons = document.querySelectorAll('#infoButtons button');
 
     // ตรวจสอบว่า.className ตรงกับ D4, D2, D3 หรือ D11
-    if (['D11', 'D2', 'D3', 'D4'].includes(className)) {
+    if (['V2'].includes(className)) {
         actionButtons.forEach(button => button.style.display = 'none');
         infoButtons.forEach(button => button.style.display = 'block');
     } else {
@@ -297,15 +293,11 @@ function toggleButtons(className) {
 // Event listener for causeButton
 causeButton.addEventListener('click', () => {
     const resultText = resultDisplayElement.querySelector('h3, p')?.textContent.trim() || '';
-    let url = 'bad.html'; // ค่าเริ่มต้น
+    let url = 'bad5.html'; // ค่าเริ่มต้น
 
-    if (resultText.includes('เป็นโรคจุดขาว')) {
-        url = 'bad11.html';
-    } else if (resultText.includes('สนิม')) {
-        url = 'bad3.html';
-    } else if (resultText.includes('ใบไหม้')) {
-        url = 'bad.html';
-    } 
+    if (resultText.includes('เป็นโรคใบไหม้')) {
+        href = 'bad5.html';
+    }
 
     const diseaseName = resultText.replace(/[🚨✅]/g, '').trim();
     window.location.href = `${url}?disease=${encodeURIComponent(diseaseName)}`;
@@ -314,14 +306,10 @@ causeButton.addEventListener('click', () => {
 // Event listener for treatmentButton
 treatmentButton.addEventListener('click', () => {
     const resultText = resultDisplayElement.querySelector('h3, p')?.textContent.trim() || '';
-    let url = 'health.html'; // ค่าเริ่มต้น
+    let url = 'health10.html'; // ค่าเริ่มต้น
 
-    if (resultText.includes('เป็นโรคจุดขาว')) {
-        url = 'health2.html';
-    } else if (resultText.includes('สนิม')) {
-        url = 'health3.html';
-    } else if (resultText.includes('ใบไหม้')) {
-        url = 'health.html';
+    if (resultText.includes('เป็นโรคใบไหม้')) {
+        href = 'health10.html';
     }
 
     const diseaseName = resultText.replace(/[🚨✅]/g, '').trim();
@@ -333,22 +321,16 @@ function handleClassificationResult(label) {
     const resultMessage = document.getElementById("resultMessage");
 
     // รายชื่อโรคที่จะแสดงปุ่ม
-   const showButtonsFor = ["D2", "D3", "D4", "D11"];
+   const showButtonsFor = ["V2",];
 
     if (showButtonsFor.includes(label)) {
         // ตั้งชื่อโรคให้ตรงตาม label
         let name = "";
         switch (label) {
-            case "D2":
-                name = "เป็นโรคจุดขาว";
+            case "V2":
+                name = "เป็นโรคใบไหม้";
                 break;
-            case "D3":
-                name = "โรคใบสนิม";
-                break;
-            case "D4":
-                name = "โรคใบไหม้";
-                break;
-    
+            
         }
 
         resultMessage.textContent = `🚨 เป็น${name} (${label}) 🚨`;

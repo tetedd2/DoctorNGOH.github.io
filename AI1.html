@@ -27,8 +27,8 @@
             overflow-y: auto;
         }
         #webcam {
-    width: 210px;
-    height: 400px;
+    width: 150px;
+    height: 250px;
     border: 2px solid #ddd;
     border-radius: 8px;
     background-color: #eee;
@@ -247,7 +247,7 @@
         
         .btn-bottom:hover {
             transform: scale(1.05);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 6px 16px rgba(255, 252, 252, 0.993);
         }
         
         .btn-bottom:active {
@@ -278,7 +278,18 @@
             .btn-bottom { flex-basis: calc(25% - 10px); }
         }
         
-        .custom-button {
+        /* จัด container ให้อยู่กลางจอ */
+.container {
+  min-height: 100vh;            /* ให้สูงเต็มจอ */
+  display: flex;
+  flex-direction: column;       /* เรียงปุ่มแนวตั้ง */
+  justify-content: center;      /* กลางแนวตั้ง */
+  align-items: center;          /* กลางแนวนอน */
+  background: #f4f7f6;          /* สีพื้นหลัง */
+}
+
+/* สไตล์ปุ่มหลัก */
+.custom-button {
   display: inline-block;
   text-align: center;
   font-size: 16px;
@@ -292,40 +303,53 @@
   height: 60px;
   position: relative;
   overflow: hidden;
+  margin-bottom: 20px;
+  /* ถ้าอยากให้ปุ่มกลมกลืนกว่านี้สามารถเพิ่ม box-shadow ได้ */
 }
 
 .custom-button:hover {
-  background-color: #ffffff;
+  background-color: #e0e0e0;
 }
 
 /* ปุ่มถ่ายรูป */
 .capture-button {
   background-image: url('7.png');
-  background-size: cover; /* รูปภาพจะขยายให้เต็มปุ่ม */
-  background-position: center; /* จัดตำแหน่งรูปให้ตรงกลาง */
+  background-size: cover;
+  background-position: center;
   background-repeat: no-repeat;
-  padding: 0; /* ปิดการใช้ padding เพื่อให้รูปเต็มปุ่ม */
+  padding: 0;
   color: white;
 }
 
 /* ปุ่มเลือกรูปจากอัลบั้ม */
 .select-button {
   background-image: url('181.png');
-  background-size: cover; /* รูปภาพจะขยายให้เต็มปุ่ม */
-  background-position: center; /* จัดตำแหน่งรูปให้ตรงกลาง */
+  background-size: cover;
+  background-position: center;
   background-repeat: no-repeat;
-  padding: 0; /* ปิดการใช้ padding เพื่อให้รูปเต็มปุ่ม */
+  padding: 0;
   color: white;
 }
 
 /* ปุ่มยืนยัน */
 .confirm-button {
   background-image: url('191.png');
-  background-size: cover; /* รูปภาพจะขยายให้เต็มปุ่ม */
-  background-position: center; /* จัดตำแหน่งรูปให้ตรงกลาง */
+  background-size: cover;
+  background-position: center;
   background-repeat: no-repeat;
-  padding: 0; /* ปิดการใช้ padding เพื่อให้รูปเต็มปุ่ม */
+  padding: 0;
   color: white;
+}
+
+.shrink {
+  width: 0 !important;
+  height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  opacity: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
 }
 
 
@@ -354,7 +378,7 @@
 
 
 <!-- ปุ่มยืนยันการจำแนก -->
-<button id="confirmButton" onclick="startClassification()" disabled class="custom-button confirm-button"></button>
+<button id="confirmButton" onclick="startClassification" disabled class="custom-button confirm-button"></button>
 
 
 
@@ -362,19 +386,22 @@
     
 </label>
 
+
         <div id="actionButtons">
             <button type="button" id="startButton"><img src="1234.png" alt="เริ่มการจำแนก"></button>
             <button type="button" id="stopButton" disabled><img src="1234.png" alt="หยุดการจำแนก"></button>
             <button type="button" id="switchCameraButton" disabled><img src="1234.png" alt="สลับกล้อง"></button>
         </div>
+        
        <div id="infoButtons" class="hidden vertical">
             <button type="button" id="causeButton"><img src="3.png" alt="สาเหตุ"></button>
             <button type="button" id="treatmentButton"><img src="4.png" alt="รักษา"></button>
-        </div>
+      </div>
         <div id="label-container"></div>
         <div id="resultDisplay"><p>ผลลัพธ์การจำแนกจะแสดงที่นี่</p></div>
 
     </div>
+
     <div class="button-container-bottom">
         <a href="Home999.html" class="btn-bottom"><img src="60.png" alt="Home" /></a>
         <a href="Home.html" class="btn-bottom"><img src="61.png" alt="AI" /></a>

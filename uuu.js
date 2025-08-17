@@ -1,4 +1,4 @@
-const URL = "https://teachablemachine.withgoogle.com/models/3O9JIdn-U/";
+const URL = "https://teachablemachine.withgoogle.com/models/l_zvMSkA3/";
 let model, labelContainer, maxPredictions;
 let isPredicting = false;
 let currentFacingMode = 'environment';
@@ -299,13 +299,15 @@ causeButton.addEventListener('click', () => {
     const resultText = resultDisplayElement.querySelector('h3, p')?.textContent.trim() || '';
     let url = 'bad.html'; // ค่าเริ่มต้น
 
-    if (resultText.includes('เป็นโรคจุดขาว')) {
+    if (resultText.includes('จุดราขาว')) {
         url = 'bad11.html';
     } else if (resultText.includes('สนิม')) {
         url = 'bad3.html';
     } else if (resultText.includes('ใบไหม้')) {
         url = 'bad.html';
-    } 
+    } else if (resultText.includes('ราขาว')) {
+        url = 'bad2.html';
+    }
 
     const diseaseName = resultText.replace(/[🚨✅]/g, '').trim();
     window.location.href = `${url}?disease=${encodeURIComponent(diseaseName)}`;
@@ -316,12 +318,14 @@ treatmentButton.addEventListener('click', () => {
     const resultText = resultDisplayElement.querySelector('h3, p')?.textContent.trim() || '';
     let url = 'health.html'; // ค่าเริ่มต้น
 
-    if (resultText.includes('เป็นโรคจุดขาว')) {
+    if (resultText.includes('จุดราขาว')) {
         url = 'health2.html';
     } else if (resultText.includes('สนิม')) {
         url = 'health3.html';
     } else if (resultText.includes('ใบไหม้')) {
         url = 'health.html';
+    } else if (resultText.includes('ราขาว')) {
+        url = 'health4.html';
     }
 
     const diseaseName = resultText.replace(/[🚨✅]/g, '').trim();
@@ -340,7 +344,7 @@ function handleClassificationResult(label) {
         let name = "";
         switch (label) {
             case "D2":
-                name = "เป็นโรคจุดขาว";
+                name = "โรคจุดราขาว";
                 break;
             case "D3":
                 name = "โรคใบสนิม";

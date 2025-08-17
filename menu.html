@@ -1,168 +1,83 @@
 <!DOCTYPE html>
 <html lang="th">
 
+<!DOCTYPE html>
+<html lang="th">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ระบบ AI ของฉัน</title>
     <style>
         /* Reset */
-        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
-         body {
-    font-family: 'Helvetica Neue', sans-serif;
-    background-color: white;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* จัดแนวนอนตรงกลาง */
-    justify-content: center; /* จัดแนวตั้งตรงกลาง */
-    padding: 20px;
-    margin: 0;
-   }
-        
+
+        body {
+            font-family: 'Helvetica Neue', sans-serif;
+            background-color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+        }
+
         h1 {
             color: #333;
             font-size: 24px;
             text-align: center;
-            margin-bottom: 30px;
-        }
-        /* ปุ่มแนวตั้งด้านบน (แก้ไขให้ใส่รูปได้) */
-        .logo-container {
-            position: fixed;
-            top: -70px; /* ปรับตำแหน่งให้สูงขึ้น */
-            left: 0;
-            right: 0;
-            margin: auto;
-            width: 100%;
-            max-width: 500px; /* กำหนดขนาดสูงสุด */
-            height: 300px; /* กำหนดความสูง */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 12px;
-
+            margin-bottom: 20px;
         }
 
-        .logo-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
+        /* ปรับขนาดปุ่มบนให้เป็นแนวตั้ง */
         .button-container-top {
             display: flex;
-            flex-direction: column;
-            gap: 20px;
-            width: 100%;
-            max-width: 600px;
+            flex-direction: column; /* เปลี่ยนจากแนวนอนเป็นแนวตั้ง */
+            gap: 10px; /* ระยะห่างระหว่างปุ่ม */
             justify-content: center;
             align-items: center;
-            
-
+            width: 100%;
+            max-width: 100px; /* ขนาดสูงสุด */
+            margin-bottom: 100px; /* เพิ่มระยะห่างระหว่างปุ่มและด้านล่าง */
         }
-
-.btn-top {
-    background-color: orange;
-    padding: 0;
-    border-radius: 12px;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-align: center;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 150px;
-    height: 150px;
-}
-
-        
-        .btn-top:nth-child(1) {
-            background-color: rgb(255, 255, 255);
-        }
-        
-        .btn-top:nth-child(2) {
-            background-color: rgb(255, 255, 255);
-        }
-        
-        .btn-top:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 16px rgba(255, 255, 255, 0.15);
-        }
-        
-        .btn-top:active {
-            transform: scale(0.98);
-        }
-        
-        .btn-top img {
-            width: 300%; /* กำหนดขนาดรูปภาพ */
-            height: 150%; /* กำหนดขนาดรูปภาพ */
-        }
-        /* ปุ่มแนวนอนด้านล่าง ติดขอบล่างหน้าจอ */
-        
-               .button-container-bottom {
-    position: fixed;
-    bottom: 0;
-    left: 0; /* ตั้งค่าใหม่ */
-    width: 100%; /* ให้เต็มหน้าจอ */
-    display: flex;
-    justify-content: space-around; /* กระจายปุ่มให้เท่าๆ กัน */
-    gap: 10px; /* ระยะห่างระหว่างปุ่ม */
-    background-color: white;
-    padding: 8px 0;
-    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-}
 
         .btn-top {
-            background-color: orange;
-            padding: 0; /* ลบ-padding เดิม */
+            background-color: rgb(255, 255, 255);
+            padding: 0;
             border-radius: 12px;
             font-size: 18px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
-            text-align: center; /* ปรับให้ข้อความอยู่ตรงกลาง */
-            position: relative;
+            text-align: center;
             display: flex;
             align-items: center;
-            justify-content: center; /* ทำให้ไอคอนและข้อความอยู่ตรงกลาง */
-            width: 100%; /* กำหนดขนาดปุ่ม */
-            height: 200px; /* กำหนดขนาดปุ่ม */
+            justify-content: center;
+            width: 450px; /* ปรับขนาดปุ่ม */
+            height: 100%; /* ปรับขนาดปุ่ม */
         }
-        
-        .btn-top:nth-child(1) {
-            background-color: rgb(255, 255, 255);
-        }
-        
-        .btn-top:nth-child(2) {
-            background-color: rgb(255, 255, 255);
-        }
-        
+
         .btn-top:hover {
             transform: scale(1.05);
             box-shadow: 0 6px 16px rgba(255, 255, 255, 0.15);
         }
-        
+
         .btn-top:active {
             transform: scale(0.98);
         }
-        
+
         .btn-top img {
-            width: 100%; /* กำหนดขนาดรูปภาพ */
-            height: 100%; /* กำหนดขนาดรูปภาพ */
-            object-fit: cover; /* ทำให้รูปภาพเต็มพื้นที่โดยไม่บิดเบี้ยว */
-            border-radius: 6px;
+            width: 60%; /* ปรับขนาดรูปภาพ */
+            height: 60%; /* ปรับขนาดรูปภาพ */
         }
-        /* ปุ่มแนวนอนด้านล่าง ติดขอบล่างหน้าจอ */
-        
+
+        /* ปรับขนาดปุ่มล่างให้ติดกับขอบ */
         .button-container-bottom {
     position: fixed;
     bottom: 0;
@@ -281,23 +196,22 @@
 </head>
 
 <body>
-
-    <!-- ข้อความหัวเรื่อง -->
     <h1></h1>
 
     <!-- กล่องปุ่มบน (แนวตั้ง) -->
     <div class="button-container-top">
+        <a href="#.html" class="btn-top">
+            <img src="777.png" class="logo-img" />
+        </a>
+
         <a href="menu1.html" class="btn-top">
-            <img src="556.png" /> 
+            <img src="556.png" />
         </a>
         <a href="menu2.html" class="btn-top">
-            <img src="889.png"/> 
+            <img src="889.png" />
         </a>
     </div>
-    <!-- กล่องโลโก้ด้านบน -->
-    <div class="logo-container">
-        <img src="8000.png" alt="Logo" />
-    </div>
+
     <!-- กล่องปุ่มล่าง (แนวนอน) -->
     <div class="button-container-bottom">
         <a href="Home999.html" class="btn-bottom home">
@@ -313,7 +227,9 @@
             <img src="1000.png" alt="MENU" />
         </a>
     </div>
-
 </body>
 
 </html>
+
+
+    

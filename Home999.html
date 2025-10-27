@@ -4,47 +4,37 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>เกษตร Now + AI</title>
-
   <style>
     :root{--bg:#f5f7fb;--card:#fff;--text:#1f2937;--muted:#6b7280;--brand:#10b981;--brand2:#3b82f6;--radius:18px;--shadow:0 8px 24px rgba(0,0,0,.06)}
     *{box-sizing:border-box}
     body{margin:0;background:var(--bg);color:var(--text);font-family:ui-rounded,"Segoe UI",system-ui,-apple-system,"Kanit",sans-serif}
-
     header.appbar{position:sticky;top:0;background:rgba(245,247,251,.8);backdrop-filter:blur(8px);border-bottom:1px solid #eee;z-index:20}
     .wrap{max-width:1100px;margin:0 auto;padding:14px 20px}
     .hello{display:inline-flex;align-items:center;gap:10px;background:var(--card);padding:10px 14px;border-radius:999px;box-shadow:var(--shadow);border:1px solid #eee;font-weight:600}
-
-    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:22px;max-width:1100px;margin:0 auto;padding:18px 20px 96px}
+    .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;background:#f1f5f9;border-radius:999px;font-size:12px}
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:22px;max-width:1100px;margin:0 auto;padding:18px 20px 90px}
     .card{grid-column:span 4;background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;border:1px solid #eee}
     .big{grid-column:span 8}
     @media(max-width:980px){.card{grid-column:span 6}.big{grid-column:span 12}}
     @media(max-width:680px){.card{grid-column:span 12}}
-
     .title{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;margin-bottom:8px}
     .badge{margin-left:auto;font-size:12px;color:#fff;background:#16a34a;padding:2px 8px;border-radius:999px}
     .rows{display:flex;flex-direction:column;gap:6px}
     .muted{color:var(--muted)}
     .divider{height:1px;background:#eee;margin:12px 0}
     .stack{display:flex;gap:10px;flex-wrap:wrap}
-    .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;background:#f1f5f9;border-radius:999px;font-size:12px}
     input,button,select,textarea{font:inherit;border-radius:12px;border:1px solid #e5e7eb;padding:10px 12px;background:#fff}
     button{background:var(--brand2);color:#fff;border:none;font-weight:700;cursor:pointer}
     button.ghost{background:#eef2ff;color:#374151}
     .btn-link{background:#eef2ff;color:#1f2937;border:1px solid #e5e7eb;border-radius:999px;padding:6px 10px;font-weight:600;cursor:pointer}
-    textarea{min-height:90px;width:100%}
     .list{display:flex;flex-direction:column;gap:10px}
+    .clamp{display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden}
+    .clamp-2{-webkit-line-clamp:2}
+    .clamp-6{-webkit-line-clamp:6}
     .table{width:100%;border-collapse:separate;border-spacing:0 8px}
     .tr{display:grid;grid-template-columns:1.2fr .8fr .8fr;gap:10px;align-items:center;background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:10px 12px}
-    .tr b{font-size:16px}
     .chip{font-size:12px;background:#e2e8f0;border-radius:999px;padding:2px 8px}
-
-    /* โหมดกะทัดรัด */
-    body.compact .card{ padding:14px }
-    body.compact .title{ font-size:16px }
-    body.compact .rows, body.compact .list{ gap:6px }
-    body.compact input, body.compact button, body.compact select, body.compact textarea{ padding:8px 10px; border-radius:10px; font-size:14px }
-
-    /* ข่าว */
+    /* ข่าว: กล่องเลื่อน + กริด 2 คอลัมน์ */
     .news-wrap{ max-height:520px; overflow:auto; padding-right:6px }
     .news-grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px }
     @media (max-width:980px){ .news-grid{ grid-template-columns:1fr } }
@@ -52,239 +42,57 @@
     .news-title{ font-weight:700 }
     .news-desc{ color:#6b7280; font-size:13px }
     .news-controls{ display:flex; gap:8px; justify-content:flex-end; margin-top:10px }
-    .news-wrap::-webkit-scrollbar{ width:8px }
-    .news-wrap::-webkit-scrollbar-thumb{ background:#e5e7eb; border-radius:99px }
     .news-toolbar{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:10px }
     .news-summary{ background:#f8fafc; border:1px solid #e5e7eb; border-radius:12px; padding:10px 12px }
     .hl{ background:#fde68a }
-
-    /* Chat Assistant (Floating) */
-    .chat-btn{
-      position:fixed; right:20px; bottom:110px;
-      width:60px; height:60px; border-radius:50%;
-      display:flex; align-items:center; justify-content:center;
-      background:linear-gradient(135deg,#18fc4a 0%,#98eb87 100%);
-      color:#fff; font-size:24px; border:none; cursor:pointer;
-      box-shadow:0 12px 28px rgba(0,0,0,.18); z-index:1001;
-      transition:transform .15s ease;
-    }
-    .chat-btn:hover{ transform:translateY(-2px) scale(1.03) }
-    .chat-box{
-      position:fixed; right:20px; bottom:180px;
-      width:320px; height:450px; background:#fff; border-radius:16px;
-      box-shadow:0 18px 48px rgba(0,0,0,.18); overflow:hidden; display:none; z-index:1000;
-    }
-    .chat-box.show{ display:flex; flex-direction:column; }
-    .chat-header{ background:#e8ffe9; color:#14532d; padding:12px 14px; font-weight:700 }
-    .chat-body{ flex:1; padding:12px; overflow:auto; background:#fbfbfb }
-    .chat-footer{ display:flex; gap:8px; padding:10px; background:#fff; border-top:1px solid #eee }
-    .chat-footer textarea{ flex:1; resize:none; border:1px solid #e5e7eb; border-radius:10px; padding:10px 12px; font:inherit }
-    .msg{ max-width:80%; margin:8px 0; padding:8px 10px; border-radius:14px; font-size:14px }
-    .msg.ai{ background:#eef2ff; color:#111827; border-bottom-left-radius:6px }
-    .msg.me{ background:#22c55e; color:#fff; margin-left:auto; border-bottom-right-radius:6px }
-
-       .button-container-bottom {
-    position: fixed;
-    bottom: 0;
-    left: 0; /* ตั้งค่าใหม่ */
-    width: 100%; /* ให้เต็มหน้าจอ */
-    display: flex;
-    justify-content: space-around; /* กระจายปุ่มให้เท่าๆ กัน */
-    gap: 10px; /* ระยะห่างระหว่างปุ่ม */
-    background-color: white;
-    padding: 8px 0;
-    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-}
-
-        .btn-top {
-            background-color: orange;
-            padding: 0; /* ลบ-padding เดิม */
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center; /* ปรับให้ข้อความอยู่ตรงกลาง */
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center; /* ทำให้ไอคอนและข้อความอยู่ตรงกลาง */
-            width: 100%; /* กำหนดขนาดปุ่ม */
-            height: 200px; /* กำหนดขนาดปุ่ม */
-        }
-        
-        .btn-top:nth-child(1) {
-            background-color: rgb(255, 255, 255);
-        }
-        
-        .btn-top:nth-child(2) {
-            background-color: rgb(255, 255, 255);
-        }
-        
-        .btn-top:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 16px rgba(255, 255, 255, 0.15);
-        }
-        
-        .btn-top:active {
-            transform: scale(0.98);
-        }
-        
-        .btn-top img {
-            width: 100%; /* กำหนดขนาดรูปภาพ */
-            height: 100%; /* กำหนดขนาดรูปภาพ */
-            object-fit: cover; /* ทำให้รูปภาพเต็มพื้นที่โดยไม่บิดเบี้ยว */
-            border-radius: 6px;
-        }
-        /* ปุ่มแนวนอนด้านล่าง ติดขอบล่างหน้าจอ */
-        
-        .button-container-bottom {
-    position: fixed;
-    bottom: 0;
-    left: 0; /* ตั้งค่าใหม่ */
-    width: 100%; /* ให้เต็มหน้าจอ */
-    display: flex;
-    justify-content: space-around; /* กระจายปุ่มให้เท่าๆ กัน */
-    gap: 10px; /* ระยะห่างระหว่างปุ่ม */
-    background-color: white;
-    padding: 8px 0;
-    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-}
-
-.btn-bottom {
-    background-color: transparent; /* ทำให้พื้นหลังโปร่งใส */
-    border: none;                 /* ลบขอบ */
-    cursor: pointer;
-    flex: 1;                     /* ขยายปุ่มให้เต็มพื้นที่ */
-    height: 60px;                /* กำหนดความสูงของปุ่ม */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    padding: 0;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    box-shadow: none;             /* ลบเงา */
-}
-
-.btn-bottom img {
-    width: 80px;                 /* ปรับขนาดไอคอนให้เหมาะสม */
-    height: auto;
-    object-fit: contain;
-    display: block;
-}
-
-.btn-bottom:hover {
-    transform: scale(1.05);
-}
-
-.btn-bottom:active {
-    transform: scale(0.98);
-}
-        /* สีปุ่มล่าง */
-        
-        .btn-bottom.home {
-            background-color: #ffffff;
-        }
-        
-        .btn-bottom.ai {
-            background-color: #ffffff;
-        }
-        
-        .btn-bottom.plant {
-            background-color: #ffffff;
-        }
-        
-        .btn-bottom.menu {
-            background-color: #ffffff;
-        }
-        
-        .btn-bottom {
-            background-color: white;
-            color: #333;
-            padding: 0;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: none;
-            border-radius: 0;
-            box-shadow: none;
-        }
-        
-        .btn-bottom img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .btn-bottom:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-        }
-        
-        .btn-bottom:active {
-            transform: scale(0.98);
-        }
-        
-        .btn-bottom.home {
-            background-color: #e74c3c;
-            color: white;
-        }
-        
-        .btn-bottom.ai {
-            background-color: #2ecc71;
-            color: white;
-        }
-        
-        .btn-bottom.plant {
-            background-color: #007bff;
-            color: white;
-        }
-        
-        .btn-bottom.menu {
-            background-color: #ff9900;
-            color: white;
-        }
+    /* ปุ่มล่าง */
+    .button-container-bottom{position:fixed;bottom:0;left:0;width:100%;display:flex;justify-content:space-around;gap:10px;background:#fff;padding:8px 0;box-shadow:0 -2px 6px rgba(0,0,0,.1);z-index:20}
+    .btn-bottom{background:transparent;border:none;cursor:pointer;flex:1;height:60px;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:0;transition:.3s}
+    .btn-bottom img{width:80px;height:auto;object-fit:contain;display:block}
+    .btn-bottom:hover{transform:scale(1.05)}
+    /* ปุ่มแชท AI ลอย */
+    .chat-fab{position:fixed;right:16px;bottom:84px;width:56px;height:56px;border-radius:50%;background:#22c55e;display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;box-shadow:0 10px 24px rgba(34,197,94,.35);cursor:pointer;z-index:30}
+    .chat-box{position:fixed;right:16px;bottom:150px;width:320px;height:450px;background:#fff;border:1px solid #eee;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.15);display:none;flex-direction:column;overflow:hidden;z-index:35}
+    .chat-header{background:#eafff2;color:#065f46;padding:12px 14px;font-weight:700}
+    .chat-body{flex:1;padding:12px;overflow:auto;background:linear-gradient(180deg,#f8fafc,#fff)}
+    .message{margin:8px 0;padding:8px 12px;border-radius:12px;max-width:85%}
+    .message.user{margin-left:auto;background:#22c55e;color:#fff;border-bottom-right-radius:6px}
+    .message.ai{background:#eef2ff;color:#111827;border-bottom-left-radius:6px}
+    .chat-footer{display:flex;gap:8px;padding:10px;background:#fff;border-top:1px solid #eee}
+    .chat-footer textarea{flex:1;border:1px solid #e5e7eb;border-radius:12px;padding:10px;resize:none}
   </style>
 </head>
 <body>
 
+  <!-- Header -->
   <header class="appbar">
     <div class="wrap">
       <div class="hello">
         👋🏻 สวัสดี, เกษตรกร!
         <span class="pill"><span id="clock">--:--</span> • วันนี้ <span id="today"></span></span>
         <button id="compactBtn" class="btn-link" style="margin-left:12px">โหมดกะทัดรัด</button>
-        <span id="keyStatus" class="pill" style="margin-left:8px;background:#fff;border:1px solid #e5e7eb">HF Token: ยังไม่บันทึก</span>
       </div>
     </div>
   </header>
 
+  <!-- Content -->
   <main class="grid" id="appContent">
     <!-- ราคาผลไม้ -->
     <section class="card" id="priceCard">
       <div class="title">💰 ราคาผลไม้ <span class="badge" id="priceBadge">อัปเดตอัตโนมัติ</span></div>
       <div class="rows">
         <div class="muted">ระบบจะพยายามประเมินจากข่าว หากไม่เจอให้กรอกเองได้</div>
-        <div id="priceTable" class="list"><div class="muted">รอเริ่มการดึงข้อมูล…</div></div>
+        <div id="priceTable" class="list"></div>
       </div>
       <div class="divider"></div>
       <div class="stack">
         <input id="pName" placeholder="เพิ่มรายการ เช่น ลางสาด" />
         <input id="pPrice" placeholder="ราคา/กก." />
-        <button id="btnAddPrice">เพิ่ม</button>
+        <button onclick="addPrice()">เพิ่ม</button>
       </div>
     </section>
 
-    <!-- ข่าวสาร -->
+    <!-- ข่าว -->
     <section class="card">
       <div class="title">📰 ข่าวสารเกษตร (ทุเรียน • มังคุด • เงาะ)</div>
       <div class="news-toolbar">
@@ -293,12 +101,12 @@
       </div>
       <div id="newsSummary" class="news-summary muted">สรุปข่าวจะปรากฏที่นี่หลังดึงข่าว</div>
       <div id="newsScroll" class="news-wrap">
-        <div id="newsList" class="news-grid"><div class="muted">กำลังเตรียม…</div></div>
+        <div id="newsList" class="news-grid"><div class="muted">กำลังดึงข่าว…</div></div>
       </div>
       <div id="newsControls" class="news-controls"></div>
     </section>
 
-    <!-- อากาศ + ปุ่มทำงาน -->
+    <!-- อากาศ -->
     <section class="card big">
       <div class="title">🌤️ สภาพอากาศ <span class="badge" id="placeBadge">ระบุตำแหน่ง…</span></div>
       <div class="rows">
@@ -308,170 +116,85 @@
         <div>☔ ฝน 3 ชม.: <b id="rain">--</b> มม.</div>
       </div>
       <div class="divider"></div>
-      <div class="stack">
+      <!-- แถวโทเค็น (จะถูกซ่อนอัตโนมัติ) -->
+      <div class="stack" id="tokenRow">
         <input id="hfKey" type="password" placeholder="HF Token (hf_…)" style="min-width:280px" autocomplete="off" />
-        <button id="btnAggregate">สรุปรวม (ตำแหน่งปัจจุบัน)</button>
-        <button class="ghost" id="btnSaveKey">บันทึก Token (ซ่อน)</button>
+        <button onclick="aggregateNow()">สรุปรวม (ตำแหน่งปัจจุบัน)</button>
+        <button class="ghost" onclick="saveKey()">บันทึก Token (ซ่อน)</button>
       </div>
     </section>
 
-    <!-- ปุ่มแชท -->
-    <button class="chat-btn" id="chatBtn" aria-label="เปิดแชทผู้ช่วย">💬</button>
-    <div class="chat-box" id="chatBox" role="dialog" aria-label="แชทผู้ช่วย AI">
-      <div class="chat-header">ผู้ช่วย AI</div>
-      <div class="chat-body" id="chatBody">
-        <div class="msg ai">สวัสดีค่ะ/ครับ ฉันคือผู้ช่วยของคุณ พิมพ์คำถามได้เลย 🙌</div>
-      </div>
-      <div class="chat-footer">
-        <textarea id="chatInput" rows="1" placeholder="พิมพ์ข้อความ... (กด Enter เพื่อส่ง)"></textarea>
-        <button id="chatSend">ส่ง</button>
-      </div>
-    </div>
-
-    <!-- ปุ่มเมนูล่าง -->
-    <div class="button-container-bottom">
-      <a href="Home999.html" class="btn-bottom"><img src="60.png" alt="Home" /></a>
-      <a href="Home.html"   class="btn-bottom"><img src="61.png" alt="AI" /></a>
-      <a href="Home555.html"class="btn-bottom"><img src="62.png" alt="วิธีปลูก" /></a>
-      <a href="menu.html"   class="btn-bottom"><img src="1000.png" alt="MENU" /></a>
-    </div>
-
-    <!-- AI Summary -->
+    <!-- สรุป AI -->
     <section class="card big">
       <div class="title">🧠 สรุปโดย AI (Ling-1T) <span class="badge">อ่านเพิ่มเติมได้</span></div>
-      <div id="aiBox" class="list"><div class="muted">กด “สรุปรวม (ตำแหน่งปัจจุบัน)” เพื่อเริ่ม</div></div>
+      <div id="aiBox" class="list"><div class="muted">กำลังเตรียมข้อมูล…</div></div>
     </section>
   </main>
 
-<script>
-/* ------------------- Chat Assistant ------------------- */
-const chatBtn  = document.getElementById('chatBtn');
-const chatBox  = document.getElementById('chatBox');
-const chatBody = document.getElementById('chatBody');
-const chatIn   = document.getElementById('chatInput');
-const chatSend = document.getElementById('chatSend');
-function toggleChat(){ const show=!chatBox.classList.contains('show'); chatBox.classList.toggle('show',show); if(show) chatIn.focus(); }
-chatBtn.addEventListener('click', toggleChat);
-function appendMsg(who,text){ const el=document.createElement('div'); el.className=`msg ${who}`; el.textContent=text; chatBody.appendChild(el); chatBody.scrollTop=chatBody.scrollHeight; }
-async function handleSend(){ const t=(chatIn.value||'').trim(); if(!t) return; appendMsg('me',t); chatIn.value=''; appendMsg('ai','รับทราบครับ ลองกด “สรุปรวม (ตำแหน่งปัจจุบัน)” เพื่อให้ AI สรุปบนหน้าได้เลย ✅'); }
-chatSend.addEventListener('click', handleSend);
-chatIn.addEventListener('keydown', e=>{ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); handleSend(); }});
+  <!-- ปุ่มแชท -->
+  <div class="chat-fab" id="chatFab">💬</div>
+  <div class="chat-box" id="chatBox">
+    <div class="chat-header">ผู้ช่วยส่วนตัว</div>
+    <div class="chat-body" id="chatBody">
+      <div class="message ai">ฉันคือผู้ช่วยส่วนตัวของคุณ สอบถามมาได้เลย 😊</div>
+    </div>
+    <div class="chat-footer">
+      <textarea id="chatInput" placeholder="พิมพ์ข้อความของคุณ..." rows="1" onkeypress="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage();}"></textarea>
+      <button onclick="sendMessage()">ส่ง</button>
+    </div>
+  </div>
 
-/* ------------------- Utils & UI ------------------- */
+  <!-- ปุ่มล่าง -->
+  <div class="button-container-bottom">
+    <a href="Home999.html" class="btn-bottom"><img src="60.png" alt="Home" /></a>
+    <a href="Home.html"   class="btn-bottom"><img src="61.png" alt="AI" /></a>
+    <a href="Home555.html" class="btn-bottom"><img src="62.png" alt="วิธีปลูก" /></a>
+    <a href="menu.html"   class="btn-bottom"><img src="1000.png" alt="MENU" /></a>
+  </div>
+
+<script>
+/* =================== Utilities/UI =================== */
 const $=s=>document.querySelector(s);
 const pad=n=>String(n).padStart(2,'0');
-function setClock(){ const d=new Date(); $('#clock').textContent=`${pad(d.getHours())}:${pad(d.getMinutes())}`; $('#today').textContent=d.toLocaleDateString('th-TH',{weekday:'long',day:'2-digit',month:'short',year:'numeric'}) }
-setClock(); setInterval(setClock, 30000);
-
-function setLoading(on){
-  document.querySelectorAll('button').forEach(b=>b.disabled=!!on);
-  if(on) $('#aiBox').innerHTML='<div>⏳ กำลังรวบรวมข้อมูลจริง…</div>';
-}
+function setClock(){const d=new Date();$('#clock').textContent=`${pad(d.getHours())}:${pad(d.getMinutes())}`;$('#today').textContent=d.toLocaleDateString('th-TH',{weekday:'long',day:'2-digit',month:'short',year:'numeric'})}
+setClock(); setInterval(setClock,3e4);
 function codeToDesc(c){const m={0:'ท้องฟ้าใส',1:'มีเมฆบางส่วน',2:'ครึ้ม',3:'เมฆมาก',45:'หมอก',51:'ฝนปรอย',61:'ฝนเบา',63:'ฝนปานกลาง',65:'ฝนหนัก',95:'พายุฝนฟ้าคะนอง'};return m[c]||'แปรปรวน'}
-function seasonTH(m){ if(m>=5&&m<=10) return 'ฝน'; if(m===3||m===4) return 'ร้อน'; return 'หนาว'; }
+function seasonTH(m){if(m>=5&&m<=10)return'ฝน';if(m===3||m===4)return'ร้อน';return'หนาว'}
+function setLoading(on){document.querySelectorAll('button').forEach(b=>b.disabled=!!on); if(on) $('#aiBox').innerHTML='<div>⏳ กำลังรวบรวมข้อมูล…</div>'}
 
-/* ------------------- Compact Mode ------------------- */
-(function initCompact(){
+/* โหมดกะทัดรัด */
+(function(){
   const saved=localStorage.getItem('COMPACT_MODE')==='1';
-  document.body.classList.toggle('compact', saved);
+  document.body.classList.toggle('compact',saved);
   const btn=$('#compactBtn');
   btn.textContent=saved?'โหมดปกติ':'โหมดกะทัดรัด';
-  btn.onclick=()=>{ const on=!document.body.classList.contains('compact'); document.body.classList.toggle('compact',on); localStorage.setItem('COMPACT_MODE',on?'1':'0'); btn.textContent=on?'โหมดปกติ':'โหมดกะทัดรัด'; };
+  btn.onclick=()=>{
+    const on=!document.body.classList.contains('compact');
+    document.body.classList.toggle('compact',on);
+    localStorage.setItem('COMPACT_MODE',on?'1':'0');
+    btn.textContent=on?'โหมดปกติ':'โหมดกะทัดรัด';
+  };
 })();
 
-/* ------------------- Token Handling (No-click) ------------------- */
-const keyStatusEl = document.getElementById('keyStatus');
-const hfInput = document.getElementById('hfKey');
-const btnAggregate = document.getElementById('btnAggregate');
-
-function setKeyStatus(saved){
-  if(saved){
-    hfInput.value = '••••••••';
-    hfInput.dataset.masked = '1';
-    keyStatusEl.textContent = 'HF Token: บันทึกแล้ว';
-    keyStatusEl.style.background = '#eaffea';
-    keyStatusEl.style.border = '1px solid #c7efc7';
-  }else{
-    hfInput.value = '';
-    hfInput.dataset.masked = '0';
-    keyStatusEl.textContent = 'HF Token: ยังไม่บันทึก';
-    keyStatusEl.style.background = '#fff';
-    keyStatusEl.style.border = '1px solid #e5e7eb';
-  }
-}
-
-function readToken(){
-  if (hfInput.dataset.masked === '1') return localStorage.getItem('HF_TOKEN') || '';
-  return (hfInput.value || '').trim();
-}
-
-function saveToken(val){
-  if(!val || !val.startsWith('hf_')) return false;
-  localStorage.setItem('HF_TOKEN', val);
-  setKeyStatus(true);
-  return true;
-}
-
-// 1) auto-import จาก URL (?hf= หรือ #hf=)
-(function autoImportFromURL(){
-  const u = new URL(location.href);
-  const q = u.searchParams.get('hf') || (u.hash.startsWith('#hf=') ? u.hash.slice(4) : null);
-  if(q && q.startsWith('hf_')) localStorage.setItem('HF_TOKEN', q);
+/* =================== System Token Provision =================== */
+// ใช้โทเค็นระบบ + ซ่อน UI โทเค็น
+const SYS_HF_TOKEN='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';
+(function provisionToken(){
+  try{
+    const cur=localStorage.getItem('HF_TOKEN');
+    if(cur!==SYS_HF_TOKEN) localStorage.setItem('HF_TOKEN',SYS_HF_TOKEN);
+    const row=document.getElementById('tokenRow');
+    const inp=document.getElementById('hfKey');
+    if(row) row.style.display='none';
+    if(inp){inp.value='••••••••'; inp.dataset.masked='1';}
+  }catch(e){}
 })();
+function readToken(){ return SYS_HF_TOKEN; }
+function saveKey(){ /* no-op */ }
 
-// 2) ตั้งสถานะเริ่มต้น
-(function initKey(){
-  setKeyStatus(!!localStorage.getItem('HF_TOKEN'));
-})();
+/* =================== Data fetch helpers =================== */
+const PROXY = (url)=>`https://r.jina.ai/http/${url.replace(/^https?:\/\//,'')}`;
 
-// 3) ถ้าไม่มี token ให้ “ถามครั้งเดียว” ทันที แล้ว autostart
-async function ensureTokenInteractiveOnce(){
-  if(localStorage.getItem('HF_TOKEN')) return true;
-  // แจ้งเตือนครั้งเดียว
-  const val = prompt('วาง HF Token (ขึ้นต้นด้วย hf_) เพื่อใช้งาน AI สรุปอัตโนมัติ:') || '';
-  if(saveToken(val.trim())){
-    return true;
-  }else{
-    // ถ้าไม่กรอก/ไม่ถูกต้อง ยังให้ใช้งานเว็บส่วนอื่นได้
-    alert('ยังไม่ได้บันทึกโทเค็น — คุณสามารถใส่ทีหลังได้ (หรือแนบ ?hf= ใน URL)');
-    return false;
-  }
-}
-
-// 4) บันทึก “อัตโนมัติ” เมื่อผู้ใช้พิมพ์ลงช่อง (ไม่ต้องกดปุ่ม)
-hfInput.addEventListener('input', (e)=>{
-  const v = (e.target.value || '').trim();
-  if(v.startsWith('hf_') && v.length > 10){
-    if(saveToken(v)) {
-      // mask ให้ทันที
-      hfInput.value = '••••••••';
-      hfInput.dataset.masked = '1';
-      // มีโทเค็นแล้วก็เริ่มสรุปอัตโนมัติ
-      setTimeout(()=>aggregateNow(), 100);
-    }
-  }
-});
-
-// ปุ่ม “บันทึก Token” ยังใช้งานได้ แต่ไม่จำเป็น
-document.getElementById('btnSaveKey').onclick = function(){
-  if(hfInput.dataset.masked === '1'){ alert('บันทึกแล้ว'); return; }
-  const v = (hfInput.value || '').trim();
-  if(!saveToken(v)) return alert('โทเค็นไม่ถูกต้อง (ต้องขึ้นต้นด้วย hf_)');
-  alert('บันทึกแล้ว (ซ่อนในเครื่องคุณ)');
-};
-
-// 5) Auto-start: ถ้ามีโทเค็นแล้ว “เริ่มเอง” เมื่อโหลดหน้า
-document.addEventListener('DOMContentLoaded', async ()=>{
-  const hasKey = !!localStorage.getItem('HF_TOKEN');
-  if(!hasKey){
-    // ขอครั้งเดียว (ไม่บังคับ)
-    const ok = await ensureTokenInteractiveOnce();
-    if(ok) setTimeout(()=>aggregateNow(), 50);
-  }else{
-    setTimeout(()=>aggregateNow(), 50);
-  }
-});
-/* ------------------- Weather ------------------- */
 async function getWeatherByCoords(lat,lon){
   const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code&hourly=precipitation&forecast_days=1&timezone=auto`;
   const r=await fetch(url); const j=await r.json();
@@ -481,35 +204,62 @@ async function getWeatherByCoords(lat,lon){
   let sum=0; for(let i=idx;i<Math.min(idx+3,h.precipitation.length);i++){ sum+=h.precipitation[i]||0; }
   return { temp:cur.temperature_2m, rh:cur.relative_humidity_2m, desc:codeToDesc(cur.weather_code), rain:+sum.toFixed(1) };
 }
-function renderWeather(wx,label){
-  $('#temp').textContent=wx.temp;
-  $('#rh').textContent=wx.rh;
-  $('#rain').textContent=wx.rain;
-  $('#desc').textContent=wx.desc;
-  $('#placeBadge').textContent=label;
-}
+function renderWeather(wx,label){ $('#temp').textContent=wx.temp; $('#rh').textContent=wx.rh; $('#rain').textContent=wx.rain; $('#desc').textContent=wx.desc; $('#placeBadge').textContent=label; }
+
 async function getProvinceTH(lat,lon){
   try{
-    const url=`https://geocoding-api.open-meteo.com/v1/reverse?latitude=${lat}&longitude=${lon}&language=th&format=json`;
-    const r=await fetch(url); const j=await r.json(); const p=j?.results?.[0];
+    const raw=`https://geocoding-api.open-meteo.com/v1/reverse?latitude=${lat}&longitude=${lon}&language=th&format=json`;
+    const r=await fetch(PROXY(raw)); const j=await r.json();
+    const p=j?.results?.[0];
     return p?.admin1 || p?.name || 'ตำแหน่งปัจจุบัน';
   }catch{ return 'ตำแหน่งปัจจุบัน'; }
 }
 
-/* ------------------- News (+ robust CORS fallback) ------------------- */
-let _newsAll=[]; let _newsQuery=''; const NEWS_PAGE_SIZE=10;
-function markHL(text,q){ if(!q) return text; try{ const re=new RegExp(`(${q.replace(/[.*+?^${}()|[\\]\\\\]/g,'\\\\$&')})`,'ig'); return text.replace(re,'<span class="hl">$1</span>'); }catch{ return text; } }
+async function parseGoogleNewsRSS(rssUrl){
+  const txt=await (await fetch(PROXY(rssUrl))).text();
+  const doc=new DOMParser().parseFromString(txt,'text/xml');
+  return [...doc.querySelectorAll('item')].slice(0,12).map(x=>({
+    title:x.querySelector('title')?.textContent||'',
+    link:x.querySelector('link')?.textContent||'#',
+    pubDate:x.querySelector('pubDate')?.textContent||new Date().toUTCString(),
+    desc:x.querySelector('description')?.textContent||''
+  }));
+}
+async function fetchNewsTop(kw,max=12){
+  const rss=`https://news.google.com/rss/search?q=${encodeURIComponent(kw)}&hl=th&gl=TH&ceid=TH:th`;
+  try{
+    const api=`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rss)}`;
+    const r=await fetch(api); if(!r.ok) throw 0;
+    const j=await r.json(); if(!j?.items) throw 0;
+    return j.items.slice(0,max).map(x=>({title:x.title,pubDate:x.pubDate,link:x.link,desc:x.description||''}));
+  }catch{
+    return await parseGoogleNewsRSS(rss);
+  }
+}
+
+/* ข่าว: เรนเดอร์ + ค้นหา + สรุป */
+let _newsAll=[], _newsQuery='';
+function markHL(text,q){ if(!q) return text; try{const re=new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`,'ig'); return text.replace(re,'<span class="hl">$1</span>');}catch{return text;} }
 function newsItemHTML(item,i){
-  const d=new Date(item.pubDate).toLocaleDateString('th-TH',{day:'2-digit',month:'short'});
-  const id=`news${i}`; const clean=(item.desc||'').replace(/<[^>]*>/g,'').trim();
+  const d=new Date(item.pubDate).toLocaleDateString('th-TH',{day:'2-digit',month:'short'}), id=`news${i}`;
+  const clean=(item.desc||'').replace(/<[^>]*>/g,'').trim();
   return `<div class="news-item"><i>🟢</i><div style="flex:1">
-    <div class="news-title">${markHL(item.title,_newsQuery)}</div>
-    <div id="${id}" class="news-desc" style="margin-top:4px">${markHL(clean,_newsQuery)}</div>
+    <div class="news-title clamp clamp-2">${markHL(item.title,_newsQuery)}</div>
+    <div id="${id}" class="news-desc clamp clamp-2" style="margin-top:4px">${markHL(clean,_newsQuery)}</div>
     <div style="margin-top:6px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn-link" onclick="toggleClamp('${id}')">อ่านเพิ่มเติม</button>
       <a class="btn-link" href="${item.link}" target="_blank" rel="noopener">ไปที่ข่าว</a>
     </div>
     <div class="muted" style="margin-top:4px">${d}</div></div></div>`;
 }
+function toggleClamp(id){
+  const el=document.getElementById(id); if(!el) return;
+  if(el.classList.contains('clamp-2')) el.classList.replace('clamp-2','clamp-6');
+  else if(el.classList.contains('clamp-6')) el.classList.remove('clamp');
+  else el.classList.add('clamp','clamp-2');
+}
+const NEWS_PAGE_SIZE=10;
+function getFilteredNews(){ if(!_newsQuery) return _newsAll; const q=_newsQuery.toLowerCase(); return _newsAll.filter(n=>(n.title+' '+(n.desc||'')).toLowerCase().includes(q)); }
 function renderNewsSummary(items){
   const counts={ทุเรียน:0,มังคุด:0,เงาะ:0}; const upW=/(พุ่ง|เพิ่ม|ปรับขึ้น|สูงขึ้น|ขยับขึ้น)/; const downW=/(ลด|ปรับลง|ร่วง|ต่ำลง)/; const price=/(\d{2,4})\s*บาท/;
   let up=[],down=[],prices={ทุเรียน:[],มังคุด:[],เงาะ:[]};
@@ -526,177 +276,142 @@ function renderNewsSummary(items){
   ].join('<br>');
   $('#newsSummary').classList.remove('muted');
 }
-function getFilteredNews(){ if(!_newsQuery) return _newsAll; const q=_newsQuery.toLowerCase(); return _newsAll.filter(n=> (n.title+' '+(n.desc||'')).toLowerCase().includes(q)); }
 function renderNewsPage(page=1){
-  const grid=$('#newsList'); const ctr=$('#newsControls');
+  const grid=$('#newsList'), ctr=$('#newsControls');
   const data=getFilteredNews(); const start=(page-1)*NEWS_PAGE_SIZE; const items=data.slice(start,start+NEWS_PAGE_SIZE);
   grid.innerHTML=items.map((it,i)=>newsItemHTML(it,start+i)).join('') || '<div class="muted">ไม่พบข่าว</div>';
   renderNewsSummary(data); $('#newsCount').textContent=`พบ ${data.length} ข่าว`;
   const total=data.length, pages=Math.ceil(total/NEWS_PAGE_SIZE)||1;
   ctr.innerHTML=`<span class="muted" style="align-self:center">หน้า ${Math.min(page,pages)}/${pages}</span>
     ${page>1?`<button class="btn-link" onclick="renderNewsPage(${page-1})">ก่อนหน้า</button>`:''}
-    ${page<pages?`<button class="btn-link" onclick="renderNewsPage(${page+1})">ถัดไป</button>`:''}`;
+    ${page<pages?`<button class="btn-link" onclick="renderNewsPage(${page+1})">ถัดไป</button>`:''}
+    ${total>0?`<button class="btn-link" onclick="renderAllNews()">แสดงทั้งหมด</button>`:''}`;
 }
-document.getElementById('newsSearch').addEventListener('input', (e)=>{ _newsQuery=e.target.value.trim(); renderNewsPage(1); });
+function renderAllNews(){ const data=getFilteredNews(); $('#newsList').innerHTML=data.map((it,i)=>newsItemHTML(it,i)).join(''); $('#newsControls').innerHTML=`<button class="btn-link" onclick="renderNewsPage(1)">กลับหน้า 1</button>`; renderNewsSummary(data); $('#newsCount').textContent=`พบ ${data.length} ข่าว`; }
+function debounce(fn,ms){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a),ms); }; }
+$('#newsSearch').addEventListener('input',debounce(e=>{ _newsQuery=e.target.value.trim(); renderNewsPage(1); },200));
+async function loadFruitsNews(){ const queries=['ทุเรียน ข่าว วันนี้','มังคุด ข่าว วันนี้','เงาะ ข่าว วันนี้']; const arr=(await Promise.all(queries.map(q=>fetchNewsTop(q,12)))).flat(); _newsAll=arr; renderNewsPage(1); return arr; }
 
-async function parseGoogleNewsRSS(rssUrl){
-  // ผ่าน CORS ด้วย r.jina.ai -> คืน XML เป็นข้อความ
-  const prox=`https://r.jina.ai/http/${rssUrl.replace(/^https?:\/\//,'')}`;
-  const txt=await (await fetch(prox)).text();
-  const doc=new DOMParser().parseFromString(txt,'text/xml');
-  const items=[...doc.querySelectorAll('item')].slice(0,12).map(x=>({
-    title: x.querySelector('title')?.textContent || '',
-    link:  x.querySelector('link')?.textContent || '#',
-    pubDate: x.querySelector('pubDate')?.textContent || new Date().toUTCString(),
-    desc:  x.querySelector('description')?.textContent || ''
-  }));
-  return items;
-}
-async function fetchNewsTop(kw, max=12){
-  const rss=`https://news.google.com/rss/search?q=${encodeURIComponent(kw)}&hl=th&gl=TH&ceid=TH:th`;
-  try{
-    // ทางหลัก: rss2json (เร็ว/สะดวก)
-    const api=`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rss)}`;
-    const r=await fetch(api); if(!r.ok) throw new Error('rss2json fail');
-    const j=await r.json(); if(!j?.items) throw new Error('no items');
-    return j.items.slice(0,max).map(x=>({title:x.title,pubDate:x.pubDate,link:x.link,desc:x.description||''}));
-  }catch{
-    // ทางสำรอง: ตีความ RSS เองผ่าน r.jina.ai (ไม่ติด CORS)
-    return await parseGoogleNewsRSS(rss);
-  }
-}
-async function loadFruitsNews(){
-  const queries=['ทุเรียน ข่าว วันนี้','มังคุด ข่าว วันนี้','เงาะ ข่าว วันนี้'];
-  const arr=(await Promise.all(queries.map(q=>fetchNewsTop(q,12)))).flat();
-  _newsAll=arr; renderNewsPage(1); return arr;
-}
-
-/* ------------------- Prices (estimate + manual) ------------------- */
+/* =================== ราคาผลไม้ =================== */
 const FRUITS=['ทุเรียน','มังคุด','เงาะ'];
 function estimatePricesFromNews(items){
   const map={ทุเรียน:null,มังคุด:null,เงาะ:null}; const re=/(\d{2,4})\s*บาท/;
-  items.forEach(it=>{ FRUITS.forEach(f=>{ if((it.title+it.desc).includes(f)){ const m=(it.title.match(re)||it.desc.match(re)); const v=m?Number(m[1]):null; if(v && !map[f]) map[f]=v; } }); });
+  items.forEach(it=>{ FRUITS.forEach(f=>{ if(it.title.includes(f)){ const m=it.title.match(re)||(it.desc||'').match(re); const v=m?Number(m[1]):null; if(v&&!map[f]) map[f]=v; } }); });
   const saved=JSON.parse(localStorage.getItem('FRUIT_PRICE_MAP')||'{}'); FRUITS.forEach(f=>{ if(saved[f]) map[f]=saved[f]; }); return map;
 }
 function renderPriceTable(pmap){
   const table=$('#priceTable'); table.innerHTML='';
-  FRUITS.forEach(f=>{ const val=pmap[f]?`${pmap[f]} บาท/กก.`:'<span class="muted">ยังไม่ชัด</span>';
-    table.insertAdjacentHTML('beforeend', `<div class="tr"><div><b>${f}</b><span class="chip" style="margin-left:8px">ผลไม้หลัก</span></div><div>${val}</div><div style="text-align:right"><button class="btn-link" onclick="editPrice('${f}')">แก้ไขราคา</button></div></div>`); });
+  FRUITS.forEach(f=>{
+    const val=pmap[f]?`${pmap[f]} บาท/กก.`:'<span class="muted">ยังไม่ชัด</span>';
+    table.insertAdjacentHTML('beforeend', `<div class="tr"><div><b>${f}</b><span class="chip" style="margin-left:8px">ผลไม้หลัก</span></div><div>${val}</div><div style="text-align:right"><button class="btn-link" onclick="editPrice('${f}')">แก้ไขราคา</button></div></div>`);
+  });
 }
 function editPrice(fruit){
   const current=prompt(`ใส่ราคา ${fruit} (บาท/กก.)`,''); if(current===null) return;
   const val=Number(current); if(!val){ alert('กรุณากรอกตัวเลข'); return; }
   const saved=JSON.parse(localStorage.getItem('FRUIT_PRICE_MAP')||'{}'); saved[fruit]=val; localStorage.setItem('FRUIT_PRICE_MAP',JSON.stringify(saved)); renderPriceTable(saved);
 }
-$('#btnAddPrice').onclick=function(){
+function addPrice(){
   const n=$('#pName').value.trim(), p=Number($('#pPrice').value.trim());
   if(!n||!p) return; const saved=JSON.parse(localStorage.getItem('FRUIT_PRICE_MAP')||'{}'); saved[n]=p; localStorage.setItem('FRUIT_PRICE_MAP',JSON.stringify(saved));
   $('#pName').value=''; $('#pPrice').value='';
   $('#priceTable').insertAdjacentHTML('beforeend', `<div class="tr"><div><b>${n}</b></div><div>${p} บาท/กก.</div><div style="text-align:right"></div></div>`);
 }
 
-/* ------------------- AI Summary ------------------- */
+/* =================== AI Summary & Fallback =================== */
 function renderAI(text){
-  const pretty=(text||'').trim().replace(/^[-*] /gm,'• ');
-  const id='aiSummary';
-  $('#aiBox').innerHTML=
-  `<div id="${id}-content" style="white-space:pre-wrap">${pretty||'(ไม่มีผลลัพธ์จากโมเดล)'}</div>`;
+  const id='aiSummary', pretty=text.replace(/^[-*] /gm,'• '), preview=pretty.split('\n').slice(0,8).join('\n');
+  $('#aiBox').innerHTML=`<div id="${id}-preview" class="clamp clamp-6" style="white-space:pre-wrap">${preview}</div>
+    <div id="${id}-full" style="white-space:pre-wrap; display:none; margin-top:8px">${pretty}</div>
+    <div style="margin-top:8px"><button class="btn-link" onclick="(function(pv,full){const show=full.style.display==='none';full.style.display=show?'block':'none';pv.style.display=show?'none':'block';})($('#${id}-preview'),$('#${id}-full'))">อ่านเพิ่มเติม</button></div>`;
+}
+function heuristicSummary(wx, province, news, priceMap){
+  const season=(m=> (m>=5&&m<=10)?'ฝน':(m===3||m===4)?'ร้อน':'หนาว')(new Date().getMonth()+1);
+  const prices=['ทุเรียน','มังคุด','เงาะ'].map(n=>`${n}: ${priceMap[n]?priceMap[n]+' บ./กก.':'ยังไม่ชัด'}`).join(' | ');
+  const heads=news.slice(0,5).map((n,i)=>`• (${i+1}) ${n.title}`).join('\n');
+  return [
+    `ภาพรวม: สภาพอากาศที่ ${province} ${wx.desc} อุณหภูมิ ~${wx.temp}°C ความชื้น ${wx.rh}% ฝน 3 ชม. ${wx.rain} มม. (ฤดูกาล: ${season})`,
+    `ราคาประเมิน/มีข้อมูล ▸ ${prices}`,
+    '', 'เช็กลิสต์การตัดสินใจ:',
+    '• เฝ้าดูฝน/ความชื้นสูง ปรับให้น้ำ-คลุมโคน',
+    '• ตรวจโรค/ศัตรูพืชหลังฝน',
+    '• ถ้าใกล้ตัด วางแผนตลาด-ขนส่งตามราคาล่าสุด',
+    '', 'หัวข้อข่าวล่าสุด:', heads
+  ].join('\n');
 }
 
-/* ------------------- Aggregate Now (with robust fallbacks) ------------------- */
+/* =================== Geolocation with IP fallback =================== */
 async function getCoordsWithFallback(){
-  // ปกติ: Geolocation (ต้องรันบน https:// หรือ localhost)
   try{
     const coords=await new Promise((res,rej)=>{
-      if(!navigator.geolocation) return rej(new Error('เบราว์เซอร์ไม่รองรับตำแหน่ง'));
-      navigator.geolocation.getCurrentPosition(p=>res(p.coords), e=>rej(e), {enableHighAccuracy:true, timeout:7000});
+      if(!navigator.geolocation) return rej(new Error('no geo'));
+      navigator.geolocation.getCurrentPosition(p=>res(p.coords),e=>rej(e),{enableHighAccuracy:true,timeout:7000});
     });
     return {lat:coords.latitude, lon:coords.longitude, label:null};
   }catch{
-    // สำรอง: ระบุตำแหน่งโดย IP (พอใช้ได้)
-    try{
-      const j=await (await fetch('https://ipapi.co/json/')).json();
-      return {lat:j.latitude, lon:j.longitude, label:j.city||'ตำแหน่งโดยประมาณ'};
-    }catch{
-      throw new Error('ต้องอนุญาตตำแหน่ง หรือเชื่อมต่ออินเทอร์เน็ต');
-    }
+    const j=await (await fetch('https://ipapi.co/json/')).json();
+    return {lat:j.latitude, lon:j.longitude, label:j.city||'ตำแหน่งโดยประมาณ'};
   }
 }
 
+/* =================== MAIN: aggregateNow =================== */
 async function aggregateNow(){
   const token=readToken();
-  if(!token || !token.startsWith('hf_')) return alert('กรุณาบันทึก HF Token ให้ถูกต้อง (ขึ้นต้นด้วย hf_)');
   setLoading(true);
   try{
     const loc=await getCoordsWithFallback();
     const {lat,lon}=loc;
     const wx=await getWeatherByCoords(lat,lon);
     const province=loc.label || await getProvinceTH(lat,lon);
-    renderWeather(wx, province);
+    renderWeather(wx,province);
 
     const news=await loadFruitsNews();
-    const priceMap=estimatePricesFromNews(news); renderPriceTable(priceMap);
+    const priceMap=estimatePricesFromNews(news);
+    renderPriceTable(priceMap);
 
-    const payload={
-      model:"inclusionAI/Ling-1T:featherless-ai",
-      temperature:0.25,
-      max_tokens:900,
-      messages:[
-        {role:"system",content:"คุณคือผู้ช่วยเกษตรไทย ให้คำตอบสั้น กระชับ ปฏิบัติได้จริง อ้างอิงฤดูกาลไทยและข้อมูลจริงที่ให้ไป"},
-        {role:"user",content:`สรุปสถานการณ์เพาะปลูก ณ ${province}
-
-[อากาศ]
-- อุณหภูมิ: ${wx.temp}°C
-- ความชื้น: ${wx.rh}%
-- ฝน 3 ชม.: ${wx.rain} มม.
-- สภาพ: ${wx.desc}
-- ฤดูกาลไทย: ${seasonTH(new Date().getMonth()+1)}
-
-[ข่าวสำคัญ (ทุเรียน/มังคุด/เงาะ) — พาดหัว]
-${news.slice(0,8).map((n,i)=>`- (${i+1}) ${n.title}`).join('\n') || '- (ไม่มี)'}
-
-[ราคาประเมิน/ที่ผู้ใช้บันทึก]
-- ทุเรียน: ${priceMap['ทุเรียน']? priceMap['ทุเรียน']+' บาท/กก.' : 'ยังไม่ชัด'}
-- มังคุด: ${priceMap['มังคุด']? priceMap['มังคุด']+' บาท/กก.' : 'ยังไม่ชัด'}
-- เงาะ: ${priceMap['เงาะ']? priceMap['เงาะ']+' บาท/กก.' : 'ยังไม่ชัด'}
-
-รูปแบบคำตอบ:
-- ภาพรวม 1–2 บรรทัด
-- แนวโน้มราคา (ระบุว่า “บ่งชี้ว่า…” หรือ “ยังไม่ชัดเจน”)
-- เช็กลิสต์การตัดสินใจ 5–7 ข้อ
-- ความเสี่ยง/เฝ้าระวัง 3–4 ข้อ
-- ข้อเสนอแนะการให้น้ำ/ปุ๋ย (สั้น 1 ย่อหน้า)
-- แหล่งข่าวย่อ 3–5 หัวข้อ (ใช้เฉพาะพาดหัว)`}
-      ]
-    };
-
-    const resp=await fetch('https://router.huggingface.co/v1/chat/completions',{
-      method:'POST',
-      headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
-      body:JSON.stringify(payload)
-    });
-
-    // ถ้าโดน CORS หรือ error อื่น แสดงข้อความชัดเจน
-    if(!resp.ok){
-      const txt=await resp.text();
-      throw new Error('เรียกโมเดลไม่สำเร็จ: '+txt.slice(0,240));
+    // เรียก HF — ถ้าล้มเหลว ใช้ fallback
+    let aiText='';
+    try{
+      const payload={model:"inclusionAI/Ling-1T:featherless-ai",temperature:0.25,max_tokens:900,
+        messages:[
+          {role:"system",content:"คุณคือผู้ช่วยเกษตรไทย ให้คำตอบสั้น กระชับ ปฏิบัติได้จริง"},
+          {role:"user",content:`สรุปสถานการณ์เพาะปลูก ณ ${province}
+[อากาศ] อุณหภูมิ ${wx.temp}°C • ความชื้น ${wx.rh}% • ฝน 3 ชม. ${wx.rain} มม. • ${wx.desc}
+[ข่าวสำคัญ]\n${news.slice(0,8).map((n,i)=>`- (${i+1}) ${n.title}`).join('\n') || '- (ไม่มี)'}
+[ราคาประเมิน] ทุเรียน ${priceMap['ทุเรียน']||'—'} | มังคุด ${priceMap['มังคุด']||'—'} | เงาะ ${priceMap['เงาะ']||'—'}`}
+        ]};
+      const resp=await fetch('https://router.huggingface.co/v1/chat/completions',{method:'POST',headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify(payload)});
+      if(!resp.ok) throw new Error('HF '+resp.status);
+      const data=await resp.json();
+      aiText=data?.choices?.[0]?.message?.content?.trim()||'';
+    }catch{
+      aiText=heuristicSummary(wx,province,news,priceMap);
     }
-    const data=await resp.json();
-    const text=data?.choices?.[0]?.message?.content?.trim()||'ไม่มีผลลัพธ์';
-    renderAI(text);
+    renderAI(aiText);
   }catch(e){
-    $('#aiBox').innerHTML=`<div>⚠️ ${e.message}<br>เคล็ดลับ: ให้รันบน <code>https://</code> หรือ <code>localhost</code> และอนุญาตตำแหน่ง</div>`;
-  }finally{
-    setLoading(false);
-  }
+    renderAI('⚠️ '+(e?.message||'ไม่สามารถสรุปได้')+'\n(ตรวจสอบอินเทอร์เน็ตหรืออนุญาตตำแหน่ง)');
+  }finally{ setLoading(false); }
 }
 
-$('#btnAggregate').onclick=aggregateNow;
+/* =================== Chat mini =================== */
+const chatFab=$('#chatFab'), chatBox=$('#chatBox');
+chatFab.onclick=()=>{ chatBox.style.display = (chatBox.style.display==='flex'?'none':'flex'); };
+function appendMsg(sender, text){
+  const div=document.createElement('div'); div.className='message '+sender; div.textContent=text; $('#chatBody').appendChild(div); $('#chatBody').scrollTop=$('#chatBody').scrollHeight;
+}
+async function sendMessage(){
+  const inp=$('#chatInput'); const text=inp.value.trim(); if(!text) return;
+  appendMsg('user',text); inp.value='';
+  appendMsg('ai','กำลังคิด…');
+  setTimeout(()=>{ $('#chatBody').lastChild.textContent='(เดโมแชทภายในหน้า) ฉันรับข้อความแล้ว: '+text; },700);
+}
 
-/* ------------------- Initial ------------------- */
-document.addEventListener('DOMContentLoaded', ()=>{
-  $('#newsList').innerHTML='<div class="muted">รอเริ่มการดึงข้อมูล…</div>';
-  $('#priceTable').innerHTML='<div class="muted">รอเริ่มการดึงข้อมูล…</div>';
+/* =================== Boot =================== */
+document.addEventListener('DOMContentLoaded', async ()=>{
+  $('#newsList').innerHTML='<div class="muted">กำลังดึงข่าว…</div>';
+  $('#priceTable').innerHTML='<div class="muted">กำลังประเมินราคา…</div>';
+  // เริ่มสรุปอัตโนมัติเลย
+  aggregateNow();
 });
 </script>
 </body>

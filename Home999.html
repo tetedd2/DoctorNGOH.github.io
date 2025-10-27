@@ -379,31 +379,98 @@ function seasonTH(m){ if(m>=5&&m<=10) return 'ฝน'; if(m===3||m===4) return '
   btn.onclick=()=>{ const on=!document.body.classList.contains('compact'); document.body.classList.toggle('compact',on); localStorage.setItem('COMPACT_MODE',on?'1':'0'); btn.textContent=on?'โหมดปกติ':'โหมดกะทัดรัด'; };
 })();
 
-/* ------------------- Token Handling ------------------- */
-const keyStatusEl = $('#keyStatus');
-(function autoImportTokenFromURL(){
-  // รองรับ ?hf= หรือ #hf=  เพื่อเติมอัตโนมัติ (ใช้ครั้งแรก)
-  const u=new URL(location.href);
-  const q=u.searchParams.get('hf') || (u.hash.startsWith('#hf=')? u.hash.slice(4) : null);
+/* ------------------- Token Handling (No-click) ------------------- */
+const keyStatusEl = document.getElementById('keyStatus');
+const hfInput = document.getElementById('hfKey');
+const btnAggregate = document.getElementById('btnAggregate');
+
+function setKeyStatus(saved){
+  if(saved){
+    hfInput.value = '••••••••';
+    hfInput.dataset.masked = '1';
+    keyStatusEl.textContent = 'HF Token: บันทึกแล้ว';
+    keyStatusEl.style.background = '#eaffea';
+    keyStatusEl.style.border = '1px solid #c7efc7';
+  }else{
+    hfInput.value = '';
+    hfInput.dataset.masked = '0';
+    keyStatusEl.textContent = 'HF Token: ยังไม่บันทึก';
+    keyStatusEl.style.background = '#fff';
+    keyStatusEl.style.border = '1px solid #e5e7eb';
+  }
+}
+
+function readToken(){
+  if (hfInput.dataset.masked === '1') return localStorage.getItem('HF_TOKEN') || '';
+  return (hfInput.value || '').trim();
+}
+
+function saveToken(val){
+  if(!val || !val.startsWith('hf_')) return false;
+  localStorage.setItem('HF_TOKEN', val);
+  setKeyStatus(true);
+  return true;
+}
+
+// 1) auto-import จาก URL (?hf= หรือ #hf=)
+(function autoImportFromURL(){
+  const u = new URL(location.href);
+  const q = u.searchParams.get('hf') || (u.hash.startsWith('#hf=') ? u.hash.slice(4) : null);
   if(q && q.startsWith('hf_')) localStorage.setItem('HF_TOKEN', q);
 })();
-function updateKeyUI(){
-  const saved=localStorage.getItem('HF_TOKEN');
-  const inp=$('#hfKey');
-  if(saved){ inp.value='••••••••'; inp.dataset.masked='1'; keyStatusEl.textContent='HF Token: บันทึกแล้ว'; keyStatusEl.style.background='#eaffea'; keyStatusEl.style.border='1px solid #c7efc7'; }
-  else{ inp.value=''; inp.dataset.masked='0'; keyStatusEl.textContent='HF Token: ยังไม่บันทึก'; keyStatusEl.style.background='#fff'; keyStatusEl.style.border='1px solid #e5e7eb'; }
-}
-updateKeyUI();
-$('#btnSaveKey').onclick=function(){
-  const inp=$('#hfKey');
-  const val=(inp.dataset.masked==='1')?null:inp.value.trim();
-  if(val && !val.startsWith('hf_')) return alert('กรุณาใช้โทเค็นที่ขึ้นต้นด้วย hf_');
-  if(val){ localStorage.setItem('HF_TOKEN', val); }
-  alert('บันทึกแล้ว (ซ่อนในเครื่องคุณ)');
-  updateKeyUI();
-}
-function readToken(){ const inp=$('#hfKey'); if(inp.dataset.masked==='1') return localStorage.getItem('HF_TOKEN')||''; return inp.value.trim(); }
 
+// 2) ตั้งสถานะเริ่มต้น
+(function initKey(){
+  setKeyStatus(!!localStorage.getItem('HF_TOKEN'));
+})();
+
+// 3) ถ้าไม่มี token ให้ “ถามครั้งเดียว” ทันที แล้ว autostart
+async function ensureTokenInteractiveOnce(){
+  if(localStorage.getItem('HF_TOKEN')) return true;
+  // แจ้งเตือนครั้งเดียว
+  const val = prompt('วาง HF Token (ขึ้นต้นด้วย hf_) เพื่อใช้งาน AI สรุปอัตโนมัติ:') || '';
+  if(saveToken(val.trim())){
+    return true;
+  }else{
+    // ถ้าไม่กรอก/ไม่ถูกต้อง ยังให้ใช้งานเว็บส่วนอื่นได้
+    alert('ยังไม่ได้บันทึกโทเค็น — คุณสามารถใส่ทีหลังได้ (หรือแนบ ?hf= ใน URL)');
+    return false;
+  }
+}
+
+// 4) บันทึก “อัตโนมัติ” เมื่อผู้ใช้พิมพ์ลงช่อง (ไม่ต้องกดปุ่ม)
+hfInput.addEventListener('input', (e)=>{
+  const v = (e.target.value || '').trim();
+  if(v.startsWith('hf_') && v.length > 10){
+    if(saveToken(v)) {
+      // mask ให้ทันที
+      hfInput.value = '••••••••';
+      hfInput.dataset.masked = '1';
+      // มีโทเค็นแล้วก็เริ่มสรุปอัตโนมัติ
+      setTimeout(()=>aggregateNow(), 100);
+    }
+  }
+});
+
+// ปุ่ม “บันทึก Token” ยังใช้งานได้ แต่ไม่จำเป็น
+document.getElementById('btnSaveKey').onclick = function(){
+  if(hfInput.dataset.masked === '1'){ alert('บันทึกแล้ว'); return; }
+  const v = (hfInput.value || '').trim();
+  if(!saveToken(v)) return alert('โทเค็นไม่ถูกต้อง (ต้องขึ้นต้นด้วย hf_)');
+  alert('บันทึกแล้ว (ซ่อนในเครื่องคุณ)');
+};
+
+// 5) Auto-start: ถ้ามีโทเค็นแล้ว “เริ่มเอง” เมื่อโหลดหน้า
+document.addEventListener('DOMContentLoaded', async ()=>{
+  const hasKey = !!localStorage.getItem('HF_TOKEN');
+  if(!hasKey){
+    // ขอครั้งเดียว (ไม่บังคับ)
+    const ok = await ensureTokenInteractiveOnce();
+    if(ok) setTimeout(()=>aggregateNow(), 50);
+  }else{
+    setTimeout(()=>aggregateNow(), 50);
+  }
+});
 /* ------------------- Weather ------------------- */
 async function getWeatherByCoords(lat,lon){
   const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code&hourly=precipitation&forecast_days=1&timezone=auto`;

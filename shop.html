@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ร้านขายปุ๋ยออนไลน์</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root{ --green:#1f9d47; --green-dark:#0f7a32; --bg:#e9f8ee; --card:#fff; --shadow:0 4px 10px rgba(0,0,0,.1) }
+  *{box-sizing:border-box}
+  body{ font-family:'Prompt',system-ui,-apple-system,Segoe UI,Roboto,sans-serif; background:var(--bg); margin:0; color:#123}
+  h1{ text-align:center; color:var(--green); margin:20px 10px 8px}
+  .sub{ text-align:center; color:#456; margin-bottom:8px; font-size:14px}
+
+  .container{ display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:15px; padding:20px; max-width:900px; margin:auto }
+  .product{ background:var(--card); border-radius:15px; box-shadow:var(--shadow); text-align:center; padding:15px; transition:transform .1s ease }
+  .product:hover{ transform:translateY(-2px)}
+  .product img{ width:70px; height:70px; object-fit:contain}
+  .price{ font-weight:600; color:#2b6; margin:6px 0 10px}
+  .muted{ color:#678; font-size:12px}
+  button{ background:var(--green); color:#fff; border:none; padding:8px 14px; border-radius:10px; cursor:pointer; font-size:14px}
+  button:hover{ background:var(--green-dark)}
+
+  .cart-icon{ position:fixed; top:15px; right:15px; background:#28a745; color:#fff; padding:10px 12px; border-radius:999px; cursor:pointer; font-size:20px; box-shadow:0 3px 8px rgba(0,0,0,.2); display:flex; align-items:center; gap:8px; user-select:none }
+  .badge{ background:#fff; color:#28a745; font-weight:700; min-width:22px; height:22px; border-radius:999px; display:inline-flex; align-items:center; justify-content:center; font-size:12px; padding:0 6px }
+  .cart-toast{ position:absolute; right:100%; margin-right:10px; top:50%; transform:translateY(-50%); background:#1f9d47; color:#fff; font-size:12px; padding:6px 10px; border-radius:999px; box-shadow:0 3px 8px rgba(0,0,0,.2); opacity:0; pointer-events:none; transition:opacity .25s ease, transform .25s ease; white-space:nowrap }
+  .cart-toast.show{ opacity:1; transform:translateY(-50%) translateX(-2px) }
+
+  .modal,.popup{ display:none; position:fixed; z-index:1000; inset:0; background:rgba(0,0,0,.4); padding:16px }
+  .modal-content,.popup-content{ background:#fff; margin:6% auto 0; padding:20px; border-radius:15px; width:100%; max-width:520px; box-shadow:var(--shadow); text-align:center; position:relative }
+  .close{ position:absolute; right:12px; top:10px; font-size:22px; cursor:pointer; color:#678}
+
+  .cart-item{ display:grid; grid-template-columns:1fr auto auto; gap:10px; align-items:center; margin:10px 0; text-align:left }
+  .cart-name{ font-weight:600}
+  .ctrl{ display:inline-flex; align-items:center; gap:6px; border:1px solid #dde; border-radius:8px; padding:4px 6px; background:#f9fbfa }
+  .ctrl input{ width:56px; padding:6px 4px; border:1px solid #ccd; border-radius:6px; text-align:center; font-size:14px }
+  .ctrl button{ padding:6px 10px; border-radius:8px; background:#eaf7ef; color:#177a3a }
+  .ctrl button:hover{ background:#d9f1e2}
+  .remove-btn{ background:#ff4d4f; padding:6px 10px; border-radius:8px; font-size:12px; color:#fff}
+  .remove-btn:hover{ background:#d9363e}
+  .checkout{ background:var(--green); color:#fff; padding:12px 20px; border-radius:12px; display:block; text-align:center; margin:15px auto 0; width:100%; font-size:16px}
+  .clear-cart{ background:#f1f3f5; color:#345; margin-top:10px }
+  .btn-secondary{ background:#eef1f5; color:#234 }
+
+  .popup-content .row{ text-align:left; margin:10px auto; max-width:320px}
+  .popup-content label{ font-size:14px; color:#456}
+  .popup-content input[type="number"], .popup-content select{ width:100%; padding:10px; margin-top:8px; border-radius:8px; border:1px solid #ccd; font-size:16px; background:#fff }
+  .popup-actions{ display:flex; gap:10px; margin-top:14px}
+  .popup-actions button{ flex:1 }
+  .total-row{ display:flex; justify-content:space-between; align-items:center; font-weight:700; font-size:16px; margin-top:8px}
+  .hr{ height:1px; background:#eee; margin:12px 0}
+
+  .pay-methods{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin:10px 0 6px }
+  .radio-card{ border:1px solid #dde; border-radius:12px; padding:10px; cursor:pointer; user-select:none; display:flex; align-items:center; gap:8px; justify-content:center; background:#fafdfb }
+  .radio-card input{ accent-color:#1f9d47 }
+  .radio-card.active{ border-color:#1f9d47; background:#f0fbf4 }
+  .pay-pane{ display:none; text-align:left } .pay-pane.active{ display:block }
+  .qr-wrap{ display:flex; flex-direction:column; align-items:center; gap:8px; margin-top:10px}
+  .qr-box{ background:#fff; padding:10px; border-radius:12px; box-shadow:var(--shadow) }
+  .copy-btn{ background:#f1f3f5; color:#345 }
+  .sum-line{ display:flex; justify-content:space-between; margin:6px 0 }
+  .addr-area{ width:100%; min-height:86px; padding:10px; border-radius:10px; border:1px solid #ccd; resize:vertical }
+  .file-row{ display:flex; align-items:center; gap:10px; flex-wrap:wrap }
+  .thumb{ width:120px; height:120px; border-radius:12px; object-fit:cover; background:#f5f7f9; display:none }
+  .success-box{ background:#f0fbf4; border:1px solid #cfead6; border-radius:12px; padding:12px; margin-top:10px; color:#135a2c; display:none }
+
+  .history-list{ text-align:left; max-height:55vh; overflow:auto; padding-right:6px }
+  .order-card{ border:1px solid #edf; border-radius:12px; padding:12px; margin:10px 0; background:#fbfdff }
+  .order-head{ display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap }
+  .order-items{ margin-top:8px; color:#345; font-size:14px }
+  .order-items li{ margin:3px 0 }
+
+  /* Popup ระบุที่อยู่หลังจ่าย */
+  .eta{ background:#f5fff7; border:1px dashed #9ed3b1; padding:10px; border-radius:10px; color:#165b2e; margin:8px 0 }
+
+          .button-container-bottom {
+    position: fixed;
+    bottom: 0;
+    left: 0; /* ตั้งค่าใหม่ */
+    width: 100%; /* ให้เต็มหน้าจอ */
+    display: flex;
+    justify-content: space-around; /* กระจายปุ่มให้เท่าๆ กัน */
+    gap: 10px; /* ระยะห่างระหว่างปุ่ม */
+    background-color: white;
+    padding: 8px 0;
+    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.btn-bottom {
+    background-color: transparent; /* ทำให้พื้นหลังโปร่งใส */
+    border: none;                 /* ลบขอบ */
+    cursor: pointer;
+    flex: 1;                     /* ขยายปุ่มให้เต็มพื้นที่ */
+    height: 60px;                /* กำหนดความสูงของปุ่ม */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 0;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: none;             /* ลบเงา */
+}
+
+.btn-bottom img {
+    width: 80px;                 /* ปรับขนาดไอคอนให้เหมาะสม */
+    height: auto;
+    object-fit: contain;
+    display: block;
+}
+
+.btn-bottom:hover {
+    transform: scale(1.05);
+}
+
+.btn-bottom:active {
+    transform: scale(0.98);
+}
+        /* สีปุ่มล่าง */
+        
+        .btn-bottom.home {
+            background-color: #ffffff;
+        }
+        
+        .btn-bottom.ai {
+            background-color: #ffffff;
+        }
+        
+        .btn-bottom.plant {
+            background-color: #ffffff;
+        }
+        
+        .btn-bottom.menu {
+            background-color: #ffffff;
+        }
+        
+        .btn-bottom {
+            background-color: white;
+            color: #333;
+            padding: 0;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
+        }
+        
+        .btn-bottom img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .btn-bottom:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-bottom:active {
+            transform: scale(0.98);
+        }
+        
+        .btn-bottom.home {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .btn-bottom.ai {
+            background-color: #2ecc71;
+            color: white;
+        }
+        
+        .btn-bottom.plant {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .btn-bottom.menu {
+            background-color: #ff9900;
+            color: white;
+        }
+
+</style>
+</head>
+<body>
+
+<h1>🛒 ร้านขายปุ๋ยออนไลน์</h1>
+<p class="sub">เลือกซื้อได้ทั้งแบบ “กิโลกรัม” และ “ถุง” — ระบบคำนวณราคาให้อัตโนมัติ</p>
+
+<div class="cart-icon" onclick="openCart()" aria-label="เปิดตะกร้าสินค้า" role="button">
+  <span class="cart-toast" id="cartToast" aria-live="polite">เพิ่มแล้ว</span>
+  🛍️ <span class="badge" id="cartBadge">0</span>
+</div>
+
+<div class="container" id="productList"></div>
+
+<!-- Popup เลือกซื้อ -->
+<div id="popup" class="popup" aria-hidden="true">
+  <div class="popup-content" role="dialog" aria-modal="true">
+    <span class="close" onclick="closePopup()" aria-label="ปิด">&times;</span>
+    <h3>🧮 เลือกรูปแบบการสั่งซื้อ</h3>
+    <p class="muted">เลือกรูปแบบและใส่จำนวน</p>
+    <div class="row"><label>สินค้า</label><div id="popupProductName" style="font-weight:600; margin-top:6px;">-</div></div>
+    <div class="row"><label for="typeSelect">รูปแบบ</label>
+      <select id="typeSelect"><option value="kg">น้ำหนัก (กก.)</option><option value="bag">จำนวนถุง</option></select>
+    </div>
+    <div class="row"><label for="quantityInput">จำนวน</label>
+      <input type="number" id="quantityInput" placeholder="ใส่จำนวน" min="0.1" step="0.1" />
+      <div id="unitHint" class="muted" style="margin-top:6px;">หน่วยเป็น กก.</div>
+    </div>
+    <div class="row total-row"><span>ราคารวม:</span><span id="popupTotal">฿0.00</span></div>
+    <div class="popup-actions"><button class="clear-cart" onclick="closePopup()">ยกเลิก</button><button onclick="confirmAdd()">เพิ่มลงตะกร้า</button></div>
+  </div>
+</div>
+
+<!-- ตะกร้า -->
+<div id="cartModal" class="modal" aria-hidden="true">
+  <div class="modal-content" role="dialog" aria-modal="true">
+    <span class="close" onclick="closeCart()" aria-label="ปิด">&times;</span>
+    <h2>🧺 ตะกร้าสินค้า</h2>
+    <div id="cartItems"></div>
+    <div class="hr"></div>
+    <div class="total-row"><span>รวมทั้งหมด</span><span id="total">฿0.00</span></div>
+    <button class="checkout" onclick="openPayment()">💳 จ่ายเงิน</button>
+    <div style="display:flex; gap:10px; justify-content:center; margin-top:10px">
+      <button class="clear-cart" onclick="clearCart()">ล้างตะกร้า</button>
+      <button class="btn-secondary" onclick="openHistory()">ประวัติการซื้อ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ชำระเงิน -->
+<div id="paymentModal" class="modal" aria-hidden="true">
+  <div class="modal-content" role="dialog" aria-modal="true">
+    <span class="close" onclick="closePayment()" aria-label="ปิด">&times;</span>
+    <h2>💳 เลือกวิธีชำระเงิน</h2>
+    <div class="sum-line"><span>หมายเลขสั่งซื้อ</span><strong id="orderId">-</strong></div>
+    <div class="sum-line"><span>ยอดที่ต้องชำระ</span><strong id="payTotal">฿0.00</strong></div>
+    <div class="pay-methods" id="payMethods">
+      <label class="radio-card active"><input type="radio" name="payMethod" value="qr" checked> PromptPay QR</label>
+      <label class="radio-card"><input type="radio" name="payMethod" value="slip"> อัปโหลดสลิป</label>
+      <label class="radio-card"><input type="radio" name="payMethod" value="cod"> เก็บเงินปลายทาง (COD)</label>
+    </div>
+
+    <div id="paneQR" class="pay-pane active">
+      <div class="qr-wrap">
+        <div class="qr-box"><canvas id="qrCanvas" width="240" height="240"></canvas></div>
+        <div>โอนเข้า PromptPay: <b id="ppIdText">-</b></div>
+        <div class="file-row">
+          <button class="copy-btn" onclick="copyText(PROMPTPAY_ID)">คัดลอกเบอร์พร้อมเพย์</button>
+          <button class="copy-btn" onclick="copyAmount()">คัดลอกยอดโอน</button>
+        </div>
+        <label style="display:flex; gap:8px; align-items:center; margin-top:8px"><input type="checkbox" id="qrConfirmed"><span>ฉันโอนแล้ว</span></label>
+      </div>
+    </div>
+
+    <div id="paneSlip" class="pay-pane">
+      <div class="row"><label>อัปโหลดสลิปโอน (jpg/png)</label>
+        <div class="file-row"><input type="file" id="slipInput" accept="image/*" /><img id="slipThumb" class="thumb" alt="สลิปตัวอย่าง"></div>
+      </div>
+    </div>
+
+    <div id="paneCOD" class="pay-pane">
+      <div class="row"><label>ชื่อ-นามสกุลผู้รับ</label><input type="text" id="codName" placeholder="ชื่อ-นามสกุล" /></div>
+      <div class="row"><label>เบอร์โทร</label><input type="tel" id="codPhone" placeholder="0XXXXXXXXX" /></div>
+      <div class="row"><label>ที่อยู่จัดส่ง</label><textarea id="codAddr" class="addr-area" placeholder="บ้านเลขที่ / ถนน / ตำบล / อำเภอ / จังหวัด / รหัสไปรษณีย์"></textarea></div>
+    </div>
+
+    <div class="hr"></div>
+    <button class="checkout" onclick="confirmPayment()">ยืนยันการชำระเงิน</button>
+    <div id="paySuccess" class="success-box"></div>
+  </div>
+</div>
+
+<!-- ประวัติ -->
+<div id="historyModal" class="modal" aria-hidden="true">
+  <div class="modal-content" role="dialog" aria-modal="true">
+    <span class="close" onclick="closeHistory()" aria-label="ปิด">&times;</span>
+    <h2>🧾 ประวัติการซื้อ (อุปกรณ์นี้)</h2>
+    <div class="history-list" id="historyList"></div>
+    <div class="hr"></div>
+    <div style="display:flex; gap:10px; justify-content:center">
+      <button class="clear-cart" onclick="clearHistory()">ลบประวัติทั้งหมด</button>
+      <button class="btn-secondary" onclick="closeHistory()">ปิด</button>
+    </div>
+  </div>
+</div>
+
+<!-- Popup ระบุที่อยู่หลังจ่าย + ETA ภายใน 30 นาที -->
+<div id="deliveryModal" class="modal" aria-hidden="true">
+  <div class="modal-content" role="dialog" aria-modal="true">
+    <span class="close" onclick="closeDelivery()" aria-label="ปิด">&times;</span>
+    <h2>🚚 ยืนยันที่อยู่จัดส่ง</h2>
+    <p class="eta"><b id="etaMsg">คนส่งกำลังเตรียมของ...</b></p>
+    <div class="row"><label>ชื่อ-นามสกุลผู้รับ</label><input type="text" id="shipName" placeholder="ชื่อ-นามสกุล" /></div>
+    <div class="row"><label>เบอร์โทร</label><input type="tel" id="shipPhone" placeholder="0XXXXXXXXX" /></div>
+    <div class="row"><label>ที่อยู่จัดส่ง</label><textarea id="shipAddr" class="addr-area" placeholder="บ้านเลขที่ / ถนน / ตำบล / อำเภอ / จังหวัด / รหัสไปรษณีย์"></textarea></div>
+    <div class="hr"></div>
+    <button class="checkout" onclick="saveDelivery()">บันทึกที่อยู่ & เสร็จสิ้น</button>
+  </div>
+</div>
+
+ <div class="button-container-bottom">
+    <a href="Home999.html" class="btn-bottom">
+      <img src="60.png" alt="Home">
+    </a>
+    <a href="shop.html" class="btn-bottom">
+      <img src="1000.png" alt="เมนู">
+    </a>
+    <a href="Home.html" class="btn-bottom">
+      <img src="61.png" alt="AI">
+    </a>
+    <a href="Home555.html" class="btn-bottom">
+      <img src="62.png" alt="วิธีปลูก">
+    </a>
+    <a href="menu.html" class="btn-bottom">
+      <img src="1000.png" alt="เมนู">
+    </a>
+  </div>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script>
+  /* ===== Config ===== */
+  const PROMPTPAY_ID = '0812345678'; // เปลี่ยนเป็นเบอร์ขึ้นต้น 0 หรือเลขบัตร 13 หลัก
+  const THB = new Intl.NumberFormat('th-TH', { style:'currency', currency:'THB' });
+  const DT  = new Intl.DateTimeFormat('th-TH', { dateStyle:'medium', timeStyle:'short' });
+  const $   = s => document.querySelector(s);
+
+  const CART_KEY='fertilizer_cart', HIST_KEY='fertilizer_order_history', ADDR_KEY='fertilizer_last_address';
+
+  const PRODUCTS = [
+    { id:'organic',  name:'ปุ๋ยอินทรีย์', img:'https://cdn-icons-png.flaticon.com/512/3523/3523063.png', pricePerKg:120, pricePerBag:95,  bagUnit:'ถุง 1 กก.' },
+    { id:'chemical', name:'ปุ๋ยเคมี',   img:'https://cdn-icons-png.flaticon.com/512/3523/3523063.png', pricePerKg:150, pricePerBag:135, bagUnit:'ถุง 1 กก.' },
+    { id:'mix',      name:'ปุ๋ยผสม',   img:'https://cdn-icons-png.flaticon.com/512/3523/3523063.png', pricePerKg:180, pricePerBag:160, bagUnit:'ถุง 1 กก.' }
+  ];
+
+  function saveCartLS(){ localStorage.setItem(CART_KEY, JSON.stringify(cart)); }
+  function loadCartLS(){ try{ return JSON.parse(localStorage.getItem(CART_KEY)||'[]'); }catch{ return []; } }
+  function saveHistoryLS(arr){ localStorage.setItem(HIST_KEY, JSON.stringify(arr)); }
+  function loadHistoryLS(){ try{ return JSON.parse(localStorage.getItem(HIST_KEY)||'[]'); }catch{ return []; } }
+  function saveLastAddr(obj){ localStorage.setItem(ADDR_KEY, JSON.stringify(obj)); }
+  function loadLastAddr(){ try{ return JSON.parse(localStorage.getItem(ADDR_KEY)||'{}'); }catch{ return {}; } }
+
+  let cart = loadCartLS();
+  let currentProduct = null;
+  let toastTimer = null;
+  let lastOrderIdForDelivery = null; // ใช้เชื่อมออเดอร์ล่าสุดกับที่อยู่
+
+  /* ===== Render ===== */
+  function renderProducts(){
+    $('#productList').innerHTML = PRODUCTS.map(p=>`
+      <div class="product">
+        <img src="${p.img}" alt="">
+        <h3>${p.name}</h3>
+        <div class="price">฿${p.pricePerKg.toLocaleString()} / กก.</div>
+        <div class="muted">หรือแบบถุง: ฿${p.pricePerBag.toLocaleString()} (${p.bagUnit})</div>
+        <div style="height:10px"></div>
+        <button onclick="openPopup('${p.id}')">เพิ่มลงตะกร้า</button>
+      </div>`).join('');
+  }
+
+  /* ===== Popup สั่งซื้อ ===== */
+  function openPopup(id){
+    const p = PRODUCTS.find(x=>x.id===id); if(!p) return;
+    currentProduct = p;
+    $('#typeSelect').value='kg'; $('#quantityInput').value='';
+    $('#unitHint').textContent='หน่วยเป็น กก.'; $('#popupProductName').textContent=p.name;
+    $('#popupTotal').textContent=THB.format(0);
+    $('#popup').style.display='block'; $('#popup').setAttribute('aria-hidden','false'); $('#quantityInput').focus();
+  }
+  function closePopup(){ $('#popup').style.display='none'; $('#popup').setAttribute('aria-hidden','true'); currentProduct=null; }
+  $('#typeSelect').addEventListener('change', ()=>{ $('#unitHint').textContent=$('#typeSelect').value==='kg'?'หน่วยเป็น กก.':'หน่วยเป็น ถุง'; updatePopupTotal(); });
+  $('#quantityInput').addEventListener('input', updatePopupTotal);
+  function updatePopupTotal(){
+    if(!currentProduct) return;
+    const type=$('#typeSelect').value, qty=parseFloat($('#quantityInput').value);
+    const unit= type==='kg'? currentProduct.pricePerKg : currentProduct.pricePerBag;
+    $('#popupTotal').textContent = THB.format((!isNaN(qty)&&qty>0)? unit*qty:0);
+  }
+
+  function showCartToast(t='เพิ่มแล้ว'){ const el=$('#cartToast'); el.textContent=t; el.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>el.classList.remove('show'),1500); }
+  function confirmAdd(){
+    if(!currentProduct) return;
+    const type=$('#typeSelect').value, qty=parseFloat($('#quantityInput').value);
+    if(isNaN(qty)||qty<=0){ alert('กรุณากรอกจำนวนให้ถูกต้อง'); return; }
+    const unit = type==='kg'? currentProduct.pricePerKg : currentProduct.pricePerBag;
+    const i = cart.findIndex(x=>x.id===currentProduct.id && x.type===type);
+    if(i>=0) cart[i].qty = parseFloat((cart[i].qty+qty).toFixed(2)); else cart.push({id:currentProduct.id,name:currentProduct.name,type,qty,unitPrice:unit});
+    saveCartLS(); closePopup(); updateCart(); showCartToast(`เพิ่มแล้ว (${cart.length} รายการ)`);
+  }
+
+  function openCart(){ $('#cartModal').style.display='block'; $('#cartModal').setAttribute('aria-hidden','false'); updateCart(); }
+  function closeCart(){ $('#cartModal').style.display='none'; $('#cartModal').setAttribute('aria-hidden','true'); }
+  function clearCart(){ if(!cart.length)return; if(confirm('ล้างตะกร้าทั้งหมดหรือไม่?')){ cart=[]; saveCartLS(); updateCart(); } }
+  function removeItem(i){ cart.splice(i,1); saveCartLS(); updateCart(); }
+  function setQty(i,v){ const q=parseFloat(v); if(isNaN(q)||q<=0)return; cart[i].qty=parseFloat(q.toFixed(2)); saveCartLS(); updateCart(); }
+  function stepQty(i,d){ const v=Math.max(0.1, cart[i].qty+d); cart[i].qty=parseFloat(v.toFixed(2)); saveCartLS(); updateCart(); }
+  function itemLabel(it){ return it.type==='kg'? `${it.qty} กก.` : `${it.qty} ถุง`; }
+  function updateCart(){
+    const items=$('#cartItems'), totalEl=$('#total'), badge=$('#cartBadge');
+    if(!cart.length){ items.innerHTML='<p class="muted">ยังไม่มีสินค้าในตะกร้า</p>'; totalEl.textContent=THB.format(0); badge.textContent=0; return; }
+    let total=0;
+    items.innerHTML=cart.map((it,i)=>{ const sub=it.unitPrice*it.qty; total+=sub; const unitTxt=it.type==='kg'?'บาท/กก.':'บาท/ถุง';
+      return `<div class="cart-item">
+        <div><div class="cart-name">${it.name} <span class="muted">(${itemLabel(it)})</span></div><div class="muted">฿${it.unitPrice.toLocaleString()} / ${unitTxt}</div></div>
+        <div class="ctrl"><button onclick="stepQty(${i},-0.1)">−</button><input type="number" step="0.1" min="0.1" value="${it.qty}" onchange="setQty(${i},this.value)"><button onclick="stepQty(${i},+0.1)">+</button></div>
+        <div style="text-align:right"><div><strong>${THB.format(sub)}</strong></div><button class="remove-btn" onclick="removeItem(${i})">ลบ</button></div>
+      </div>`; }).join('');
+    totalEl.textContent=THB.format(total); badge.textContent=cart.length;
+  }
+
+  /* ===== EMV PromptPay (Offline) ===== */
+  function tlv(id,val){ const len=val.length.toString().padStart(2,'0'); return id+len+val; }
+  function crc16ccitt(str){ let crc=0xFFFF; for(let i=0;i<str.length;i++){ crc^=(str.charCodeAt(i)<<8); for(let j=0;j<8;j++){ crc=(crc&0x8000)?((crc<<1)^0x1021):(crc<<1); crc&=0xFFFF; } } return crc.toString(16).toUpperCase().padStart(4,'0'); }
+  function normalizePP(id){ const d=(id||'').replace(/\D/g,''); if(/^0\d{9}$/.test(d)) return '66'+d.slice(1); return d; }
+  function buildPromptPayEMV(opt={}){
+    const pp=normalizePP(opt.id||''); const isMobile=/^66\d{9}$/.test(pp), isNat=/^\d{13}$/.test(pp);
+    if(!isMobile && !isNat) throw new Error('PromptPay ID ไม่ถูกต้อง');
+    const payloadFormat='01', poi=opt.amount?'12':'11', gui='A000000677010111';
+    const acct = tlv('00',gui) + (isMobile? tlv('01',pp) : tlv('02',pp));
+    let p=''; p+=tlv('00',payloadFormat); p+=tlv('01',poi); p+=tlv('26',acct); p+=tlv('52','0000'); p+=tlv('53','764');
+    if(opt.amount){ p+=tlv('54',(+opt.amount).toFixed(2)); }
+    p+=tlv('58','TH'); p+=tlv('59',(opt.name||'FERTILIZER SHOP').slice(0,25)||'NA'); p+=tlv('60',(opt.city||'BANGKOK').slice(0,15)||'BANGKOK');
+    if(opt.billNumber){ p+=tlv('62', tlv('01', String(opt.billNumber).slice(0,25))); }
+    const toCRC=p+'6304'; const crc=crc16ccitt(toCRC); return p+tlv('63',crc);
+  }
+  function renderQR(){
+    const canvas=$('#qrCanvas'); if(!canvas || !window.QRCode) return;
+    const payload=buildPromptPayEMV({ id:PROMPTPAY_ID, amount:getCartTotal(), name:'FERTILIZER', city:'BANGKOK', billNumber: $('#orderId')?.textContent||'' });
+    QRCode.toCanvas(canvas, payload, {width:240, margin:1}, err=>{ if(err) console.error(err); });
+  }
+
+  /* ===== Payment ===== */
+  function getCartTotal(){ return cart.reduce((s,i)=>s+i.unitPrice*i.qty,0); }
+  function genOrderId(){ const n=new Date().toISOString().replace(/\D/g,'').slice(0,14), r=Math.floor(Math.random()*1000).toString().padStart(3,'0'); return `ORD-${n}-${r}`; }
+  function openPayment(){
+    if(!cart.length){ alert('ยังไม่มีสินค้าในตะกร้า'); return; }
+    $('#orderId').textContent=genOrderId(); $('#payTotal').textContent=THB.format(getCartTotal()); $('#ppIdText').textContent=PROMPTPAY_ID;
+    selectPayPane('qr'); renderQR(); $('#paymentModal').style.display='block'; $('#paymentModal').setAttribute('aria-hidden','false');
+  }
+  function closePayment(){ $('#paymentModal').style.display='none'; $('#paymentModal').setAttribute('aria-hidden','true'); }
+  document.getElementById('payMethods').addEventListener('change',e=>{ if(e.target.name==='payMethod'){ selectPayPane(e.target.value); if(e.target.value==='qr') renderQR(); } });
+  function selectPayPane(v){ document.querySelectorAll('.radio-card').forEach(el=>{ const c=el.querySelector('input')?.value===v; el.classList.toggle('active',c); el.querySelector('input').checked=c; }); ['QR','Slip','COD'].forEach(k=>{ const p=document.getElementById('pane'+k); p.classList.toggle('active', k.toLowerCase()===v); }); }
+  function copyText(t){ navigator.clipboard.writeText(t).then(()=>alert('คัดลอกแล้ว')); }
+  function copyAmount(){ navigator.clipboard.writeText(getCartTotal().toFixed(2)).then(()=>alert('คัดลอกยอดแล้ว')); }
+  document.getElementById('slipInput').addEventListener('change', e=>{ const f=e.target.files?.[0], img=$('#slipThumb'); if(f){ img.src=URL.createObjectURL(f); img.style.display='block'; } else { img.src=''; img.style.display='none'; } });
+
+  function confirmPayment(){
+    const method=document.querySelector('input[name="payMethod"]:checked')?.value;
+    const total=getCartTotal(), orderId=$('#orderId').textContent||genOrderId();
+    if(method==='qr'){ if(!$('#qrConfirmed').checked){ alert('กรุณาติ๊ก “ฉันโอนแล้ว”'); return; } finishOrder({method:'PromptPay QR', total, orderId}); }
+    else if(method==='slip'){ const f=$('#slipInput').files?.[0]; if(!f){ alert('กรุณาอัปโหลดสลิปโอน'); return; } finishOrder({method:'โอน/สลิป', total, orderId, slipName:f.name}); }
+    else if(method==='cod'){ const name=$('#codName').value.trim(), phone=$('#codPhone').value.trim(), addr=$('#codAddr').value.trim(); if(!name||!phone||!addr){ alert('กรุณากรอก ชื่อ-โทรศัพท์-ที่อยู่ ให้ครบ'); return; } finishOrder({method:'เก็บเงินปลายทาง (COD)', total, orderId, name, phone, addr}); }
+  }
+
+  function snapshotItems(){ return cart.map(i=>({name:i.name,type:i.type,qty:i.qty,unitPrice:i.unitPrice,sub:i.qty*i.unitPrice})); }
+
+  function finishOrder(info){
+    // กล่องสำเร็จเล็กๆ
+    const box=$('#paySuccess'); let lines=[`วิธีชำระ: ${info.method}`,`หมายเลขสั่งซื้อ: ${info.orderId}`,`ยอดสุทธิ: ${THB.format(info.total)}`];
+    if(info.slipName) lines.push(`ไฟล์สลิป: ${info.slipName}`); box.innerHTML=`<strong>สำเร็จ!</strong><br>${lines.join('<br>')}`; box.style.display='block';
+
+    // บันทึกประวัติ (ยังไม่มีที่อยู่ — จะเพิ่มหลังเก็บที่อยู่)
+    const history=loadHistoryLS(); const orderDoc={ orderId:info.orderId, total:info.total, method:info.method, timestamp:new Date().toISOString(), items:snapshotItems() };
+    if(info.name){ orderDoc.name=info.name; orderDoc.phone=info.phone; orderDoc.addr=info.addr; }
+    history.unshift(orderDoc); if(history.length>200) history.length=200; saveHistoryLS(history);
+
+    // ล้างตะกร้า
+    cart=[]; saveCartLS(); updateCart();
+
+    // เปิด popup ระบุที่อยู่ + ETA
+    lastOrderIdForDelivery = info.orderId;
+    openDelivery(info);
+  }
+
+  /* ===== Popup ระบุที่อยู่ + ETA (≤ 30 นาที) ===== */
+  function randomMinutes(max=30){ return Math.floor(Math.random()*max)+1; } // 1..30
+  function openDelivery(info){
+    // ปิดหน้าชำระก่อน
+    closePayment();
+
+    // เติม ETA
+    const mins = randomMinutes(30);
+    const etaDate = new Date(Date.now() + mins*60*1000);
+    $('#etaMsg').innerHTML = `พนักงานกำลังจัดส่งสินค้า ⏱️ คาดว่าจะถึงภายใน <b>${mins} นาที</b> (ประมาณ <b>${DT.format(etaDate)}</b>)`;
+
+    // เติมที่อยู่ล่าสุด
+    const last = loadLastAddr();
+    // ถ้าจ่ายแบบ COD แล้วกรอกไว้ ใช้เป็นค่าเริ่มต้น
+    const seedName  = info?.name  || last.name  || '';
+    const seedPhone = info?.phone || last.phone || '';
+    const seedAddr  = info?.addr  || last.addr  || '';
+    $('#shipName').value = seedName;
+    $('#shipPhone').value = seedPhone;
+    $('#shipAddr').value = seedAddr;
+
+    // แสดง popup
+    $('#deliveryModal').style.display='block'; $('#deliveryModal').setAttribute('aria-hidden','false');
+  }
+  function closeDelivery(){ $('#deliveryModal').style.display='none'; $('#deliveryModal').setAttribute('aria-hidden','true'); $('#paySuccess').style.display='none'; alert('ขอบคุณสำหรับการสั่งซื้อ!'); }
+
+  function saveDelivery(){
+    const name=$('#shipName').value.trim(), phone=$('#shipPhone').value.trim(), addr=$('#shipAddr').value.trim();
+    if(!name||!phone||!addr){ alert('กรุณากรอก ชื่อ-โทรศัพท์-ที่อยู่ ให้ครบ'); return; }
+    // จำที่อยู่ครั้งถัดไป
+    saveLastAddr({name,phone,addr});
+
+    // อัปเดตลงประวัติของออเดอร์ล่าสุด
+    const hist=loadHistoryLS();
+    const idx=hist.findIndex(h=>h.orderId===lastOrderIdForDelivery);
+    if(idx>-1){ hist[idx].name=name; hist[idx].phone=phone; hist[idx].addr=addr; saveHistoryLS(hist); }
+
+    closeDelivery();
+  }
+
+  /* ===== ประวัติ ===== */
+  function openHistory(){
+    const list=$('#historyList'); const hist=loadHistoryLS();
+    if(!hist.length){ list.innerHTML='<p class="muted">ยังไม่มีประวัติการซื้อบนอุปกรณ์นี้</p>'; }
+    else{
+      list.innerHTML = hist.map(h=>{
+        const when=DT.format(new Date(h.timestamp));
+        const items=h.items.map(it=>`<li>${it.name} (${it.type==='kg'?it.qty+' กก.':it.qty+' ถุง'}) — ${THB.format(it.sub)}</li>`).join('');
+        const addr = (h.name||h.phone||h.addr) ? `<div class="muted" style="margin-top:6px">📦 ผู้รับ: ${h.name||'-'} | ☎️ ${h.phone||'-'}<br>🏠 ${h.addr||'-'}</div>` : '';
+        return `<div class="order-card">
+          <div class="order-head"><div><strong>${h.orderId}</strong><br><span class="muted">${when}</span></div>
+          <div style="text-align:right"><div><b>${THB.format(h.total)}</b></div><div class="muted">${h.method}</div></div></div>
+          <ul class="order-items">${items}</ul>${addr}
+        </div>`;
+      }).join('');
+    }
+    $('#historyModal').style.display='block'; $('#historyModal').setAttribute('aria-hidden','false');
+  }
+  function closeHistory(){ $('#historyModal').style.display='none'; $('#historyModal').setAttribute('aria-hidden','true'); }
+  function clearHistory(){ if(confirm('ลบประวัติการซื้อทั้งหมดบนอุปกรณ์นี้หรือไม่?')){ saveHistoryLS([]); openHistory(); } }
+
+  /* ===== ฉากหลัง/ESC ===== */
+  window.addEventListener('click',e=>{
+    if(e.target===$('#cartModal')) closeCart();
+    if(e.target===$('#popup')) closePopup();
+    if(e.target===$('#paymentModal')) closePayment();
+    if(e.target===$('#historyModal')) closeHistory();
+    if(e.target===$('#deliveryModal')) closeDelivery();
+  });
+  window.addEventListener('keydown',e=>{
+    if(e.key==='Escape'){
+      if($('#cartModal').style.display==='block') closeCart();
+      if($('#popup').style.display==='block') closePopup();
+      if($('#paymentModal').style.display==='block') closePayment();
+      if($('#historyModal').style.display==='block') closeHistory();
+      if($('#deliveryModal').style.display==='block') closeDelivery();
+    }
+  });
+
+  /* ===== Init ===== */
+  (function init(){ renderProducts(); updateCart(); })();
+</script>
+</body>
+</html>

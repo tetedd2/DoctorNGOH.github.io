@@ -1,174 +1,52 @@
 <!DOCTYPE html>
 <html lang="th">
-
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ระบบ AI ของฉัน</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>เกษตร Now + AI</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root{--bg:#f5f7fb;--card:#fff;--text:#1f2937;--muted:#6b7280;--brand:#10b981;--brand2:#3b82f6;--radius:18px;--shadow:0 8px 24px rgba(0,0,0,.06)}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:ui-rounded,"Segoe UI",system-ui,-apple-system,"Kanit",sans-serif}
+    header.appbar{position:sticky;top:0;background:rgba(245,247,251,.8);backdrop-filter:blur(8px);border-bottom:1px solid #eee;z-index:20}
+    .wrap{max-width:1100px;margin:0 auto;padding:14px 20px}
+    .hello{display:inline-flex;align-items:center;gap:10px;background:var(--card);padding:10px 14px;border-radius:999px;box-shadow:var(--shadow);border:1px solid #eee;font-weight:600}
+    .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;background:#f1f5f9;border-radius:999px;font-size:12px}
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:22px;max-width:1100px;margin:0 auto;padding:18px 20px 90px}
+    .card{grid-column:span 4;background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;border:1px solid #eee}
+    .big{grid-column:span 8}
+    @media(max-width:980px){.card{grid-column:span 6}.big{grid-column:span 12}}
+    @media(max-width:680px){.card{grid-column:span 12}}
+    .title{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;margin-bottom:8px}
+    .badge{margin-left:auto;font-size:12px;color:#fff;background:#16a34a;padding:2px 8px;border-radius:999px}
+    .rows{display:flex;flex-direction:column;gap:6px}
+    .muted{color:var(--muted)}
+    .divider{height:1px;background:#eee;margin:12px 0}
+    .stack{display:flex;gap:10px;flex-wrap:wrap}
+    input,button,select,textarea{font:inherit;border-radius:12px;border:1px solid #e5e7eb;padding:10px 12px;background:#fff}
+    button{background:var(--brand2);color:#fff;border:none;font-weight:700;cursor:pointer}
+    button.ghost{background:#eef2ff;color:#374151}
+    .btn-link{background:#eef2ff;color:#1f2937;border:1px solid #e5e7eb;border-radius:999px;padding:6px 10px;font-weight:600;cursor:pointer}
+    .list{display:flex;flex-direction:column;gap:10px}
 
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #e9f8ee;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 50px;
-      padding: 80px 50px 0;
-    }
+    .clamp{display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden}
+    .clamp-2{-webkit-line-clamp:2}
+    .clamp-6{-webkit-line-clamp:6}
 
-    /* Enhanced Chat Button with Pulse Animation */
-    .chat-btn {
-      position: fixed;
-      bottom: 80px;
-      right: 20px;
-      background: linear-gradient(135deg, #18fc4a 0%, #98eb87 100%);
-      color: white;
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-      font-size: 24px;
-      z-index: 1001;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      animation: pulse 2s infinite;
-      border: none;
-      outline: none;
-    }
+    .table{width:100%;border-collapse:separate;border-spacing:0 8px}
+    .tr{display:grid;grid-template-columns:1.2fr .8fr .8fr;gap:10px;align-items:center;background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:10px 12px}
+    .chip{font-size:12px;background:#e2e8f0;border-radius:999px;padding:2px 8px}
 
-    .chat-btn:hover { transform: translateY(-2px) scale(1.05); box-shadow: 0 12px 30px rgba(102, 126, 234, 0.6); animation: none; }
-    .chat-btn:active { transform: translateY(0) scale(0.98); transition: all 0.1s; }
-    .chat-btn.clicked { animation: clickPulse 0.3s ease-out; }
-
-    @keyframes pulse {
-      0% { box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4); }
-      50% { box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4), 0 0 0 10px rgba(102, 126, 234, 0.1); }
-      100% { box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4), 0 0 0 20px rgba(102, 126, 234, 0); }
-    }
-    @keyframes clickPulse { 0%{transform:scale(1)} 50%{transform:scale(.9)} 100%{transform:scale(1.05)} }
-
-    /* Enhanced Chat Box with Slide Animation */
-    .chat-box {
-      position: fixed;
-      bottom: 100px;
-      right: 20px;
-      width: 320px;
-      height: 450px;
-      background-color: white;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-      border-radius: 20px;
-      display: none;
-      flex-direction: column;
-      z-index: 1000;
-      overflow: hidden;
-      transform: translateY(20px) scale(0.95);
-      opacity: 0;
-      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    }
-    .chat-box.show { display: flex; transform: translateY(0) scale(1); opacity: 1; }
-    .chat-box.hide { transform: translateY(20px) scale(0.95); opacity: 0; }
-
-    /* Enhanced Header */
-    .chat-header {
-      background: linear-gradient(135deg, #18fc4a 0%, #98eb87 100%);
-      color: rgb(53, 52, 52);
-      padding: 15px;
-      text-align: center;
-      cursor: move;
-      font-weight: 600;
-      position: relative;
-      overflow: hidden;
-    }
-    .chat-header::before {
-      content: '';
-      position: absolute;
-      top: 0; left: -100%;
-      width: 100%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-      transition: left 0.6s;
-    }
-    .chat-header:hover::before { left: 100%; }
-
-    /* Enhanced Chat Body */
-    .chat-body {
-      flex: 1;
-      padding: 15px;
-      overflow-y: auto;
-      background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
-      scroll-behavior: smooth;
-    }
-    .chat-body::-webkit-scrollbar { width: 6px; }
-    .chat-body::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 3px; }
-    .chat-body::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #18fc4a, #98eb87); border-radius: 3px; }
-
-    /* Enhanced Message Styling */
-    .message { margin-bottom: 12px; padding: 8px 12px; border-radius: 15px; max-width: 85%; animation: fadeInUp 0.4s ease-out; word-wrap: break-word; }
-    .message.user { background: linear-gradient(135deg, #18fc4a, #98eb87); color: white; margin-left: auto; border-bottom-right-radius: 5px; }
-    .message.ai { background: #e9ecef; color: #333; border-bottom-left-radius: 5px; }
-
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px);} to { opacity: 1; transform: translateY(0);} }
-
-    /* Enhanced Chat Footer */
-    .chat-footer { display: flex; padding: 15px; background-color: #ffffff; gap: 10px; align-items: flex-end; }
-    .chat-footer textarea { flex: 1; padding: 12px; border-radius: 20px; border: 2px solid #e9ecef; resize: none; transition: all 0.3s ease; font-family: inherit; max-height: 100px; }
-    .chat-footer textarea:focus { outline: none; border-color: #2de41d; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
-    .chat-footer button { background: linear-gradient(135deg, #4be71b, #79db89); color: white; border: none; padding: 12px 16px; border-radius: 20px; cursor: pointer; transition: all 0.3s ease; font-weight: 600; }
-    .chat-footer button:hover { transform: translateY(-1px); box-shadow: 0 5px 15px rgba(56, 228, 84, 0.774); }
-    .chat-footer button:active { transform: translateY(0); }
-
-    /* Typing indicator */
-    .typing-indicator {
-      display: none;
-      padding: 8px 12px;
-      margin-bottom: 12px;
-      background: #e9ecef;
-      border-radius: 15px;
-      border-bottom-left-radius: 5px;
-      max-width: 85%;
-    }
-    .typing-dots { display: flex; gap: 4px; }
-    .typing-dots span { height: 8px; width: 8px; background: #2ec933; border-radius: 50%; animation: typing 1.4s infinite ease-in-out both; }
-    .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
-    .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
-    @keyframes typing { 0%,80%,100% { transform: scale(0.8); opacity: 0.5; } 40% { transform: scale(1); opacity: 1; } }
-
-    /* Bottom Navigation */
-    .button-container-bottom {
-      position: fixed; bottom: 0; left: 0; width: 100%;
-      display: flex; justify-content: space-around; gap: 10px;
-      background-color: white; padding: 8px 0; box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
-      z-index: 1000;
-    }
-    .btn-bottom {
-      background-color: transparent; border: none; cursor: pointer; flex: 1; height: 60px;
-      display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 0;
-      text-decoration: none; transition: all 0.3s ease; box-shadow: none;
-    }
-    .btn-bottom img { width: 80px; height: auto; object-fit: contain; display: block; }
-    .btn-bottom:hover { transform: scale(1.05); }
-    .btn-bottom:active { transform: scale(0.98); }
-
-    /* Logo (if any) */
-    .logo-container img { width: 100%; height: 100%; object-fit: contain; }
-
-    .box-container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; width: 100%; max-width: 340px; }
-    .box { background-color: white; padding: 30px; border-radius: 30px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); text-align: center; width: 100%; max-width: 340px; }
-
-    #weatherBox { background-color: #e0f7ff; border-left: 4px solid #1100ff; }
-    #weatherInfo { margin-top: 10px; font-size: 16px; color: #555; }
-
-    .greeting-box {
-      position: fixed; top: 20px; left: 20px;
-      background-color: #fffbe8; border-left: 4px solid #f1c40f; padding: 10px 20px;
-      border-radius: 12px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      z-index: 1000; font-size: 16px; font-weight: bold; color: #333; pointer-events: none;
-    }
+    .news-wrap{ max-height:520px; overflow:auto; padding-right:6px }
+    .news-grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px }
+    @media (max-width:980px){ .news-grid{ grid-template-columns:1fr } }
+    .news-item{ background:#f8fafc; border:1px solid #e5e7eb; border-radius:12px; padding:10px 12px; display:flex; gap:8px; align-items:flex-start }
+    .news-title{ font-weight:700 }
+    .news-desc{ color:#6b7280; font-size:13px }
+    .news-controls{ display:flex; gap:8px; justify-content:flex-end; margin-top:10px }
+    .news-toolbar{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:10px }
+    .news-summary{ background:#f8fafc; border:1px solid #e5e7eb; border-radius:12px; padding:10px 12px }
+    .hl{ background:#fde68a }
 
     .button-container-bottom {
     position: fixed;
@@ -284,55 +162,92 @@
             background-color: #ff9900;
             color: white;
         }
+
+    .chat-fab{position:fixed;right:16px;bottom:84px;width:56px;height:56px;border-radius:50%;background:#22c55e;display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;box-shadow:0 10px 24px rgba(34,197,94,.35);cursor:pointer;z-index:30}
+    .chat-box{position:fixed;right:16px;bottom:150px;width:320px;height:450px;background:#fff;border:1px solid #eee;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.15);display:none;flex-direction:column;overflow:hidden;z-index:35}
+    .chat-header{background:#eafff2;color:#065f46;padding:12px 14px;font-weight:700}
+    .chat-body{flex:1;padding:12px;overflow:auto;background:linear-gradient(180deg,#f8fafc,#fff)}
+    .message{margin:8px 0;padding:8px 12px;border-radius:12px;max-width:85%}
+    .message.user{margin-left:auto;background:#22c55e;color:#fff;border-bottom-right-radius:6px}
+    .message.ai{background:#eef2ff;color:#111827;border-bottom-left-radius:6px}
+    .chat-footer{display:flex;gap:8px;padding:10px;background:#fff;border-top:1px solid #eee}
+    .chat-footer textarea{flex:1;border:1px solid #e5e7eb;border-radius:12px;padding:10px;resize:none}
   </style>
 </head>
-
 <body>
-  <!-- ป้ายชื่อ -->
-  <div class="greeting-box" id="greetingBox">
-    <p>🧑‍🌾 <span id="greetingText">สวัสดี</span></p>
-  </div>
-
-  <!-- กล่องข้อมูล -->
-  <div class="box-container">
-    <div class="box" id="priceBox">
-      <h2>💰 ราคาผลไม้</h2>
-      <p>มังคุด 10 บาท</p>
-      <p>เงาะโรงเรียน 10 บาท</p>
-      <p>เงาะสีทอง 10 บาท</p>
-      <p>ทุเรียน 10 บาท</p>
+  <header class="appbar">
+    <div class="wrap">
+      <div class="hello">
+        👋🏻 สวัสดี, เกษตรกร!
+        <span class="pill"><span id="clock">--:--</span> • วันนี้ <span id="today"></span></span>
+        <button id="compactBtn" class="btn-link" style="margin-left:12px">โหมดกะทัดรัด</button>
+      </div>
     </div>
+  </header>
 
-    <div class="box" id="newsBox">
-      <h2>📰 ข่าวสารเกษตร</h2>
-      <div id="newsContent">กำลังโหลดข่าว...</div>
-    </div>
+  <main class="grid" id="appContent">
+    <section class="card" id="priceCard">
+      <div class="title">💰 ราคาผลไม้ <span class="badge" id="priceBadge">อัปเดตอัตโนมัติ</span></div>
+      <div class="rows">
+        <div class="muted">ระบบจะพยายามประเมินจากข่าว หากไม่เจอให้กรอกเองได้</div>
+        <div id="priceTable" class="list"></div>
+      </div>
+      <div class="divider"></div>
+      <div class="stack">
+        <input id="pName" placeholder="เพิ่มรายการ เช่น ลางสาด" />
+        <input id="pPrice" placeholder="ราคา/กก." />
+        <button onclick="addPrice()">เพิ่ม</button>
+      </div>
+    </section>
 
-    <div id="weatherBox" class="box">
-      <h2>🌤️ สภาพอากาศ</h2>
-      <div id="weatherInfo"><p>กำลังโหลด...</p></div>
-    </div>
-  </div>
+    <section class="card">
+      <div class="title">📰 ข่าวสารเกษตร (ทุเรียน • มังคุด • เงาะ)</div>
+      <div class="news-toolbar">
+        <input id="newsSearch" placeholder="ค้นหาในข่าว (เช่น ราคา, ผลผลิต, ทุเรียน)" style="min-width:280px" />
+        <span class="muted" id="newsCount">—</span>
+      </div>
+      <div id="newsSummary" class="news-summary muted">สรุปข่าวจะปรากฏที่นี่หลังดึงข่าว</div>
+      <div id="newsScroll" class="news-wrap">
+        <div id="newsList" class="news-grid"><div class="muted">กำลังดึงข่าว…</div></div>
+      </div>
+      <div id="newsControls" class="news-controls"></div>
+    </section>
 
-  <!-- Enhanced Chat Button -->
-  <div class="chat-btn" onclick="toggleChat()" id="chatBtn">💬</div>
+    <section class="card big">
+      <div class="title">🌤️ สภาพอากาศ <span class="badge" id="placeBadge">ระบุตำแหน่ง…</span></div>
+      <div class="rows">
+        <div>🌡️ อุณหภูมิ: <b id="temp">--</b>°C</div>
+        <div>☁️ สภาพอากาศ: <span id="desc" class="muted">--</span></div>
+        <div>💧 ความชื้น: <b id="rh">--</b>%</div>
+        <div>☔ ฝน 3 ชม.: <b id="rain">--</b> มม.</div>
+      </div>
+      <div class="divider"></div>
+      <div class="stack" id="tokenRow" style="display:none">
+        <input id="hfKey" type="password" placeholder="HF Token (hf_…)" style="min-width:280px" autocomplete="off" />
+        <button onclick="aggregateNow()">สรุปรวม (ตำแหน่งปัจจุบัน)</button>
+        <button class="ghost" onclick="saveKey()">บันทึก Token (ซ่อน)</button>
+      </div>
+    </section>
 
-  <!-- Enhanced Chat Box -->
+    <section class="card big">
+      <div class="title">🧠 สรุปโดย AI (Ling-1T) <span class="badge">อ่านเพิ่มเติมได้</span></div>
+      <div id="aiBox" class="list"><div class="muted">กำลังเตรียมข้อมูล…</div></div>
+    </section>
+  </main>
+
+  <div class="chat-fab" id="chatFab">💬</div>
   <div class="chat-box" id="chatBox">
     <div class="chat-header">ผู้ช่วยส่วนตัว</div>
     <div class="chat-body" id="chatBody">
       <div class="message ai">ฉันคือผู้ช่วยส่วนตัวของคุณ สอบถามมาได้เลย 😊</div>
     </div>
-    <div class="typing-indicator" id="typingIndicator">
-      <div class="typing-dots"><span></span><span></span><span></span></div>
-    </div>
     <div class="chat-footer">
-      <textarea id="chatInput" placeholder="พิมพ์ข้อความของคุณ..." rows="1" onkeypress="handleKeyPress(event)"></textarea>
+      <textarea id="chatInput" placeholder="พิมพ์ข้อความของคุณ..." rows="1" onkeypress="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage();}"></textarea>
       <button onclick="sendMessage()">ส่ง</button>
     </div>
   </div>
 
-  <!-- ปุ่มล่าง -->
+
   <div class="button-container-bottom">
     <a href="Home999.html" class="btn-bottom">
       <img src="60.png" alt="Home">
@@ -350,264 +265,266 @@
       <img src="1000.png" alt="เมนู">
     </a>
   </div>
+<script>
+/* ===== basic UI ===== */
+const $=s=>document.querySelector(s);
+const pad=n=>String(n).padStart(2,'0');
+function setClock(){const d=new Date();$('#clock').textContent=`${pad(d.getHours())}:${pad(d.getMinutes())}`;$('#today').textContent=d.toLocaleDateString('th-TH',{weekday:'long',day:'2-digit',month:'short',year:'numeric'})}
+setClock(); setInterval(setClock,30_000);
 
-  <!-- JavaScript -->
-  <script>
-    // ตั้งคำทักทาย
-    (function(){
-      const h = new Date().getHours();
-      document.getElementById("greetingText").textContent =
-        h < 11 ? "สวัสดีตอนเช้า 🌅" :
-        h < 15 ? "สวัสดีตอนกลางวัน ☀️" :
-        h < 19 ? "สวัสดีตอนเย็น 🌇" : "สวัสดีตอนค่ำ 🌙";
-    })();
+function codeToDesc(c){const m={0:'ท้องฟ้าใส',1:'มีเมฆบางส่วน',2:'ครึ้ม',3:'เมฆมาก',45:'หมอก',51:'ฝนปรอย',61:'ฝนเบา',63:'ฝนปานกลาง',65:'ฝนหนัก',95:'พายุฝนฟ้าคะนอง'};return m[c]||'แปรปรวน'}
+function seasonTH(m){return (m>=5&&m<=10)?'ฝน':(m===3||m===4)?'ร้อน':'หนาว'}
+function setLoading(on){document.querySelectorAll('button').forEach(b=>b.disabled=!!on); if(on) $('#aiBox').innerHTML='<div>⏳ กำลังรวบรวมข้อมูล…</div>'}
 
-    // โหลดข่าวจาก ThaiPBS (ลบช่องว่างท้ายลิงก์แล้ว)
-    async function loadRSS() {
-      const rssUrl = "https://www.thaipbs.or.th/agriculture/feed";
-      const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+const USE_HF = false; // << ปิดการเรียก HF เพื่อไม่ให้คอนโซลขึ้น 401 (เปิดเป็น true ถ้าจะทดสอบ)
 
-      try {
-        const res = await fetch(apiUrl);
-        const data = await res.json();
+/* ===== compact mode ===== */
+(function(){
+  const saved=localStorage.getItem('COMPACT_MODE')==='1';
+  document.body.classList.toggle('compact',saved);
+  const btn=$('#compactBtn');
+  btn.textContent=saved?'โหมดปกติ':'โหมดกะทัดรัด';
+  btn.onclick=()=>{
+    const on=!document.body.classList.contains('compact');
+    document.body.classList.toggle('compact',on);
+    localStorage.setItem('COMPACT_MODE',on?'1':'0');
+    btn.textContent=on?'โหมดปกติ':'โหมดกะทัดรัด';
+  };
+})();
 
-        if (!data.items || data.items.length === 0) {
-          document.getElementById("newsContent").innerText = "ไม่พบข่าวในขณะนี้";
-          return;
-        }
+/* ===== token provisioning (ซ่อน UI และใช้ในระบบเอง) ===== */
+const SYS_HF_TOKEN='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';
+(function(){
+  try{
+    const cur=localStorage.getItem('HF_TOKEN');
+    if(cur!==SYS_HF_TOKEN) localStorage.setItem('HF_TOKEN',SYS_HF_TOKEN);
+    const row=$('#tokenRow'), inp=$('#hfKey');
+    if(row) row.style.display='none';
+    if(inp){inp.value='••••••••';inp.dataset.masked='1';}
+  }catch(e){}
+})();
+function readToken(){return SYS_HF_TOKEN}
+function saveKey(){}
 
-        let html = "<ul class='feed'>";
-        data.items.slice(0, 5).forEach(item => {
-          html += `
-            <li>
-              <a href="${item.link}" target="_blank" rel="noopener">${item.title}</a><br>
-              <span class="feedDate">${new Date(item.pubDate).toLocaleDateString('th-TH')}</span>
-            </li>`;
-        });
-        html += "</ul>";
-        document.getElementById("newsContent").innerHTML = html;
-      } catch (err) {
-        document.getElementById("newsContent").innerText = "เกิดข้อผิดพลาดในการโหลดข่าว";
-        console.error("โหลดข่าวล้มเหลว:", err);
-      }
-    }
+/* ===== weather ===== */
+async function getWeatherByCoords(lat,lon){
+  const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code&hourly=precipitation&forecast_days=1&timezone=auto`;
+  const r=await fetch(url); const j=await r.json();
+  const cur=j.current, h=j.hourly;
+  const nowHour=new Date().toISOString().slice(0,13);
+  const idx=h.time.findIndex(t=>t.startsWith(nowHour));
+  let sum=0; for(let i=idx;i<Math.min(idx+3,h.precipitation.length);i++){ sum+=h.precipitation[i]||0; }
+  return { temp:cur.temperature_2m, rh:cur.relative_humidity_2m, desc:codeToDesc(cur.weather_code), rain:+sum.toFixed(1) };
+}
+function renderWeather(wx,label){ $('#temp').textContent=wx.temp; $('#rh').textContent=wx.rh; $('#rain').textContent=wx.rain; $('#desc').textContent=wx.desc; $('#placeBadge').textContent=label; }
 
-    // จำลองราคาผลไม้แบบเรียลไทม์ (แก้ชื่อให้ตรงกับการเรียกใช้)
-    async function loadFruitPricesRealtime() {
-      try {
-        const fruitPrices = await new Promise(resolve => {
-          setTimeout(() => {
-            resolve({
-              "เงาะโรงเรียน": (32.5).toFixed(2) + " บาท/กก.",
-              "เงาะสีทอง": (27).toFixed(2) + " บาท/กก.",
-            });
-          }, 500);
-        });
+/* ===== province name: ใช้ ipapi เสมอ (เลี่ยง CORS/400 ของ reverse geocode) ===== */
+async function getProvinceFromIP(){
+  try{
+    const j=await (await fetch('https://ipapi.co/json/')).json();
+    return j?.region || j?.city || 'ตำแหน่งของคุณ';
+  }catch{ return 'ตำแหน่งของคุณ'; }
+}
 
-        let html = "<h2>💰 ราคาผลไม้</h2><ul>";
-        Object.keys(fruitPrices).forEach(fruit => {
-          html += `<li><strong>${fruit}:</strong> ${fruitPrices[fruit]}</li>`;
-        });
-        html += "</ul>";
+/* ===== news ===== */
+async function parseGoogleNewsRSS(rssUrl){
+  const prox=`https://r.jina.ai/http/${rssUrl.replace(/^https?:\/\//,'')}`;
+  const txt=await (await fetch(prox)).text();
+  const doc=new DOMParser().parseFromString(txt,'text/xml');
+  return [...doc.querySelectorAll('item')].slice(0,12).map(x=>({
+    title:x.querySelector('title')?.textContent||'',
+    link:x.querySelector('link')?.textContent||'#',
+    pubDate:x.querySelector('pubDate')?.textContent||new Date().toUTCString(),
+    desc:x.querySelector('description')?.textContent||''
+  }));
+}
+async function fetchNewsTop(kw,max=12){
+  const rss=`https://news.google.com/rss/search?q=${encodeURIComponent(kw)}&hl=th&gl=TH&ceid=TH:th`;
+  try{
+    const api=`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rss)}`;
+    const r=await fetch(api); if(!r.ok) throw 0;
+    const j=await r.json(); if(!j?.items) throw 0;
+    return j.items.slice(0,max).map(x=>({title:x.title,pubDate:x.pubDate,link:x.link,desc:x.description||''}));
+  }catch{
+    return await parseGoogleNewsRSS(rss);
+  }
+}
+let _newsAll=[], _newsQuery='';
+function markHL(text,q){ if(!q) return text; try{const re=new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`,'ig'); return text.replace(re,'<span class="hl">$1</span>');}catch{return text;} }
+function newsItemHTML(item,i){
+  const d=new Date(item.pubDate).toLocaleDateString('th-TH',{day:'2-digit',month:'short'}), id=`news${i}`;
+  const clean=(item.desc||'').replace(/<[^>]*>/g,'').trim();
+  return `<div class="news-item"><i>🟢</i><div style="flex:1">
+    <div class="news-title clamp clamp-2">${markHL(item.title,_newsQuery)}</div>
+    <div id="${id}" class="news-desc clamp clamp-2" style="margin-top:4px">${markHL(clean,_newsQuery)}</div>
+    <div style="margin-top:6px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn-link" onclick="toggleClamp('${id}')">อ่านเพิ่มเติม</button>
+      <a class="btn-link" href="${item.link}" target="_blank" rel="noopener">ไปที่ข่าว</a>
+    </div>
+    <div class="muted" style="margin-top:4px">${d}</div></div></div>`;
+}
+function toggleClamp(id){
+  const el=document.getElementById(id); if(!el) return;
+  if(el.classList.contains('clamp-2')) el.classList.replace('clamp-2','clamp-6');
+  else if(el.classList.contains('clamp-6')) el.classList.remove('clamp');
+  else el.classList.add('clamp','clamp-2');
+}
+const NEWS_PAGE_SIZE=10;
+function getFilteredNews(){ if(!_newsQuery) return _newsAll; const q=_newsQuery.toLowerCase(); return _newsAll.filter(n=>(n.title+' '+(n.desc||'')).toLowerCase().includes(q)); }
+function renderNewsSummary(items){
+  const counts={ทุเรียน:0,มังคุด:0,เงาะ:0}; const upW=/(พุ่ง|เพิ่ม|ปรับขึ้น|สูงขึ้น|ขยับขึ้น)/; const downW=/(ลด|ปรับลง|ร่วง|ต่ำลง)/; const price=/(\d{2,4})\s*บาท/;
+  let up=[],down=[],prices={ทุเรียน:[],มังคุด:[],เงาะ:[]};
+  items.forEach(x=>{ const t=x.title, d=(x.desc||'');
+    ['ทุเรียน','มังคุด','เงาะ'].forEach(f=>{ if((t+d).includes(f)) counts[f]++; });
+    if(upW.test(t)||upW.test(d)) up.push(t); if(downW.test(t)||downW.test(d)) down.push(t);
+    ['ทุเรียน','มังคุด','เงาะ'].forEach(f=>{ if((t+d).includes(f)){ const m=(t.match(price)||d.match(price)); if(m) prices[f].push(+m[1]); }});
+  });
+  const avg=a=>a.length?Math.round(a.reduce((x,y)=>x+y,0)/a.length):null;
+  $('#newsSummary').innerHTML=[
+    `• ข่าวทั้งหมด ${items.length} ชิ้น ▸ ทุเรียน ${counts['ทุเรียน']||0} | มังคุด ${counts['มังคุด']||0} | เงาะ ${counts['เงาะ']||0}`,
+    `• แนวโน้มคำบ่งชี้ ▸ เพิ่มขึ้น ${up.length} | ลดลง ${down.length}`,
+    `• ราคาที่พบ (ประมาณ): ทุเรียน ${avg(prices['ทุเรียน'])?avg(prices['ทุเรียน'])+' บ./กก.':'—'}, มังคุด ${avg(prices['มังคุด'])?avg(prices['มังคุด'])+' บ./กก.':'—'}, เงาะ ${avg(prices['เงาะ'])?avg(prices['เงาะ'])+' บ./กก.':'—'}`
+  ].join('<br>');
+  $('#newsSummary').classList.remove('muted');
+}
+function renderNewsPage(page=1){
+  const grid=$('#newsList'), ctr=$('#newsControls');
+  const data=getFilteredNews(); const start=(page-1)*NEWS_PAGE_SIZE; const items=data.slice(start,start+NEWS_PAGE_SIZE);
+  grid.innerHTML=items.map((it,i)=>newsItemHTML(it,start+i)).join('') || '<div class="muted">ไม่พบข่าว</div>';
+  renderNewsSummary(data); $('#newsCount').textContent=`พบ ${data.length} ข่าว`;
+  const total=data.length, pages=Math.ceil(total/NEWS_PAGE_SIZE)||1;
+  ctr.innerHTML=`<span class="muted" style="align-self:center">หน้า ${Math.min(page,pages)}/${pages}</span>
+    ${page>1?`<button class="btn-link" onclick="renderNewsPage(${page-1})">ก่อนหน้า</button>`:''}
+    ${page<pages?`<button class="btn-link" onclick="renderNewsPage(${page+1})">ถัดไป</button>`:''}
+    ${total>0?`<button class="btn-link" onclick="renderAllNews()">แสดงทั้งหมด</button>`:''}`;
+}
+function renderAllNews(){ const data=getFilteredNews(); $('#newsList').innerHTML=data.map((it,i)=>newsItemHTML(it,i)).join(''); $('#newsControls').innerHTML=`<button class="btn-link" onclick="renderNewsPage(1)">กลับหน้า 1</button>`; renderNewsSummary(data); $('#newsCount').textContent=`พบ ${data.length} ข่าว`; }
+function debounce(fn,ms){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a),ms); }; }
+$('#newsSearch').addEventListener('input',debounce(e=>{ _newsQuery=e.target.value.trim(); renderNewsPage(1); },200));
+async function loadFruitsNews(){ const queries=['ทุเรียน ข่าว วันนี้','มังคุด ข่าว วันนี้','เงาะ ข่าว วันนี้']; const arr=(await Promise.all(queries.map(q=>fetchNewsTop(q,12)))).flat(); _newsAll=arr; renderNewsPage(1); return arr; }
 
-        document.getElementById("priceBox").innerHTML = html;
-      } catch (error) {
-        document.getElementById("priceBox").innerHTML = "ไม่สามารถโหลดข้อมูลราคาผลไม้ได้";
-        console.error("Error fetching fruit prices:", error);
-      }
-    }
+/* ===== prices ===== */
+const FRUITS=['ทุเรียน','มังคุด','เงาะ'];
+function estimatePricesFromNews(items){
+  const map={ทุเรียน:null,มังคุด:null,เงาะ:null}; const re=/(\d{2,4})\s*บาท/;
+  items.forEach(it=>{ FRUITS.forEach(f=>{ if(it.title.includes(f)){ const m=it.title.match(re)||(it.desc||'').match(re); const v=m?Number(m[1]):null; if(v&&!map[f]) map[f]=v; } }); });
+  const saved=JSON.parse(localStorage.getItem('FRUIT_PRICE_MAP')||'{}'); FRUITS.forEach(f=>{ if(saved[f]) map[f]=saved[f]; }); return map;
+}
+function renderPriceTable(pmap){
+  const table=$('#priceTable'); table.innerHTML='';
+  FRUITS.forEach(f=>{
+    const val=pmap[f]?`${pmap[f]} บาท/กก.`:'<span class="muted">ยังไม่ชัด</span>';
+    table.insertAdjacentHTML('beforeend', `<div class="tr"><div><b>${f}</b><span class="chip" style="margin-left:8px">ผลไม้หลัก</span></div><div>${val}</div><div style="text-align:right"><button class="btn-link" onclick="editPrice('${f}')">แก้ไขราคา</button></div></div>`);
+  });
+}
+function editPrice(fruit){
+  const current=prompt(`ใส่ราคา ${fruit} (บาท/กก.)`,''); if(current===null) return;
+  const val=Number(current); if(!val){ alert('กรุณากรอกตัวเลข'); return; }
+  const saved=JSON.parse(localStorage.getItem('FRUIT_PRICE_MAP')||'{}'); saved[fruit]=val; localStorage.setItem('FRUIT_PRICE_MAP',JSON.stringify(saved)); renderPriceTable(saved);
+}
+function addPrice(){
+  const n=$('#pName').value.trim(), p=Number($('#pPrice').value.trim());
+  if(!n||!p) return; const saved=JSON.parse(localStorage.getItem('FRUIT_PRICE_MAP')||'{}'); saved[n]=p; localStorage.setItem('FRUIT_PRICE_MAP',JSON.stringify(saved));
+  $('#pName').value=''; $('#pPrice').value='';
+  $('#priceTable').insertAdjacentHTML('beforeend', `<div class="tr"><div><b>${n}</b></div><div>${p} บาท/กก.</div><div style="text-align:right"></div></div>`);
+}
 
-    // ====== CHAT (ออฟไลน์ ไม่เรียก API/ไม่ติดโควตา) ======
-    let chatOpen = false;
+/* ===== AI summary (with fallback) ===== */
+function renderAI(text){
+  const id='aiSummary', pretty=text.replace(/^[-*] /gm,'• '), preview=pretty.split('\n').slice(0,8).join('\n');
+  $('#aiBox').innerHTML=`<div id="${id}-preview" class="clamp clamp-6" style="white-space:pre-wrap">${preview}</div>
+    <div id="${id}-full" style="white-space:pre-wrap; display:none; margin-top:8px">${pretty}</div>
+    <div style="margin-top:8px"><button class="btn-link" onclick="(function(pv,full){const show=full.style.display==='none';full.style.display=show?'block':'none';pv.style.display=show?'none':'block';})($('#${id}-preview'),$('#${id}-full'))">อ่านเพิ่มเติม</button></div>`;
+}
+function heuristicSummary(wx, province, news, priceMap){
+  const season=(m=> (m>=5&&m<=10)?'ฝน':(m===3||m===4)?'ร้อน':'หนาว')(new Date().getMonth()+1);
+  const prices=['ทุเรียน','มังคุด','เงาะ'].map(n=>`${n}: ${priceMap[n]?priceMap[n]+' บ./กก.':'ยังไม่ชัด'}`).join(' | ');
+  const heads=news.slice(0,5).map((n,i)=>`• (${i+1}) ${n.title}`).join('\n');
+  return [
+    `ภาพรวม: สภาพอากาศที่ ${province} ${wx.desc} อุณหภูมิ ~${wx.temp}°C ความชื้น ${wx.rh}% ฝน 3 ชม. ${wx.rain} มม. (ฤดูกาล: ${season})`,
+    `ราคาประเมิน/มีข้อมูล ▸ ${prices}`,
+    '', 'เช็กลิสต์การตัดสินใจ:',
+    '• เฝ้าดูฝน/ความชื้นสูง ปรับให้น้ำ-คลุมโคน',
+    '• ตรวจโรค/ศัตรูพืชหลังฝน',
+    '• ถ้าใกล้ตัด วางแผนตลาด-ขนส่งตามราคาล่าสุด',
+    '', 'หัวข้อข่าวล่าสุด:', heads
+  ].join('\n');
+}
 
-    function toggleChat() {
-      const chatBtn = document.getElementById("chatBtn");
-      const chatBox = document.getElementById("chatBox");
-
-      chatBtn.classList.add("clicked");
-      setTimeout(() => chatBtn.classList.remove("clicked"), 300);
-
-      chatOpen = !chatOpen;
-
-      if (chatOpen) {
-        chatBox.style.display = 'flex';
-        setTimeout(() => chatBox.classList.add("show"), 10);
-        chatBox.classList.remove("hide");
-
-        setTimeout(() => {
-          document.getElementById("chatInput").focus();
-        }, 400);
-      } else {
-        chatBox.classList.add("hide");
-        chatBox.classList.remove("show");
-        setTimeout(() => { if (!chatOpen) chatBox.style.display = 'none'; }, 400);
-      }
-    }
-
-    async function sendMessage() {
-      const inputEl = document.getElementById("chatInput");
-      const text = inputEl.value.trim();
-      if (!text) return;
-
-      appendMessage("user", text);
-      inputEl.value = "";
-
-      showTypingIndicator();
-      await new Promise(r => setTimeout(r, 400)); // ให้รู้สึกว่ากำลังคิด
-
-      const aiResponse = await fetchAIResponse(text); // ออฟไลน์
-      hideTypingIndicator();
-      setTimeout(() => { appendMessage("ai", aiResponse); }, 150);
-    }
-
-    function appendMessage(sender, message) {
-      const chatBody = document.getElementById("chatBody");
-      const messageDiv = document.createElement("div");
-      messageDiv.className = `message ${sender}`;
-      messageDiv.textContent = message;
-      chatBody.appendChild(messageDiv);
-      chatBody.scrollTop = chatBody.scrollHeight;
-    }
-
-    function showTypingIndicator() {
-      const indicator = document.getElementById("typingIndicator");
-      const chatBody = document.getElementById("chatBody");
-      indicator.style.display = 'block';
-      chatBody.scrollTop = chatBody.scrollHeight;
-    }
-
-    function hideTypingIndicator() {
-      document.getElementById("typingIndicator").style.display = 'none';
-    }
-
-    function handleKeyPress(event) {
-      if (event.key === 'Enter' && !event.shiftKey) {
-        event.preventDefault();
-        sendMessage();
-      }
-    }
-
-    // ใช้ชื่อเดิม fetchAIResponse แต่ไม่เรียก API แล้ว
-    async function fetchAIResponse(userInput) {
-      return localSmartReply(userInput);
-    }
-
-    // กติกาตอบแบบง่าย ๆ (ปรับเพิ่มได้)
-    function localSmartReply(raw) {
-      const text = raw.toLowerCase().trim();
-
-      // 1) ทักทาย
-      if (/(สวัสดี|hello|hi|เฮลโหล)/.test(text)) {
-        const hi = ["สวัสดีครับ 👋", "สวัสดีค่า 👋", "หวัดดี! 😊"];
-        return hi[Math.floor(Math.random() * hi.length)] + " มีอะไรให้ช่วยไหม?";
-      }
-
-      // 2) เวลา/วันที่
-      if (/(กี่โมง|เวลา|time)/.test(text)) {
-        const t = new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
-        return `ตอนนี้เวลา ${t} น.`;
-      }
-      if (/(วันที่|วันอะไร|date)/.test(text)) {
-        const d = new Date().toLocaleDateString('th-TH', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-        return `วันนี้คือ ${d}`;
-      }
-
-      // 3) แนะนำตัว
-      if (/(ชื่ออะไร|คุณคือใคร|ทำอะไรได้บ้าง|ทำอะไรได้)/.test(text)) {
-        return "ฉันคือผู้ช่วยส่วนตัวแบบออฟไลน์ ตอบคำถามทั่วไป, บอกเวลา/วันที่, เล่นมุกสั้น ๆ และสะกดคำได้เล็กน้อย 😊";
-      }
-
-      // 4) มุกตลก
-      if (/(มุก|ขำ|ตลก|ขำขัน)/.test(text)) {
-        const jokes = [
-          "ทำไมคอมพ์ถึงหนาว? เพราะเปิดวินโดวส์ 🥶",
-          "ผักอะไรชอบอยู่หน้าบ้าน? บวบหน้าบ้าน 😅",
-          "ปลาอะไรชอบเลี้ยงเด็ก? ปลอบใจ 🤭"
-        ];
-        return jokes[Math.floor(Math.random() * jokes.length)];
-      }
-
-      // 5) ทิปปลูกพืชง่าย ๆ
-      if (/(ปลูก|วิธีปลูก)/.test(text)) {
-        return "ทิปพื้นฐาน: ดินโปร่งระบายน้ำดี รดน้ำสม่ำเสมอไม่แฉะ ให้แดดตามชนิดพืช และใส่ปุ๋ยตามระยะ 🌱";
-      }
-
-      // 6) สะกดคำง่าย ๆ
-      if (/^สะกด|^spell/.test(text)) {
-        const word = raw.replace(/^สะกด|^spell/i, "").trim();
-        if (!word) return "บอกคำที่อยากให้สะกดด้วยครับ 🙂";
-        return `สะกดทีละตัว: ${word.split("").join(" • ")}`;
-      }
-
-      // 7) ตอบทั่วไป
-      if (text.length <= 4) return "โอเคครับ 🙂";
-      return `รับทราบ: “${raw}” หากอยากให้ช่วยอย่างเจาะจง ลองบอกเพิ่มอีกนิดนะครับ`;
-    }
-
-    // Enhanced dragging functionality (เดิม)
-    const chatBox = document.getElementById("chatBox");
-    const chatHeader = document.querySelector(".chat-header");
-    let isDragging = false;
-    let offsetX, offsetY;
-
-    chatHeader.addEventListener("mousedown", (e) => {
-      isDragging = true;
-      offsetX = e.clientX - chatBox.getBoundingClientRect().left;
-      offsetY = e.clientY - chatBox.getBoundingClientRect().top;
-      document.addEventListener("mousemove", dragChatBox);
-      document.addEventListener("mouseup", stopDragging);
-      chatBox.style.transition = 'none'; // Disable transition while dragging
+/* ===== geolocation with IP fallback (สำหรับ lat/lon ใช้แผน A/B) ===== */
+async function getCoordsWithFallback(){
+  try{
+    const coords=await new Promise((res,rej)=>{
+      if(!navigator.geolocation) return rej(new Error('no geo'));
+      navigator.geolocation.getCurrentPosition(p=>res(p.coords),e=>rej(e),{enableHighAccuracy:true,timeout:7000});
     });
+    return {lat:coords.latitude, lon:coords.longitude};
+  }catch{
+    // ถ้าหาไม่ได้ก็ใช้ค่าโดยประมาณจาก IP (เฉพาะอากาศอาจเพี้ยนเล็กน้อย แต่ใช้งานได้)
+    const j=await (await fetch('https://ipapi.co/json/')).json();
+    return {lat:j.latitude, lon:j.longitude};
+  }
+}
 
-    function dragChatBox(e) {
-      if (isDragging) {
-        chatBox.style.left = `${e.clientX - offsetX}px`;
-        chatBox.style.top = `${e.clientY - offsetY}px`;
+/* ===== main aggregate ===== */
+async function aggregateNow(){
+  setLoading(true);
+  try{
+    const {lat,lon}=await getCoordsWithFallback();
+    const wx=await getWeatherByCoords(lat,lon);
+    const province=await getProvinceFromIP(); // ใช้ ipapi เสมอ (กัน error)
+    renderWeather(wx,province);
+
+    const news=await loadFruitsNews();
+    const priceMap=estimatePricesFromNews(news);
+    renderPriceTable(priceMap);
+
+    let aiText='';
+    if (USE_HF){
+      try{
+        const payload={model:"inclusionAI/Ling-1T:featherless-ai",temperature:0.25,max_tokens:900,
+          messages:[
+            {role:"system",content:"คุณคือผู้ช่วยเกษตรไทย ให้คำตอบสั้น กระชับ ปฏิบัติได้จริง"},
+            {role:"user",content:`สรุปสถานการณ์เพาะปลูก ณ ${province}
+[อากาศ] อุณหภูมิ ${wx.temp}°C • ความชื้น ${wx.rh}% • ฝน 3 ชม. ${wx.rain} มม. • ${wx.desc}
+[ข่าวสำคัญ]\n${news.slice(0,8).map((n,i)=>`- (${i+1}) ${n.title}`).join('\n') || '- (ไม่มี)'}
+[ราคาประเมิน] ทุเรียน ${priceMap['ทุเรียน']||'—'} | มังคุด ${priceMap['มังคุด']||'—'} | เงาะ ${priceMap['เงาะ']||'—'}`}
+          ]};
+        const resp=await fetch('https://router.huggingface.co/v1/chat/completions',{method:'POST',headers:{'Authorization':'Bearer '+readToken(),'Content-Type':'application/json'},body:JSON.stringify(payload)});
+        if(!resp.ok) throw new Error('HF '+resp.status);
+        const data=await resp.json();
+        aiText=data?.choices?.[0]?.message?.content?.trim()||'';
+      }catch{
+        aiText=heuristicSummary(wx,province,news,priceMap);
       }
+    }else{
+      aiText=heuristicSummary(wx,province,news,priceMap);
     }
+    renderAI(aiText);
+  }catch(e){
+    renderAI('⚠️ '+(e?.message||'ไม่สามารถสรุปได้')+'\n(ตรวจสอบอินเทอร์เน็ตหรืออนุญาตตำแหน่ง)');
+  }finally{ setLoading(false); }
+}
 
-    function stopDragging() {
-      isDragging = false;
-      document.removeEventListener("mousemove", dragChatBox);
-      document.removeEventListener("mouseup", stopDragging);
-      chatBox.style.transition = ''; // Re-enable transitions
-    }
+/* ===== mini chat ===== */
+const chatFab=$('#chatFab'), chatBox=$('#chatBox');
+chatFab.onclick=()=>{ chatBox.style.display = (chatBox.style.display==='flex'?'none':'flex'); };
+function appendMsg(sender, text){
+  const div=document.createElement('div'); div.className='message '+sender; div.textContent=text; $('#chatBody').appendChild(div); $('#chatBody').scrollTop=$('#chatBody').scrollHeight;
+}
+async function sendMessage(){
+  const inp=$('#chatInput'); const text=inp.value.trim(); if(!text) return;
+  appendMsg('user',text); inp.value='';
+  appendMsg('ai','กำลังคิด…');
+  setTimeout(()=>{ $('#chatBody').lastChild.textContent='(เดโมแชทภายในหน้า) ฉันรับข้อความแล้ว: '+text; },700);
+}
 
-    // Enhanced button dragging (เดิม)
-    const chatBtn = document.getElementById("chatBtn");
-    let isBtnDragging = false;
-    let btnOffsetX, btnOffsetY;
-
-    chatBtn.addEventListener("mousedown", (e) => {
-      isBtnDragging = true;
-      btnOffsetX = e.clientX - chatBtn.getBoundingClientRect().left;
-      btnOffsetY = e.clientY - chatBtn.getBoundingClientRect().top;
-      document.addEventListener("mousemove", dragChatBtn);
-      document.addEventListener("mouseup", stopBtnDragging);
-      chatBtn.style.transition = 'none';
-    });
-
-    function dragChatBtn(e) {
-      if (isBtnDragging) {
-        chatBtn.style.left = `${e.clientX - btnOffsetX}px`;
-        chatBtn.style.top = `${e.clientY - btnOffsetY}px`;
-      }
-    }
-
-    function stopBtnDragging() {
-      isBtnDragging = false;
-      document.removeEventListener("mousemove", dragChatBtn);
-      document.removeEventListener("mouseup", stopBtnDragging);
-      chatBtn.style.transition = '';
-    }
-
-    // เรียกใช้เมื่อโหลดหน้า
-    loadRSS();
-    loadFruitPricesRealtime();
-    setInterval(loadFruitPricesRealtime, 60000); // อัปเดตทุก 1 นาที
-  </script>
-
-  <script src="name.js"></script>
-  <script src="script.js"></script>
+/* ===== boot ===== */
+document.addEventListener('DOMContentLoaded', ()=>{
+  $('#newsList').innerHTML='<div class="muted">กำลังดึงข่าว…</div>';
+  $('#priceTable').innerHTML='<div class="muted">กำลังประเมินราคา…</div>';
+  aggregateNow(); // เริ่มอัตโนมัติ
+});
+</script>
 </body>
 </html>

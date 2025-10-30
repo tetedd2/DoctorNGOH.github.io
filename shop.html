@@ -16,7 +16,7 @@
   .container{ display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:15px; padding:20px; max-width:900px; margin:auto }
   .product{ background:var(--card); border-radius:15px; box-shadow:var(--shadow); text-align:center; padding:15px; transition:transform .1s ease }
   .product:hover{ transform:translateY(-2px)}
-  .product img{ width:70px; height:70px; object-fit:contain}
+  .product img{ width:100px; height:100px; object-fit:contain}
   .price{ font-weight:600; color:#2b6; margin:6px 0 10px}
   .muted{ color:#678; font-size:12px}
   button{ background:var(--green); color:#fff; border:none; padding:8px 14px; border-radius:10px; cursor:pointer; font-size:14px}
@@ -71,124 +71,16 @@
   .order-items{ margin-top:8px; color:#345; font-size:14px }
   .order-items li{ margin:3px 0 }
 
-  /* Popup ระบุที่อยู่หลังจ่าย */
   .eta{ background:#f5fff7; border:1px dashed #9ed3b1; padding:10px; border-radius:10px; color:#165b2e; margin:8px 0 }
 
-          .button-container-bottom {
-    position: fixed;
-    bottom: 0;
-    left: 0; /* ตั้งค่าใหม่ */
-    width: 100%; /* ให้เต็มหน้าจอ */
-    display: flex;
-    justify-content: space-around; /* กระจายปุ่มให้เท่าๆ กัน */
-    gap: 10px; /* ระยะห่างระหว่างปุ่ม */
-    background-color: white;
-    padding: 8px 0;
-    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-}
-
-.btn-bottom {
-    background-color: transparent; /* ทำให้พื้นหลังโปร่งใส */
-    border: none;                 /* ลบขอบ */
-    cursor: pointer;
-    flex: 1;                     /* ขยายปุ่มให้เต็มพื้นที่ */
-    height: 60px;                /* กำหนดความสูงของปุ่ม */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    padding: 0;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    box-shadow: none;             /* ลบเงา */
-}
-
-.btn-bottom img {
-    width: 80px;                 /* ปรับขนาดไอคอนให้เหมาะสม */
-    height: auto;
-    object-fit: contain;
-    display: block;
-}
-
-.btn-bottom:hover {
-    transform: scale(1.05);
-}
-
-.btn-bottom:active {
-    transform: scale(0.98);
-}
-        /* สีปุ่มล่าง */
-        
-        .btn-bottom.home {
-            background-color: #ffffff;
-        }
-        
-        .btn-bottom.ai {
-            background-color: #ffffff;
-        }
-        
-        .btn-bottom.plant {
-            background-color: #ffffff;
-        }
-        
-        .btn-bottom.menu {
-            background-color: #ffffff;
-        }
-        
-        .btn-bottom {
-            background-color: white;
-            color: #333;
-            padding: 0;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: none;
-            border-radius: 0;
-            box-shadow: none;
-        }
-        
-        .btn-bottom img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .btn-bottom:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-        }
-        
-        .btn-bottom:active {
-            transform: scale(0.98);
-        }
-        
-        .btn-bottom.home {
-            background-color: #e74c3c;
-            color: white;
-        }
-        
-        .btn-bottom.ai {
-            background-color: #2ecc71;
-            color: white;
-        }
-        
-        .btn-bottom.plant {
-            background-color: #007bff;
-            color: white;
-        }
-        
-        .btn-bottom.menu {
-            background-color: #ff9900;
-            color: white;
-        }
-
+  .button-container-bottom { position: fixed; bottom: 0; left: 0; width: 100%; display: flex; justify-content: space-around; gap: 10px; background-color: white; padding: 8px 0; box-shadow: 0 -2px 6px rgba(0,0,0,.1); z-index: 1000; }
+  .btn-bottom { background-color: transparent; border: none; cursor: pointer; flex: 1; height: 60px; display:flex; align-items:center; justify-content:center; overflow:hidden; padding:0; text-decoration:none; transition:.3s; box-shadow:none; }
+  .btn-bottom img { width: 80px; height: auto; object-fit: contain; display: block; }
+  .btn-bottom:hover { transform: scale(1.05); }
+  .btn-bottom:active { transform: scale(0.98); }
+  .btn-bottom img { width: 100%; height: 100%; object-fit: cover; }
+  .btn-bottom:hover { box-shadow: 0 6px 16px rgba(0,0,0,.15); }
+  .btn-bottom.home{ background:#e74c3c; color:#fff } .btn-bottom.ai{ background:#2ecc71; color:#fff } .btn-bottom.plant{ background:#007bff; color:#fff } .btn-bottom.menu{ background:#ff9900; color:#fff }
 </style>
 </head>
 <body>
@@ -309,23 +201,15 @@
   </div>
 </div>
 
- <div class="button-container-bottom">
-    <a href="Home999.html" class="btn-bottom">
-      <img src="60.png" alt="Home">
-    </a>
-    <a href="shop.html" class="btn-bottom">
-      <img src="1000.png" alt="เมนู">
-    </a>
-    <a href="Home.html" class="btn-bottom">
-      <img src="61.png" alt="AI">
-    </a>
-    <a href="Home555.html" class="btn-bottom">
-      <img src="62.png" alt="วิธีปลูก">
-    </a>
-    <a href="menu.html" class="btn-bottom">
-      <img src="1000.png" alt="เมนู">
-    </a>
-  </div>
+<!-- ปุ่มล่าง -->
+<div class="button-container-bottom">
+  <a href="Home999.html" class="btn-bottom"><img src="60.png" alt="Home"></a>
+  <a href="shop.html" class="btn-bottom"><img src="333222.png" alt="Shop"></a>
+  <a href="Home.html" class="btn-bottom"><img src="61.png" alt="AI"></a>
+  <a href="Home555.html" class="btn-bottom"><img src="62.png" alt="วิธีปลูก"></a>
+  <a href="menu.html" class="btn-bottom"><img src="1000.png" alt="เมนู"></a>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 <script>
   /* ===== Config ===== */
@@ -336,10 +220,11 @@
 
   const CART_KEY='fertilizer_cart', HIST_KEY='fertilizer_order_history', ADDR_KEY='fertilizer_last_address';
 
+  /* ใส่รูปของคุณเองตรงนี้ (วางไฟล์ไว้ที่โฟลเดอร์ images/ หรือปรับพาธเอง) */
   const PRODUCTS = [
-    { id:'organic',  name:'ปุ๋ยอินทรีย์', img:'https://cdn-icons-png.flaticon.com/512/3523/3523063.png', pricePerKg:120, pricePerBag:95,  bagUnit:'ถุง 1 กก.' },
-    { id:'chemical', name:'ปุ๋ยเคมี',   img:'https://cdn-icons-png.flaticon.com/512/3523/3523063.png', pricePerKg:150, pricePerBag:135, bagUnit:'ถุง 1 กก.' },
-    { id:'mix',      name:'ปุ๋ยผสม',   img:'https://cdn-icons-png.flaticon.com/512/3523/3523063.png', pricePerKg:180, pricePerBag:160, bagUnit:'ถุง 1 กก.' }
+    { id:'organic',  name:'0-0-60', img:'444333.png',  pricePerKg:120, pricePerBag:95,  bagUnit:'ถุง 1 กก.' },
+    { id:'chemical', name:'15-15-15',     img:'444222.png', pricePerKg:150, pricePerBag:135, bagUnit:'ถุง 1 กก.' },
+    { id:'mix',      name:'15-5-20',     img:'444555.png',      pricePerKg:180, pricePerBag:160, bagUnit:'ถุง 1 กก.' }
   ];
 
   function saveCartLS(){ localStorage.setItem(CART_KEY, JSON.stringify(cart)); }
@@ -352,7 +237,7 @@
   let cart = loadCartLS();
   let currentProduct = null;
   let toastTimer = null;
-  let lastOrderIdForDelivery = null; // ใช้เชื่อมออเดอร์ล่าสุดกับที่อยู่
+  let lastOrderIdForDelivery = null;
 
   /* ===== Render ===== */
   function renderProducts(){
@@ -464,37 +349,29 @@
   function snapshotItems(){ return cart.map(i=>({name:i.name,type:i.type,qty:i.qty,unitPrice:i.unitPrice,sub:i.qty*i.unitPrice})); }
 
   function finishOrder(info){
-    // กล่องสำเร็จเล็กๆ
     const box=$('#paySuccess'); let lines=[`วิธีชำระ: ${info.method}`,`หมายเลขสั่งซื้อ: ${info.orderId}`,`ยอดสุทธิ: ${THB.format(info.total)}`];
     if(info.slipName) lines.push(`ไฟล์สลิป: ${info.slipName}`); box.innerHTML=`<strong>สำเร็จ!</strong><br>${lines.join('<br>')}`; box.style.display='block';
 
-    // บันทึกประวัติ (ยังไม่มีที่อยู่ — จะเพิ่มหลังเก็บที่อยู่)
     const history=loadHistoryLS(); const orderDoc={ orderId:info.orderId, total:info.total, method:info.method, timestamp:new Date().toISOString(), items:snapshotItems() };
     if(info.name){ orderDoc.name=info.name; orderDoc.phone=info.phone; orderDoc.addr=info.addr; }
     history.unshift(orderDoc); if(history.length>200) history.length=200; saveHistoryLS(history);
 
-    // ล้างตะกร้า
     cart=[]; saveCartLS(); updateCart();
 
-    // เปิด popup ระบุที่อยู่ + ETA
     lastOrderIdForDelivery = info.orderId;
     openDelivery(info);
   }
 
   /* ===== Popup ระบุที่อยู่ + ETA (≤ 30 นาที) ===== */
-  function randomMinutes(max=30){ return Math.floor(Math.random()*max)+1; } // 1..30
+  function randomMinutes(max=30){ return Math.floor(Math.random()*max)+1; }
   function openDelivery(info){
-    // ปิดหน้าชำระก่อน
     closePayment();
 
-    // เติม ETA
     const mins = randomMinutes(30);
     const etaDate = new Date(Date.now() + mins*60*1000);
     $('#etaMsg').innerHTML = `พนักงานกำลังจัดส่งสินค้า ⏱️ คาดว่าจะถึงภายใน <b>${mins} นาที</b> (ประมาณ <b>${DT.format(etaDate)}</b>)`;
 
-    // เติมที่อยู่ล่าสุด
     const last = loadLastAddr();
-    // ถ้าจ่ายแบบ COD แล้วกรอกไว้ ใช้เป็นค่าเริ่มต้น
     const seedName  = info?.name  || last.name  || '';
     const seedPhone = info?.phone || last.phone || '';
     const seedAddr  = info?.addr  || last.addr  || '';
@@ -502,7 +379,6 @@
     $('#shipPhone').value = seedPhone;
     $('#shipAddr').value = seedAddr;
 
-    // แสดง popup
     $('#deliveryModal').style.display='block'; $('#deliveryModal').setAttribute('aria-hidden','false');
   }
   function closeDelivery(){ $('#deliveryModal').style.display='none'; $('#deliveryModal').setAttribute('aria-hidden','true'); $('#paySuccess').style.display='none'; alert('ขอบคุณสำหรับการสั่งซื้อ!'); }
@@ -510,10 +386,8 @@
   function saveDelivery(){
     const name=$('#shipName').value.trim(), phone=$('#shipPhone').value.trim(), addr=$('#shipAddr').value.trim();
     if(!name||!phone||!addr){ alert('กรุณากรอก ชื่อ-โทรศัพท์-ที่อยู่ ให้ครบ'); return; }
-    // จำที่อยู่ครั้งถัดไป
     saveLastAddr({name,phone,addr});
 
-    // อัปเดตลงประวัติของออเดอร์ล่าสุด
     const hist=loadHistoryLS();
     const idx=hist.findIndex(h=>h.orderId===lastOrderIdForDelivery);
     if(idx>-1){ hist[idx].name=name; hist[idx].phone=phone; hist[idx].addr=addr; saveHistoryLS(hist); }

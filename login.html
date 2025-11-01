@@ -18,7 +18,6 @@
     .foot{display:flex;gap:10px;flex-wrap:wrap}
     .err{background:#fde8e8;border:1px solid #f5c2c2;color:#b42318;padding:12px;border-radius:10px;margin-top:10px;display:none}
     .warn{display:none;background:#fff7e6;border:1px solid #ffe3a3;color:#8a6d1a;padding:10px;border-radius:10px;margin-top:8px}
-    .link{color:#2563eb;cursor:pointer;text-decoration:underline}
   </style>
 </head>
 <body>
@@ -43,7 +42,7 @@
 
     <div id="inAppWarning" class="warn">
       เบราว์เซอร์ในแอปไม่รองรับการล็อกอินด้วย Google กรุณาเปิดหน้านี้ใน Chrome/Safari
-      (Android: เมนู ⋮ → เปิดใน Chrome, iOS: Share → Open in Safari)
+      (Android: ⋮ → “เปิดใน Chrome”, iOS: Share → “Open in Safari”)
     </div>
     <div id="msg" class="err"></div>
   </div>
@@ -51,12 +50,12 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
     import {
-      getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult,
+      getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult,
       createUserWithEmailAndPassword, signInWithEmailAndPassword, fetchSignInMethodsForEmail,
       sendPasswordResetEmail, EmailAuthProvider, linkWithCredential
     } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
 
-    // ----- Firebase config (ของคุณ) -----
+    // ---- Firebase config ของคุณ (ใช้ชุดเดิม) ----
     const firebaseConfig = {
       apiKey: "AIzaSyDq60nePWYn2AXt4gkJSqnTlpR84ZfkTUw",
       authDomain: "beneficial-applications.firebaseapp.com",
@@ -72,74 +71,56 @@
     auth.languageCode = 'th';
     const provider = new GoogleAuthProvider();
 
-    // ---------- Utilities ----------
+    // ---------- Helpers ----------
     const $ = (id)=>document.getElementById(id);
-    function showErr(t){ const el=$('msg'); el.textContent=t; el.style.display='block'; }
-    function clearErr(){ const el=$('msg'); el.style.display='none'; el.textContent=''; }
-    function gotoHome(){ window.location.href = 'Home999.html'; }
+    const showErr = (t)=>{ const el=$('msg'); el.textContent=t; el.style.display='block'; };
+    const clearErr = ()=>{ const el=$('msg'); el.style.display='none'; el.textContent=''; };
+    const gotoHome = ()=>{ window.location.href='Home999.html'; };
 
-    // ป้องกัน in-app browser (จะทำให้เกิด disallowed_useragent)
+    // In-app browser detection (LINE/FB/IG/TikTok ฯลฯ)
     function isInAppBrowser(){
       const ua = navigator.userAgent || '';
       return /(FBAN|FBAV|Instagram|Line|LINE|Twitter|TikTok|WeChat|MicroMessenger|wv)/i.test(ua);
     }
-    if(isInAppBrowser()){ $('inAppWarning').style.display='block'; }
+    if (isInAppBrowser()) $('inAppWarning').style.display = 'block';
 
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-    // ---------- Email Login ----------
+    // ---------- Email/Password ----------
     $('loginBtn').addEventListener('click', async ()=>{
       clearErr();
       const email = $('email').value.trim();
       const pass  = $('password').value;
       if(!email || !pass){ showErr('กรอกอีเมลและรหัสผ่าน'); return; }
       try{
-        // ใช้ signIn อย่างเดียว (ห้าม create ในปุ่มล็อกอิน)
         await signInWithEmailAndPassword(auth, email, pass);
         gotoHome();
       }catch(e){
-        // mapping ข้อความให้เข้าใจง่าย
-        if(e.code==='auth/user-not-found'){ showErr('ไม่พบบัญชีนี้ โปรดกด "สมัคร" หรือใช้ Google'); }
-        else if(e.code==='auth/wrong-password' || e.code==='auth/invalid-credential'){ showErr('รหัสผ่านไม่ถูกต้อง'); }
-        else if(e.code==='auth/too-many-requests'){ showErr('พยายามบ่อยเกินไป โปรดลองใหม่หรือตั้งรหัสผ่านใหม่'); }
-        else { showErr(`ผิดพลาด: ${e.code}`); console.error(e); }
+        if(e.code==='auth/user-not-found') showErr('ไม่พบบัญชีนี้ โปรดกด "สมัคร" หรือใช้ Google');
+        else if(e.code==='auth/wrong-password'||e.code==='auth/invalid-credential') showErr('รหัสผ่านไม่ถูกต้อง');
+        else if(e.code==='auth/too-many-requests') showErr('พยายามบ่อยเกินไป โปรดลองใหม่หรือตั้งรหัสผ่านใหม่');
+        else showErr(`ผิดพลาด: ${e.code}`);
+        console.error(e);
       }
     });
 
-    // ---------- Sign Up ----------
     $('signupBtn').addEventListener('click', async ()=>{
       clearErr();
       const email = $('email').value.trim();
       const pass  = $('password').value;
       if(!email || !pass){ showErr('กรอกอีเมลและตั้งรหัสผ่าน'); return; }
       try{
-        // ตรวจว่ามีวิธีลงทะเบียนอยู่แล้วหรือไม่
         const methods = await fetchSignInMethodsForEmail(auth, email);
-        if(methods.length){
-          // มีบัญชีอยู่แล้ว
-          if(methods.includes('password')){
-            showErr('อีเมลนี้มีบัญชีอยู่แล้ว โปรดกด "ล็อกอิน" หรือใช้เมนู "ลืมรหัสผ่าน"');
-            return;
-          }
-          if(methods.includes('google.com')){
-            showErr('อีเมลนี้เคยสมัครด้วย Google โปรดกด "เข้าสู่ระบบด้วย Google"');
-            return;
-          }
-        }
+        if(methods.includes('password')){ showErr('อีเมลนี้มีบัญชีอยู่แล้ว กด "ล็อกอิน" หรือ "ลืมรหัสผ่าน"'); return; }
+        if(methods.includes('google.com')){ showErr('อีเมลนี้สมัครด้วย Google ให้กดปุ่ม Google'); return; }
         await createUserWithEmailAndPassword(auth, email, pass);
         gotoHome();
       }catch(e){
-        if(e.code==='auth/email-already-in-use'){
-          showErr('อีเมลนี้ถูกใช้แล้ว โปรดล็อกอิน หรือกด "ลืมรหัสผ่าน"');
-        } else if(e.code==='auth/weak-password'){
-          showErr('รหัสผ่านสั้นเกินไป (อย่างน้อย 6 ตัวอักษร)');
-        } else{
-          showErr(`ผิดพลาด: ${e.code}`); console.error(e);
-        }
+        if(e.code==='auth/email-already-in-use') showErr('อีเมลนี้ถูกใช้แล้ว โปรดล็อกอินหรือรีเซ็ตรหัสผ่าน');
+        else if(e.code==='auth/weak-password') showErr('รหัสผ่านอย่างน้อย 6 ตัวอักษร');
+        else showErr(`ผิดพลาด: ${e.code}`);
+        console.error(e);
       }
     });
 
-    // ---------- Reset Password ----------
     $('resetBtn').addEventListener('click', async ()=>{
       clearErr();
       const email = $('email').value.trim();
@@ -148,39 +129,38 @@
         await sendPasswordResetEmail(auth, email);
         alert('ส่งลิงก์ตั้งรหัสผ่านใหม่ไปที่อีเมลแล้ว');
       }catch(e){
-        if(e.code==='auth/user-not-found'){ showErr('ไม่พบอีเมลนี้ในระบบ ลองสมัครใหม่'); }
-        else{ showErr(`ผิดพลาด: ${e.code}`); console.error(e); }
+        if(e.code==='auth/user-not-found') showErr('ไม่พบอีเมลนี้ในระบบ ลองสมัครใหม่');
+        else showErr(`ผิดพลาด: ${e.code}`);
+        console.error(e);
       }
     });
 
-    // ---------- Google Sign-in (popup เดสก์ท็อป / redirect มือถือ) ----------
+    // ---------- Google Sign-in: ใช้ "redirect" เสมอ ----------
     $('googleBtn').addEventListener('click', async ()=>{
       clearErr();
-      if(isInAppBrowser()){ $('inAppWarning').scrollIntoView({behavior:'smooth'}); return; }
+      if (isInAppBrowser()){ $('inAppWarning').scrollIntoView({behavior:'smooth'}); return; }
       try{
-        if(isMobile) await signInWithRedirect(auth, provider);
-        else await signInWithPopup(auth, provider);
+        await signInWithRedirect(auth, provider);   // ใช้ redirect ตลอด = เสถียรกว่าบนมือถือ/บล็อก popup
       }catch(e){
-        // ถ้าอีเมลนี้เคยสมัครแบบ password มาก่อน → แนะนำให้ล็อกอินด้วยอีเมล
-        if(e.code==='auth/account-exists-with-different-credential'){
+        if(e.code==='auth/unauthorized-domain'){
+          showErr('โดเมนนี้ยังไม่ได้รับอนุญาตใน Firebase → Authentication → Settings → Authorized domains');
+        }else if(e.code==='auth/account-exists-with-different-credential'){
           const email = e.customData?.email;
-          if(email){
-            const methods = await fetchSignInMethodsForEmail(auth, email);
-            showErr(`อีเมลนี้ลงทะเบียนด้วย: ${methods.join(', ')} กรุณาใช้วิธีนั้นในการเข้าสู่ระบบ`);
-          } else showErr('บัญชีนี้ลงทะเบียนด้วยวิธีอื่น กรุณาใช้วิธีเดิมในการเข้าสู่ระบบ');
-        } else {
-          showErr(`ผิดพลาด: ${e.code}`); console.error(e);
+          const methods = email ? await fetchSignInMethodsForEmail(auth, email) : [];
+          showErr(`อีเมลนี้ลงทะเบียนไว้ด้วย: ${methods.join(', ')||'บัญชีอื่น'} โปรดใช้วิธีนั้นในการเข้าสู่ระบบ`);
+        }else{
+          showErr(`ผิดพลาด: ${e.code}`);
         }
+        console.error(e);
       }
     });
 
-    // รับผลหลัง redirect (มือถือ)
-    getRedirectResult(auth).then((res)=>{
-      if(res?.user) gotoHome();
-    }).catch(err=>console.error(err));
+    // รับผลหลัง redirect
+    getRedirectResult(auth)
+      .then((res)=>{ if(res?.user) gotoHome(); })
+      .catch((err)=>{ console.error(err); showErr(`ผิดพลาด: ${err.code||err.message}`); });
 
-    // (ทางเลือก) ฟังก์ชันเพิ่มรหัสผ่านให้ผู้ใช้ที่ล็อกอินด้วย Google แล้ว
-    // เรียกหลังล็อกอินสำเร็จ ถ้าต้องการผูก Email/Password เข้ากับบัญชี Google เดิม
+    // (ตัวเลือก) ผูกรหัสผ่านเพิ่มให้ผู้ใช้ Google ที่ล็อกอินแล้ว
     async function addPasswordToGoogleUser(email, newPassword){
       const cred = EmailAuthProvider.credential(email, newPassword);
       await linkWithCredential(auth.currentUser, cred);

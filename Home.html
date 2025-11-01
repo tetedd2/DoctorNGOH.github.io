@@ -1,142 +1,98 @@
 <!DOCTYPE html>
 <html lang="th">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ระบบ AI ของฉัน</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-    font-family: 'Helvetica Neue', sans-serif;
-    background-color: #e9f8ee;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* จัดแนวนอนตรงกลาง */
-    justify-content: center; /* จัดแนวตั้งตรงกลาง */
-    padding: 20px;
-    margin: 0;
-   }
-        
-        h1 {
-            font-size: 20px;
-            color: #000;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        /* กลุ่มปุ่มพืช */
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>วินิจฉัยโรคพืช (Clinic Mode)</title>
+  <style>
+    :root{
+      --bg:#f3f8fb;
+      --panel:#ffffff;
+      --ink:#173042;
+      --accent:#13a6a6;
+      --accent-2:#2f6feb;
+      --muted:#6b8896;
+      --line:rgba(19,166,166,.2);
+      --ring: rgba(47,111,235,.18);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family: ui-sans-serif, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans Thai", sans-serif;
+      background:
+        radial-gradient(1100px 500px at 110% -10%, rgba(47,111,235,.08), transparent 40%),
+        radial-gradient(1200px 600px at -10% -20%, rgba(19,166,166,.08), transparent 40%),
+        var(--bg);
+      color:var(--ink);
+      min-height:100vh; display:flex; flex-direction:column;
+      padding-bottom:86px; /* space for bottom bar */
+    }
 
-        .button-container-top {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            width: 100%;
-            max-width: 500px;
-        }
-        
-        .btn-top {
-            background-color: white;
-            border-radius: 20px;
-            overflow: hidden;
-            text-align: center;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-            height: 200px;
-            position: relative;
-        }
-        
-        .btn-top img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-        
-        .btn-top:hover {
-            transform: scale(1.03);
-        }
-        /* ขอบแต่ละปุ่ม */
-        
-        .btn-top:nth-child(1) {
-            border: 4px solid red;
-        }
-        
-        .btn-top:nth-child(2) {
-            border: 4px solid purple;
-        }
-        
-        .btn-top:nth-child(3) {
-            border: 4px solid goldenrod;
-        }
-        
-        .btn-top:nth-child(4) {
-            border: 4px dashed brown;
-        }
-        /* ปุ่มด้านล่าง */
-        
-        .button-container-bottom {
-    position: fixed;
-    bottom: 0;
-    left: 0; /* ตั้งค่าใหม่ */
-    width: 100%; /* ให้เต็มหน้าจอ */
-    display: flex;
-    justify-content: space-around; /* กระจายปุ่มให้เท่าๆ กัน */
-    gap: 10px; /* ระยะห่างระหว่างปุ่ม */
-    background-color: white;
-    padding: 8px 0;
-    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-}
+    header{
+      padding:26px 18px 10px; text-align:center;
+    }
+    .title{
+      font-size:22px; line-height:1.35; font-weight:700;
+    }
+    .sub{ margin-top:8px; color:var(--muted); font-size:13px; }
 
-        .btn-top {
-            background-color: orange;
-            padding: 0; /* ลบ-padding เดิม */
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center; /* ปรับให้ข้อความอยู่ตรงกลาง */
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center; /* ทำให้ไอคอนและข้อความอยู่ตรงกลาง */
-            width: 100%; /* กำหนดขนาดปุ่ม */
-            height: 200px; /* กำหนดขนาดปุ่ม */
-        }
-        
-        .btn-top:nth-child(1) {
-            background-color: rgb(255, 255, 255);
-        }
-        
-        .btn-top:nth-child(2) {
-            background-color: rgb(255, 255, 255);
-        }
-        
-        .btn-top:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 16px rgba(255, 255, 255, 0.15);
-        }
-        
-        .btn-top:active {
-            transform: scale(0.98);
-        }
-        
-        .btn-top img {
-            width: 100%; /* กำหนดขนาดรูปภาพ */
-            height: 100%; /* กำหนดขนาดรูปภาพ */
-            object-fit: cover; /* ทำให้รูปภาพเต็มพื้นที่โดยไม่บิดเบี้ยว */
-            border-radius: 6px;
-        }
-        /* ปุ่มแนวนอนด้านล่าง ติดขอบล่างหน้าจอ */
-        
-        .button-container-bottom {
+    .wrap{ width:100%; max-width:920px; margin:16px auto; padding:0 16px; }
+
+    .clinic{
+      background:var(--panel); border:1px solid rgba(23,48,66,.06);
+      border-radius:18px; padding:18px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.08), 0 1px 0 rgba(255,255,255,.6) inset;
+      position:relative; overflow:hidden;
+    }
+    .clinic::after{
+      content:"";
+      position:absolute; inset:0;
+      background-image:
+        linear-gradient(90deg, transparent 0 78%, var(--line) 78% 79%, transparent 79% 100%),
+        repeating-linear-gradient(0deg, transparent 0 22px, var(--line) 22px 23px);
+      opacity:.6; pointer-events:none;
+      -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 18% 82%, transparent 100%);
+      mask-image: linear-gradient(180deg, transparent 0%, #000 18% 82%, transparent 100%);
+    }
+
+    .banner{
+      display:flex; gap:12px; align-items:center;
+      background:linear-gradient(180deg, rgba(47,111,235,.10), rgba(19,166,166,.06));
+      border:1px solid rgba(47,111,235,.25);
+      padding:12px 14px; border-radius:14px; margin-bottom:14px;
+      box-shadow: 0 6px 16px var(--ring);
+    }
+    .badge{
+      background:#fff; color:#0a3a4a; border:1px solid rgba(23,48,66,.08);
+      padding:6px 10px; border-radius:999px; font-size:12px; font-weight:600;
+    }
+    .hint{ color:#214d63; font-size:13px }
+
+    .grid{
+      display:grid; gap:14px;
+      grid-template-columns:repeat(2,1fr);
+    }
+    @media (min-width:860px){ .grid{ grid-template-columns:repeat(4,1fr);} }
+
+    .tile{
+      position:relative; display:block; height:170px; border-radius:16px; overflow:hidden;
+      border:1px solid rgba(23,48,66,.10);
+      background:#f8fcff;
+      box-shadow: 0 10px 28px rgba(23,48,66,.10);
+      transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+      isolation:isolate;
+    }
+    .tile:hover{ transform: translateY(-2px); border-color: rgba(47,111,235,.35); box-shadow: 0 14px 34px rgba(23,48,66,.16); }
+    .tile img{ width:100%; height:100%; object-fit:cover; display:block; filter:contrast(1.03) saturate(1.04) }
+    .chip{
+      position:absolute; left:10px; top:10px; z-index:2;
+      display:inline-flex; gap:6px; align-items:center;
+      background:#ffffff; color:#0e3f50; border:1px solid rgba(23,48,66,.14);
+      padding:6px 10px; border-radius:999px; font-size:12px; font-weight:600;
+      box-shadow: 0 4px 12px rgba(23,48,66,.10);
+    }
+    .chip::before{ content:"🩺"; }
+
+    .button-container-bottom {
     position: fixed;
     bottom: 0;
     left: 0; /* ตั้งค่าใหม่ */
@@ -250,45 +206,59 @@
             background-color: #ff9900;
             color: white;
         }
-    </style>
+  </style>
 </head>
-
 <body>
+  <header>
+    <div class="title">คลินิกวินิจฉัยโรคพืช</div>
+    <div class="sub">อัปโหลด/สแกนภาพ และดูผลวิเคราะห์พร้อมแนวทางรักษาอย่างรวดเร็ว</div>
+  </header>
 
-    <h1>เลือกพืชที่คุณต้องการ<br>ตรวจหาโรค</h1>
+  <main class="wrap">
+    <section class="clinic">
+      <div class="banner">
+        <span class="badge">โหมดแพทย์</span>
+        <div class="hint">แตะการ์ดเพื่อ “ตรวจ” อาการของพืชชนิดนั้น ๆ</div>
+      </div>
 
-    <div class="button-container-top">
-        <a href="AI1.html" class="btn-top">
-            <img src="2000.png" alt="เงาะ" />
+      <div class="grid">
+        <a href="AI1.html" class="tile" aria-label="เงาะ">
+          <span class="chip">เงาะ • วินิจฉัย</span>
+          <img src="2000.png" alt="เงาะ">
         </a>
-        <a href="AI2.html" class="btn-top">
-            <img src="9999.png" alt="มังคุด" />
+        <a href="AI2.html" class="tile" aria-label="มังคุด">
+          <span class="chip">มังคุด • วินิจฉัย</span>
+          <img src="9999.png" alt="มังคุด">
         </a>
-        <a href="AI3.html" class="btn-top">
-            <img src="4000.png" alt="ทุเรียน" />
+        <a href="AI3.html" class="tile" aria-label="ทุเรียน">
+          <span class="chip">ทุเรียน • วินิจฉัย</span>
+          <img src="4000.png" alt="ทุเรียน">
         </a>
-        <a href="#" class="btn-top">
-            <img src="5000.png" alt="กำลังพัฒนา" />
+        <a href="#" class="tile" aria-label="กำลังพัฒนา">
+          <span class="chip">กำลังพัฒนา</span>
+          <img src="5000.png" alt="กำลังพัฒนา">
         </a>
-    </div>
+      </div>
+    </section>
+  </main>
 
-    <div class="button-container-bottom">
-        <a href="Home999.html" class="btn-bottom">
-            <img src="60.png" alt="Home" />
-        </a>
-        <a href="shop.html" class="btn-bottom">
+  <!-- Unified Bottom Bar -->
+  <div class="button-container-bottom">
+    <a href="Home999.html" class="btn-bottom">
+      <img src="60.png" alt="Home">
+    </a>
+    <a href="shop.html" class="btn-bottom">
       <img src="333222.png" alt="เมนู">
     </a>
-        <a href="Home.html" class="btn-bottom">
-            <img src="61.png" alt="AI" />
-        </a>
-        <a href="Home555.html" class="btn-bottom">
-            <img src="62.png" alt="วิธีปลูก" />
-        </a>
-        <a href="menu.html" class="btn-bottom">
-            <img src="1000.png" alt="MENU" />
-        </a>
-    </div>
+    <a href="Home.html" class="btn-bottom">
+      <img src="61.png" alt="AI">
+    </a>
+    <a href="Home555.html" class="btn-bottom">
+      <img src="62.png" alt="วิธีปลูก">
+    </a>
+    <a href="menu.html" class="btn-bottom">
+      <img src="1000.png" alt="เมนู">
+    </a>
+  </div>
 </body>
-
 </html>

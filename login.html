@@ -10,10 +10,8 @@
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
       background:#f4f7f6;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px
     }
-    .card{
-      width:100%;max-width:420px;background:#fff;border-radius:16px;
-      box-shadow:0 10px 30px rgba(0,0,0,.08);padding:28px
-    }
+    .card{width:100%;max-width:420px;background:#fff;border-radius:16px;
+      box-shadow:0 10px 30px rgba(0,0,0,.08);padding:28px}
     h1{font-size:22px;margin-bottom:4px}
     p.sub{color:#555;margin-bottom:18px}
     .btn{width:100%;padding:12px 14px;border:0;border-radius:10px;cursor:pointer;font-weight:600}
@@ -30,6 +28,7 @@
     .muted{color:#777;font-size:12px;margin-top:12px}
     .error{color:#c62828;background:#fdecea;border:1px solid #f5c6cb;padding:10px 12px;border-radius:8px;margin-top:10px;display:none;white-space:pre-line}
     .success{color:#1b5e20;background:#e8f5e9;border:1px solid #c8e6c9;padding:10px 12px;border-radius:8px;margin-top:10px;display:none}
+    .warn{display:none;margin-top:10px;padding:10px 12px;border-radius:8px;border:1px solid #ffe08a;background:#fff7da;color:#7a5b00;line-height:1.45}
   </style>
 </head>
 <body>
@@ -37,9 +36,16 @@
     <h1>เข้าสู่ระบบ</h1>
     <p class="sub">เลือกวิธีที่ต้องการด้านล่าง เพื่อไปยังหน้า Home999</p>
 
+    <!-- คำเตือนเมื่อเปิดในแอป (WebView/In-App Browser) -->
+    <div id="inAppWarning" class="warn">
+      ไม่สามารถล็อกอินด้วย Google จากเบราว์เซอร์ที่ฝังในแอปได้
+      โปรดเปิดหน้านี้ด้วยเบราว์เซอร์หลักของเครื่อง<br>
+      <b>Android:</b> แตะเมนู ⋮ → “เปิดใน Chrome” •
+      <b>iOS:</b> ปุ่มแชร์ → “Open in Safari”
+    </div>
+
     <!-- ปุ่ม Google Sign-In -->
     <button id="googleBtn" class="btn btn-google" type="button" aria-label="Sign in with Google">
-      <!-- โลโก้ G แบบ SVG -->
       <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
         <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.1 29.3 35 24 35c-7.2 0-13-5.8-13-13S16.8 9 24 9c3.1 0 5.9 1.1 8 3.1l5.7-5.7C34.5 3.5 29.5 1.5 24 1.5 11.6 1.5 1.5 11.6 1.5 24S11.6 46.5 24 46.5 46.5 36.4 46.5 24c0-1.2-.1-2.3-.3-3.5z"/>
         <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 16.2 18.9 13 24 13c3.1 0 5.9 1.1 8 3.1l5.7-5.7C34.5 7.5 29.5 5.5 24 5.5c-7.8 0-14.5 4.5-17.7 11.2z"/>
@@ -78,15 +84,8 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
     import {
-      getAuth,
-      GoogleAuthProvider,
-      signInWithPopup,
-      signInWithRedirect,
-      getRedirectResult,
-      signInWithEmailAndPassword,
-      createUserWithEmailAndPassword,
-      onAuthStateChanged,
-      updateProfile
+      getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult,
+      signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, updateProfile
     } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 
     // --- Firebase config ของโปรเจกต์คุณ ---
@@ -100,40 +99,48 @@
       measurementId: "G-N8RKQSHP94"
     };
 
-    // Init
+    // ==== Init ====
     document.getElementById('host').textContent = location.hostname;
     const app  = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    auth.languageCode = 'th';
     const provider = new GoogleAuthProvider();
 
-    // ===== Helpers =====
-    const $ = (s)=>document.querySelector(s);
+    // ===== Utils =====
+    const $ = sel => document.querySelector(sel);
     const msgErr = $("#msgError");
     const msgOk  = $("#msgOk");
+    const warn   = $("#inAppWarning");
+
+    function isInAppBrowser(){
+      const ua = navigator.userAgent || '';
+      // ครอบคลุม FB/IG/LINE/TikTok/Twitter และ Android WebView (wv)
+      return /(FBAN|FBAV|Instagram|Line|LINE|TikTok|Twitter|MicroMessenger|WeChat|wv)/i.test(ua);
+    }
+    function isMobile(){ return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent); }
 
     function goHome(user){
-      const display = user.displayName || (user.email ? user.email.split("@")[0] : "ผู้ใช้");
-      const url = `Home999.html?name=${encodeURIComponent(display)}`;
-      window.location.href = url;
+      const display = user?.displayName || (user?.email ? user.email.split("@")[0] : "ผู้ใช้");
+      location.href = `Home999.html?name=${encodeURIComponent(display)}`;
     }
 
     function explainAuthError(e) {
       if (!e || !e.code) return null;
-      if (e.code === 'auth/unauthorized-domain') {
-        return `โดเมนนี้ยังไม่ถูกอนุญาตใน Firebase Authentication\n` +
-               `ให้ไปที่ Firebase Console → Authentication → Settings → Authorized domains\n` +
-               `แล้วเพิ่ม: ${location.hostname}\nจากนั้นรีโหลดหน้าเว็บอีกครั้ง`;
+      switch (e.code) {
+        case 'auth/unauthorized-domain':
+          return `โดเมนนี้ยังไม่ถูกอนุญาตใน Firebase Authentication\n` +
+                 `ไปที่ Firebase Console → Authentication → Settings → Authorized domains\n` +
+                 `แล้วเพิ่ม: ${location.hostname}\nจากนั้นรีโหลดหน้าเว็บอีกครั้ง`;
+        case 'auth/popup-blocked':
+        case 'auth/popup-closed-by-user':
+          return 'เบราว์เซอร์บล็อกป๊อปอัพไว้ ลองใหม่ หรือระบบจะใช้โหมด Redirect ให้อัตโนมัติ';
+        case 'auth/network-request-failed':
+          return 'เครือข่ายมีปัญหา หรือเบราว์เซอร์บล็อก cookies/storage กรุณาลองใหม่';
+        case 'auth/invalid-credential':
+        case 'auth/invalid-login-credentials':
+          return 'อีเมลหรือรหัสผ่านไม่ถูกต้อง';
+        default: return null;
       }
-      if (e.code === 'auth/popup-blocked' || e.code === 'auth/popup-closed-by-user') {
-        return 'เบราว์เซอร์บล็อกป๊อปอัพไว้ ลองใหม่อีกครั้ง หรือใช้โหมด Redirect (ระบบจะลองให้อัตโนมัติ)';
-      }
-      if (e.code === 'auth/network-request-failed') {
-        return 'เครือข่ายมีปัญหา หรือเบราว์เซอร์บล็อก cookies/storage กรุณาลองใหม่';
-      }
-      if (e.code === 'auth/invalid-credential' || e.code === 'auth/invalid-login-credentials') {
-        return 'อีเมลหรือรหัสผ่านไม่ถูกต้อง';
-      }
-      return null;
     }
 
     function showErr(e){
@@ -149,26 +156,40 @@
       msgErr.style.display = "none";
     }
 
-    // ===== Google Sign-In (popup → redirect fallback) =====
+    // หากเปิดจาก in-app browser ให้เตือนและปิดปุ่ม Google
+    let blockedByInApp = false;
+    if (isInAppBrowser()){
+      warn.style.display = 'block';
+      blockedByInApp = true;
+    }
+
+    // ===== Google Sign-In =====
     $("#googleBtn").addEventListener("click", async ()=>{
       try {
-        await signInWithPopup(auth, provider);
-        // onAuthStateChanged จะพาไปต่อ
+        if (blockedByInApp){
+          warn.scrollIntoView({behavior:'smooth'});
+          return; // กัน 403: disallowed_useragent
+        }
+        if (isMobile()) {
+          await signInWithRedirect(auth, provider);   // มือถือใช้ Redirect
+        } else {
+          await signInWithPopup(auth, provider);      // เดสก์ท็อปใช้ Popup
+        }
       } catch (e) {
-        // ถ้าไม่ใช่ unauthorized-domain ให้ลอง redirect เป็นแผนสำรอง
+        // ถ้าไม่ใช่ unauthorized-domain ให้ลอง redirect เป็นสำรอง
         if (e?.code !== 'auth/unauthorized-domain') {
-          try {
-            await signInWithRedirect(auth, provider);
-            return; // จะกลับมาหน้านี้พร้อม session
-          } catch (e2) { showErr(e2); }
+          try { await signInWithRedirect(auth, provider); return; }
+          catch (e2) { showErr(e2); }
         } else {
           showErr(e);
         }
       }
     });
 
-    // รับผลลัพธ์หลัง redirect (ถ้ามี)
-    getRedirectResult(auth).catch(()=>{});
+    // รับผลลัพธ์หลัง redirect (มือถือ)
+    getRedirectResult(auth).then(result=>{
+      if (result?.user) goHome(result.user);
+    }).catch(err=>console.error(err));
 
     // ===== Email/Password: ล็อกอิน =====
     $("#emailForm").addEventListener("submit", async (ev)=>{
@@ -176,7 +197,8 @@
       const email = $("#email").value.trim();
       const pass  = $("#password").value;
       try{
-        await signInWithEmailAndPassword(auth, email, pass);
+        const cred = await signInWithEmailAndPassword(auth, email, pass);
+        goHome(cred.user);
       }catch(e){ showErr(e); }
     });
 
@@ -195,9 +217,7 @@
     });
 
     // ถ้าล็อกอินอยู่แล้วให้เด้งเลย
-    onAuthStateChanged(auth, (user)=>{
-      if(user){ goHome(user); }
-    });
+    onAuthStateChanged(auth, (user)=>{ if(user) goHome(user); });
   </script>
 </body>
 </html>

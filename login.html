@@ -3,59 +3,202 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>เข้าสู่ระบบ</title>
+  <title>เข้าสู่ระบบ • Medimate</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
-    *{box-sizing:border-box} body{font-family:'Prompt',system-ui,sans-serif;background:#f5f7fb;margin:0}
-    .card{max-width:560px;margin:24px auto;background:#fff;border-radius:16px;box-shadow:0 6px 24px rgba(0,0,0,.08);padding:28px}
-    h1{margin:0 0 6px} .muted{color:#6b7280;margin:0 0 16px}
-    .row{display:flex;gap:12px;align-items:center;margin:12px 0}
-    input{width:100%;padding:12px 14px;border:1px solid #d1d5db;border-radius:10px;font-size:16px}
-    button{padding:12px 16px;border:0;border-radius:12px;font-weight:600;cursor:pointer}
-    .btn{background:#2563eb;color:#fff} .btn.outline{background:#fff;color:#2563eb;border:2px solid #2563eb}
-    .btn.google{background:#fff;border:1px solid #e5e7eb;color:#111}
-    .foot{display:flex;gap:10px;flex-wrap:wrap}
-    .err{background:#fde8e8;border:1px solid #f5c2c2;color:#b42318;padding:12px;border-radius:10px;margin-top:10px;display:none}
-    .warn{display:none;background:#fff7e6;border:1px solid #ffe3a3;color:#8a6d1a;padding:10px;border-radius:10px;margin-top:8px}
+    :root{
+      --bg1:#0ea5e9;  /* sky-500 */
+      --bg2:#22c55e;  /* green-500 */
+      --card: rgba(255,255,255,.75);
+      --stroke: rgba(255,255,255,.35);
+      --text:#0f172a; /* slate-900 */
+      --muted:#64748b; /* slate-500 */
+      --brand:#2563eb;
+      --brand-2:#16a34a;
+      --danger:#b42318;
+      --warning:#8a6d1a;
+      --radius:18px;
+      --shadow: 0 10px 35px rgba(0,0,0,.18);
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:'Prompt',system-ui,sans-serif; color:var(--text);
+      min-height:100svh; display:grid; place-items:center;
+      background: radial-gradient(1200px 800px at 0% 0%, rgba(255,255,255,.25), transparent 60%),
+                  radial-gradient(900px 700px at 100% 100%, rgba(255,255,255,.22), transparent 60%),
+                  linear-gradient(135deg, var(--bg1), var(--bg2));
+    }
+
+    .wrap{ width:min(980px, 92vw); display:grid; grid-template-columns: 1.05fr .95fr; gap:28px }
+    @media (max-width:900px){ .wrap{ grid-template-columns:1fr } }
+
+    /* left hero */
+    .hero{
+      backdrop-filter: blur(8px);
+      border-radius: var(--radius);
+      border: 1px solid var(--stroke);
+      background: linear-gradient(180deg, rgba(255,255,255,.45), rgba(255,255,255,.30));
+      box-shadow: var(--shadow);
+      padding: 32px;
+      display:flex; flex-direction:column; justify-content:center;
+    }
+    .badge{
+      display:inline-flex; gap:8px; align-items:center;
+      background: rgba(255,255,255,.65);
+      border:1px solid var(--stroke); border-radius: 999px;
+      padding:8px 14px; font-weight:600; color:#0b3b2c
+    }
+    .hero h1{ font-size: clamp(26px, 3.6vw, 40px); line-height:1.15; margin:14px 0 10px }
+    .hero p{ color:var(--text); opacity:.85; margin:0 0 14px }
+    .points{ display:grid; gap:10px; margin-top:14px }
+    .pill{ display:flex; gap:10px; align-items:center; background: rgba(255,255,255,.7); border:1px solid var(--stroke); border-radius:12px; padding:10px 12px }
+    .pill svg{ flex:0 0 20px }
+
+    /* card */
+    .card{
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 26px 24px 22px;
+      display:flex; flex-direction:column; gap:16px;
+      backdrop-filter: blur(10px);
+    }
+    .logoRow{ display:flex; align-items:center; justify-content:space-between }
+    .app{ display:flex; gap:10px; align-items:center }
+    .app .mark{
+      width:36px; height:36px; border-radius:10px;
+      background: linear-gradient(135deg, var(--brand), #60a5fa);
+      display:grid; place-items:center; color:white; font-weight:800
+    }
+    .title{ margin:6px 0 0; font-size:22px; font-weight:700 }
+    .sub{ margin:0; color:var(--muted) }
+
+    /* Google btn */
+    .gbtn{
+      width:100%; display:flex; align-items:center; justify-content:center; gap:10px;
+      padding:14px 16px; border-radius:14px; border:1px solid #e5e7eb; background:#fff; font-weight:700; cursor:pointer
+    }
+    .gbtn:hover{ transform: translateY(-1px); box-shadow:0 8px 18px rgba(0,0,0,.06) }
+    .gicon{ width:18px; height:18px }
+
+    .or{ display:grid; grid-template-columns:1fr auto 1fr; gap:12px; align-items:center; color:var(--muted); font-weight:600 }
+    .line{ height:1px; background:#e5e7eb }
+
+    /* form */
+    .field{ position:relative }
+    .input{
+      width:100%; padding:14px 14px 14px 44px;
+      border:1.2px solid #d1d5db; border-radius:14px; background: rgba(255,255,255,.9); outline: none; font-size:16px;
+      transition:.15s border-color ease
+    }
+    .input:focus{ border-color:#60a5fa; box-shadow:0 0 0 4px rgba(37,99,235,.12) }
+    .icon{
+      position:absolute; left:14px; top:50%; transform:translateY(-50%); opacity:.55
+    }
+
+    .actions{ display:flex; gap:10px; flex-wrap:wrap }
+    .btn{
+      flex:1; min-width:140px; padding:13px 14px; border:0; border-radius:14px; font-weight:700; cursor:pointer
+    }
+    .btn.primary{ background:linear-gradient(135deg, var(--brand), #60a5fa); color:#fff }
+    .btn.ghost{ background:#fff; color:var(--brand); border:2px solid var(--brand) }
+    .btn.ghost.green{ color:var(--brand-2); border-color:var(--brand-2) }
+
+    .help{ display:flex; justify-content:space-between; color:var(--muted); font-size:14px }
+    .link{ color:var(--brand); font-weight:600; text-decoration:none; cursor:pointer }
+
+    .warn, .err{
+      border-radius:12px; padding:12px 14px; display:none
+    }
+    .warn{ background:#fff7e6; border:1px solid #ffe3a3; color:var(--warning) }
+    .err{ background:#fde8e8; border:1px solid #f5c2c2; color:var(--danger) }
+
+    footer{ margin-top:10px; text-align:center; color:#fafafa; opacity:.9; font-size:13px }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>เข้าสู่ระบบ</h1>
-    <p class="muted">เลือกวิธีด้านล่างเพื่อไปยังหน้า Home999</p>
+  <div class="wrap">
+    <!-- Left: value proposition / brand -->
+    <section class="hero">
+      <span class="badge">🌿 Medimate • ดูแลสุขภาพได้ง่ายขึ้น</span>
+      <h1>เข้าสู่ระบบเพื่อเริ่ม<br/>ติดตามสุขภาพ & การดูแลต้นไม้ของคุณ</h1>
+      <p>ล็อกอินได้ทั้ง Google และอีเมล ปลอดภัยด้วย Firebase Authentication</p>
+      <div class="points">
+        <div class="pill">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M20 7l-9 9-5-5" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          เข้าสู่ระบบได้บนทุกอุปกรณ์
+        </div>
+        <div class="pill">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 8v4l3 3" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="#2563eb" stroke-width="2"/></svg>
+          ปลอดภัย ใช้ OAuth ของ Google
+        </div>
+        <div class="pill">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M21 21l-4.35-4.35M10 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16Z" stroke="#0f172a" stroke-width="2" stroke-linecap="round"/></svg>
+          ใช้งานง่าย UI สะอาดตา
+        </div>
+      </div>
+    </section>
 
-    <div class="row">
-      <button id="googleBtn" class="btn google" style="width:100%">🔹 เข้าด้วย Google</button>
-    </div>
+    <!-- Right: login card -->
+    <section class="card">
+      <div class="logoRow">
+        <div class="app">
+          <div class="mark">M</div>
+          <div>
+            <div class="title">เข้าสู่ระบบ</div>
+            <p class="sub">เลือกวิธีด้านล่างเพื่อไปยังหน้า Home999</p>
+          </div>
+        </div>
+      </div>
 
-    <div class="row"><div style="flex:1;height:1px;background:#e5e7eb"></div><div class="muted">หรือ</div><div style="flex:1;height:1px;background:#e5e7eb"></div></div>
+      <button id="googleBtn" class="gbtn" aria-label="Sign in with Google">
+        <svg class="gicon" viewBox="0 0 48 48">
+          <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.9 32.4 29.4 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6 29.6 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.9z"/>
+          <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.5 16.6 18.9 14 24 14c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6 29.6 4 24 4 15.6 4 8.4 8.7 6.3 14.7z"/>
+          <path fill="#4CAF50" d="M24 44c5.3 0 10.1-2 13.7-5.3l-6.3-5.2C29.4 36 26.9 37 24 37c-5.3 0-9.8-3.6-11.3-8.5l-6.6 5.1C8.4 39.3 15.6 44 24 44z"/>
+          <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-1.3 3.9-5.8 7-11.3 7-3.1 0-5.9-1.2-8-3.1l-5.7 5.7C14.6 42 19.6 44 24 44c11.1 0 20-8.9 20-20 0-1.3-.1-2.7-.4-3.9z"/>
+        </svg>
+        เข้าด้วย Google
+      </button>
 
-    <div class="row"><input id="email" type="email" placeholder="อีเมล"></div>
-    <div class="row"><input id="password" type="password" placeholder="รหัสผ่าน"></div>
+      <div class="or"><div class="line"></div><div>หรือ</div><div class="line"></div></div>
 
-    <div class="row foot">
-      <button id="loginBtn" class="btn" style="flex:1">ล็อกอิน</button>
-      <button id="signupBtn" class="btn outline" style="flex:1">สมัคร</button>
-      <button id="resetBtn" class="btn outline" style="flex:1">ลืมรหัสผ่าน</button>
-    </div>
+      <div class="field">
+        <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 7a8 8 0 1 0 16 0A8 8 0 0 0 4 7Zm16 14a8 8 0 1 0-16 0" stroke="#475569" stroke-width="1.8"/></svg>
+        <input id="email" class="input" type="email" placeholder="อีเมล">
+      </div>
+      <div class="field">
+        <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="10" width="18" height="11" rx="2" stroke="#475569" stroke-width="1.8"/><path d="M8 10V7a4 4 0 1 1 8 0v3" stroke="#475569" stroke-width="1.8"/></svg>
+        <input id="password" class="input" type="password" placeholder="รหัสผ่าน">
+      </div>
 
-    <div id="inAppWarning" class="warn">
-      เบราว์เซอร์ในแอปไม่รองรับการล็อกอินด้วย Google กรุณาเปิดหน้านี้ใน Chrome/Safari
-      (Android: ⋮ → “เปิดใน Chrome”, iOS: Share → “Open in Safari”)
-    </div>
-    <div id="msg" class="err"></div>
+      <div class="actions">
+        <button id="loginBtn" class="btn primary">ล็อกอิน</button>
+        <button id="signupBtn" class="btn ghost">สมัคร</button>
+        <button id="resetBtn" class="btn ghost green">ลืมรหัสผ่าน</button>
+      </div>
+
+      <div id="inAppWarning" class="warn">
+        เบราว์เซอร์ในแอปไม่รองรับ Google Sign-in กรุณาเปิดหน้านี้ใน Chrome/Safari
+      </div>
+      <div id="msg" class="err"></div>
+    </section>
   </div>
 
+  <footer>© 2025 Medimate</footer>
+
+  <!-- ======= Auth Logic (คงเดิมแต่ซ่อนในท้ายไฟล์) ======= -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
     import {
       getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult,
       createUserWithEmailAndPassword, signInWithEmailAndPassword, fetchSignInMethodsForEmail,
-      sendPasswordResetEmail, EmailAuthProvider, linkWithCredential
+      sendPasswordResetEmail
     } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
 
-    // ---- Firebase config ของคุณ (ใช้ชุดเดิม) ----
     const firebaseConfig = {
       apiKey: "AIzaSyDq60nePWYn2AXt4gkJSqnTlpR84ZfkTUw",
       authDomain: "beneficial-applications.firebaseapp.com",
@@ -71,100 +214,66 @@
     auth.languageCode = 'th';
     const provider = new GoogleAuthProvider();
 
-    // ---------- Helpers ----------
     const $ = (id)=>document.getElementById(id);
-    const showErr = (t)=>{ const el=$('msg'); el.textContent=t; el.style.display='block'; };
-    const clearErr = ()=>{ const el=$('msg'); el.style.display='none'; el.textContent=''; };
-    const gotoHome = ()=>{ window.location.href='Home999.html'; };
+    const err = (m)=>{ const el=$('msg'); el.textContent=m; el.style.display='block'; };
+    const clear = ()=>{ const el=$('msg'); el.textContent=''; el.style.display='none'; };
+    const go = ()=>location.href='Home999.html';
 
-    // In-app browser detection (LINE/FB/IG/TikTok ฯลฯ)
-    function isInAppBrowser(){
-      const ua = navigator.userAgent || '';
-      return /(FBAN|FBAV|Instagram|Line|LINE|Twitter|TikTok|WeChat|MicroMessenger|wv)/i.test(ua);
-    }
-    if (isInAppBrowser()) $('inAppWarning').style.display = 'block';
+    function isInApp(){ const ua=navigator.userAgent||''; return /(FBAN|FBAV|Instagram|Line|LINE|Twitter|TikTok|WeChat|MicroMessenger|wv)/i.test(ua); }
+    if (isInApp()) $('inAppWarning').style.display='block';
 
-    // ---------- Email/Password ----------
+    // Google: ใช้ redirect เสมอ
+    $('googleBtn').addEventListener('click', async ()=>{
+      clear();
+      if (isInApp()) { $('inAppWarning').scrollIntoView({behavior:'smooth'}); return; }
+      try { await signInWithRedirect(auth, provider); }
+      catch(e){ err(`ผิดพลาด: ${e.code}`); console.error(e); }
+    });
+
+    // รับผลหลัง redirect
+    getRedirectResult(auth).then(r=>{ if(r?.user) go(); }).catch(e=>{ err(`ผิดพลาด: ${e.code}`); console.error(e); });
+
+    // Email/Password
     $('loginBtn').addEventListener('click', async ()=>{
-      clearErr();
-      const email = $('email').value.trim();
-      const pass  = $('password').value;
-      if(!email || !pass){ showErr('กรอกอีเมลและรหัสผ่าน'); return; }
-      try{
-        await signInWithEmailAndPassword(auth, email, pass);
-        gotoHome();
-      }catch(e){
-        if(e.code==='auth/user-not-found') showErr('ไม่พบบัญชีนี้ โปรดกด "สมัคร" หรือใช้ Google');
-        else if(e.code==='auth/wrong-password'||e.code==='auth/invalid-credential') showErr('รหัสผ่านไม่ถูกต้อง');
-        else if(e.code==='auth/too-many-requests') showErr('พยายามบ่อยเกินไป โปรดลองใหม่หรือตั้งรหัสผ่านใหม่');
-        else showErr(`ผิดพลาด: ${e.code}`);
-        console.error(e);
+      clear();
+      const email=$('email').value.trim(), pass=$('password').value;
+      if(!email||!pass) return err('กรอกอีเมลและรหัสผ่าน');
+      try{ await signInWithEmailAndPassword(auth, email, pass); go(); }
+      catch(e){
+        const map={
+          'auth/user-not-found':'ไม่พบบัญชีนี้ โปรดกด "สมัคร" หรือใช้ Google',
+          'auth/wrong-password':'รหัสผ่านไม่ถูกต้อง',
+          'auth/invalid-credential':'รหัสผ่านไม่ถูกต้อง',
+          'auth/too-many-requests':'พยายามบ่อยเกินไป โปรดลองใหม่'
+        };
+        err(map[e.code]||`ผิดพลาด: ${e.code}`); console.error(e);
       }
     });
 
     $('signupBtn').addEventListener('click', async ()=>{
-      clearErr();
-      const email = $('email').value.trim();
-      const pass  = $('password').value;
-      if(!email || !pass){ showErr('กรอกอีเมลและตั้งรหัสผ่าน'); return; }
+      clear();
+      const email=$('email').value.trim(), pass=$('password').value;
+      if(!email||!pass) return err('กรอกอีเมลและตั้งรหัสผ่าน');
       try{
         const methods = await fetchSignInMethodsForEmail(auth, email);
-        if(methods.includes('password')){ showErr('อีเมลนี้มีบัญชีอยู่แล้ว กด "ล็อกอิน" หรือ "ลืมรหัสผ่าน"'); return; }
-        if(methods.includes('google.com')){ showErr('อีเมลนี้สมัครด้วย Google ให้กดปุ่ม Google'); return; }
-        await createUserWithEmailAndPassword(auth, email, pass);
-        gotoHome();
+        if(methods.includes('password')) return err('อีเมลนี้มีบัญชีอยู่แล้ว กรุณา "ล็อกอิน" หรือ "ลืมรหัสผ่าน"');
+        if(methods.includes('google.com')) return err('อีเมลนี้สมัครด้วย Google ให้กดปุ่ม Google');
+        await createUserWithEmailAndPassword(auth, email, pass); go();
       }catch(e){
-        if(e.code==='auth/email-already-in-use') showErr('อีเมลนี้ถูกใช้แล้ว โปรดล็อกอินหรือรีเซ็ตรหัสผ่าน');
-        else if(e.code==='auth/weak-password') showErr('รหัสผ่านอย่างน้อย 6 ตัวอักษร');
-        else showErr(`ผิดพลาด: ${e.code}`);
+        err(e.code==='auth/email-already-in-use' ? 'อีเมลนี้ถูกใช้แล้ว' :
+            e.code==='auth/weak-password' ? 'รหัสผ่านอย่างน้อย 6 ตัวอักษร' :
+            `ผิดพลาด: ${e.code}`);
         console.error(e);
       }
     });
 
     $('resetBtn').addEventListener('click', async ()=>{
-      clearErr();
-      const email = $('email').value.trim();
-      if(!email){ showErr('พิมพ์อีเมลที่จะรีเซ็ตรหัสผ่านก่อน'); return; }
-      try{
-        await sendPasswordResetEmail(auth, email);
-        alert('ส่งลิงก์ตั้งรหัสผ่านใหม่ไปที่อีเมลแล้ว');
-      }catch(e){
-        if(e.code==='auth/user-not-found') showErr('ไม่พบอีเมลนี้ในระบบ ลองสมัครใหม่');
-        else showErr(`ผิดพลาด: ${e.code}`);
-        console.error(e);
-      }
+      clear();
+      const email=$('email').value.trim();
+      if(!email) return err('พิมพ์อีเมลที่จะรีเซ็ตรหัสผ่านก่อน');
+      try{ await sendPasswordResetEmail(auth, email); alert('ส่งลิงก์ตั้งรหัสผ่านใหม่ไปที่อีเมลแล้ว'); }
+      catch(e){ err(e.code==='auth/user-not-found'?'ไม่พบอีเมลนี้ในระบบ':`ผิดพลาด: ${e.code}`); console.error(e); }
     });
-
-    // ---------- Google Sign-in: ใช้ "redirect" เสมอ ----------
-    $('googleBtn').addEventListener('click', async ()=>{
-      clearErr();
-      if (isInAppBrowser()){ $('inAppWarning').scrollIntoView({behavior:'smooth'}); return; }
-      try{
-        await signInWithRedirect(auth, provider);   // ใช้ redirect ตลอด = เสถียรกว่าบนมือถือ/บล็อก popup
-      }catch(e){
-        if(e.code==='auth/unauthorized-domain'){
-          showErr('โดเมนนี้ยังไม่ได้รับอนุญาตใน Firebase → Authentication → Settings → Authorized domains');
-        }else if(e.code==='auth/account-exists-with-different-credential'){
-          const email = e.customData?.email;
-          const methods = email ? await fetchSignInMethodsForEmail(auth, email) : [];
-          showErr(`อีเมลนี้ลงทะเบียนไว้ด้วย: ${methods.join(', ')||'บัญชีอื่น'} โปรดใช้วิธีนั้นในการเข้าสู่ระบบ`);
-        }else{
-          showErr(`ผิดพลาด: ${e.code}`);
-        }
-        console.error(e);
-      }
-    });
-
-    // รับผลหลัง redirect
-    getRedirectResult(auth)
-      .then((res)=>{ if(res?.user) gotoHome(); })
-      .catch((err)=>{ console.error(err); showErr(`ผิดพลาด: ${err.code||err.message}`); });
-
-    // (ตัวเลือก) ผูกรหัสผ่านเพิ่มให้ผู้ใช้ Google ที่ล็อกอินแล้ว
-    async function addPasswordToGoogleUser(email, newPassword){
-      const cred = EmailAuthProvider.credential(email, newPassword);
-      await linkWithCredential(auth.currentUser, cred);
-    }
   </script>
 </body>
 </html>

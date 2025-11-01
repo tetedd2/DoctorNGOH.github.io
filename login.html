@@ -1,94 +1,62 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>เข้าสู่ระบบ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
-    *{margin:0;padding:0;box-sizing:border-box}
-    body{
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
-      background:#f4f7f6;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px
-    }
-    .card{width:100%;max-width:420px;background:#fff;border-radius:16px;
-      box-shadow:0 10px 30px rgba(0,0,0,.08);padding:28px}
-    h1{font-size:22px;margin-bottom:4px}
-    p.sub{color:#555;margin-bottom:18px}
-    .btn{width:100%;padding:12px 14px;border:0;border-radius:10px;cursor:pointer;font-weight:600}
-    .btn-google{display:flex;gap:10px;align-items:center;justify-content:center;margin-top:8px;background:#fff;border:1px solid #e3e3e3}
-    .btn-google:hover{background:#fafafa}
-    .or{display:flex;align-items:center;gap:10px;margin:18px 0;color:#666;font-size:13px}
-    .or::before,.or::after{content:"";flex:1;height:1px;background:#e9e9e9}
-    label{font-weight:600;margin:10px 0 6px;display:block}
-    input{width:100%;padding:11px 12px;border:1px solid #ddd;border-radius:10px}
-    .btn-primary{background:#007bff;color:#fff;margin-top:12px}
-    .btn-primary:hover{background:#0067d8}
-    .row{display:flex;gap:10px;margin-top:10px}
-    .row .btn{flex:1}
-    .muted{color:#777;font-size:12px;margin-top:12px}
-    .error{color:#c62828;background:#fdecea;border:1px solid #f5c6cb;padding:10px 12px;border-radius:8px;margin-top:10px;display:none;white-space:pre-line}
-    .success{color:#1b5e20;background:#e8f5e9;border:1px solid #c8e6c9;padding:10px 12px;border-radius:8px;margin-top:10px;display:none}
-    .warn{display:none;margin-top:10px;padding:10px 12px;border-radius:8px;border:1px solid #ffe08a;background:#fff7da;color:#7a5b00;line-height:1.45}
+    *{box-sizing:border-box} body{font-family:'Prompt',system-ui,sans-serif;background:#f5f7fb;margin:0}
+    .card{max-width:560px;margin:24px auto;background:#fff;border-radius:16px;box-shadow:0 6px 24px rgba(0,0,0,.08);padding:28px}
+    h1{margin:0 0 6px} .muted{color:#6b7280;margin:0 0 16px}
+    .row{display:flex;gap:12px;align-items:center;margin:12px 0}
+    input{width:100%;padding:12px 14px;border:1px solid #d1d5db;border-radius:10px;font-size:16px}
+    button{padding:12px 16px;border:0;border-radius:12px;font-weight:600;cursor:pointer}
+    .btn{background:#2563eb;color:#fff} .btn.outline{background:#fff;color:#2563eb;border:2px solid #2563eb}
+    .btn.google{background:#fff;border:1px solid #e5e7eb;color:#111}
+    .foot{display:flex;gap:10px;flex-wrap:wrap}
+    .err{background:#fde8e8;border:1px solid #f5c2c2;color:#b42318;padding:12px;border-radius:10px;margin-top:10px;display:none}
+    .warn{display:none;background:#fff7e6;border:1px solid #ffe3a3;color:#8a6d1a;padding:10px;border-radius:10px;margin-top:8px}
+    .link{color:#2563eb;cursor:pointer;text-decoration:underline}
   </style>
 </head>
 <body>
   <div class="card">
     <h1>เข้าสู่ระบบ</h1>
-    <p class="sub">เลือกวิธีที่ต้องการด้านล่าง เพื่อไปยังหน้า Home999</p>
+    <p class="muted">เลือกวิธีด้านล่างเพื่อไปยังหน้า Home999</p>
 
-    <!-- คำเตือนเมื่อเปิดในแอป (WebView/In-App Browser) -->
-    <div id="inAppWarning" class="warn">
-      ไม่สามารถล็อกอินด้วย Google จากเบราว์เซอร์ที่ฝังในแอปได้
-      โปรดเปิดหน้านี้ด้วยเบราว์เซอร์หลักของเครื่อง<br>
-      <b>Android:</b> แตะเมนู ⋮ → “เปิดใน Chrome” •
-      <b>iOS:</b> ปุ่มแชร์ → “Open in Safari”
+    <div class="row">
+      <button id="googleBtn" class="btn google" style="width:100%">🔹 เข้าด้วย Google</button>
     </div>
 
-    <!-- ปุ่ม Google Sign-In -->
-    <button id="googleBtn" class="btn btn-google" type="button" aria-label="Sign in with Google">
-      <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
-        <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.1 29.3 35 24 35c-7.2 0-13-5.8-13-13S16.8 9 24 9c3.1 0 5.9 1.1 8 3.1l5.7-5.7C34.5 3.5 29.5 1.5 24 1.5 11.6 1.5 1.5 11.6 1.5 24S11.6 46.5 24 46.5 46.5 36.4 46.5 24c0-1.2-.1-2.3-.3-3.5z"/>
-        <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 16.2 18.9 13 24 13c3.1 0 5.9 1.1 8 3.1l5.7-5.7C34.5 7.5 29.5 5.5 24 5.5c-7.8 0-14.5 4.5-17.7 11.2z"/>
-        <path fill="#4CAF50" d="M24 42.5c5.2 0 10-2 13.5-5.3l-6.2-5.1c-2 1.4-4.6 2.2-7.3 2.2-5.2 0-9.6-3.5-11.2-8.3L6 31.3C9.2 38 16 42.5 24 42.5z"/>
-        <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-1 2.9-3.1 5.3-5.9 6.8l.1.1 6.2 5.1c-.4.4 8.3-4.9 8.3-16.9 0-1.2-.1-2.3-.4-3.6z"/>
-      </svg>
-      เข้าด้วย Google
-    </button>
+    <div class="row"><div style="flex:1;height:1px;background:#e5e7eb"></div><div class="muted">หรือ</div><div style="flex:1;height:1px;background:#e5e7eb"></div></div>
 
-    <div class="or">หรือ</div>
+    <div class="row"><input id="email" type="email" placeholder="อีเมล"></div>
+    <div class="row"><input id="password" type="password" placeholder="รหัสผ่าน"></div>
 
-    <!-- อีเมล / รหัสผ่าน -->
-    <form id="emailForm">
-      <label for="email">อีเมล</label>
-      <input id="email" type="email" placeholder="you@example.com" autocomplete="username" required />
+    <div class="row foot">
+      <button id="loginBtn" class="btn" style="flex:1">ล็อกอิน</button>
+      <button id="signupBtn" class="btn outline" style="flex:1">สมัคร</button>
+      <button id="resetBtn" class="btn outline" style="flex:1">ลืมรหัสผ่าน</button>
+    </div>
 
-      <label for="password">รหัสผ่าน</label>
-      <input id="password" type="password" placeholder="อย่างน้อย 6 ตัวอักษร" autocomplete="current-password" required />
-
-      <div class="row">
-        <button id="loginBtn" type="submit" class="btn btn-primary">ล็อกอิน</button>
-        <button id="signupBtn" type="button" class="btn" style="border:1px solid #ddd;background:#fff;">สมัคร</button>
-      </div>
-    </form>
-
-    <div id="msgError" class="error"></div>
-    <div id="msgOk" class="success"></div>
-
-    <p class="muted">
-      หมายเหตุ: ถ้าเห็นข้อความโดเมนไม่ได้รับอนุญาต ให้เพิ่ม <code><span id="host"></span></code>
-      ใน Firebase Console → Authentication → Settings → Authorized domains
-    </p>
+    <div id="inAppWarning" class="warn">
+      เบราว์เซอร์ในแอปไม่รองรับการล็อกอินด้วย Google กรุณาเปิดหน้านี้ใน Chrome/Safari
+      (Android: เมนู ⋮ → เปิดใน Chrome, iOS: Share → Open in Safari)
+    </div>
+    <div id="msg" class="err"></div>
   </div>
 
-  <!-- Firebase v10 (modular) -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
     import {
       getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult,
-      signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, updateProfile
-    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+      createUserWithEmailAndPassword, signInWithEmailAndPassword, fetchSignInMethodsForEmail,
+      sendPasswordResetEmail, EmailAuthProvider, linkWithCredential
+    } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
 
-    // --- Firebase config ของโปรเจกต์คุณ ---
+    // ----- Firebase config (ของคุณ) -----
     const firebaseConfig = {
       apiKey: "AIzaSyDq60nePWYn2AXt4gkJSqnTlpR84ZfkTUw",
       authDomain: "beneficial-applications.firebaseapp.com",
@@ -99,125 +67,124 @@
       measurementId: "G-N8RKQSHP94"
     };
 
-    // ==== Init ====
-    document.getElementById('host').textContent = location.hostname;
-    const app  = initializeApp(firebaseConfig);
+    const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     auth.languageCode = 'th';
     const provider = new GoogleAuthProvider();
 
-    // ===== Utils =====
-    const $ = sel => document.querySelector(sel);
-    const msgErr = $("#msgError");
-    const msgOk  = $("#msgOk");
-    const warn   = $("#inAppWarning");
+    // ---------- Utilities ----------
+    const $ = (id)=>document.getElementById(id);
+    function showErr(t){ const el=$('msg'); el.textContent=t; el.style.display='block'; }
+    function clearErr(){ const el=$('msg'); el.style.display='none'; el.textContent=''; }
+    function gotoHome(){ window.location.href = 'Home999.html'; }
 
+    // ป้องกัน in-app browser (จะทำให้เกิด disallowed_useragent)
     function isInAppBrowser(){
       const ua = navigator.userAgent || '';
-      // ครอบคลุม FB/IG/LINE/TikTok/Twitter และ Android WebView (wv)
-      return /(FBAN|FBAV|Instagram|Line|LINE|TikTok|Twitter|MicroMessenger|WeChat|wv)/i.test(ua);
+      return /(FBAN|FBAV|Instagram|Line|LINE|Twitter|TikTok|WeChat|MicroMessenger|wv)/i.test(ua);
     }
-    function isMobile(){ return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent); }
+    if(isInAppBrowser()){ $('inAppWarning').style.display='block'; }
 
-    function goHome(user){
-      const display = user?.displayName || (user?.email ? user.email.split("@")[0] : "ผู้ใช้");
-      location.href = `Home999.html?name=${encodeURIComponent(display)}`;
-    }
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-    function explainAuthError(e) {
-      if (!e || !e.code) return null;
-      switch (e.code) {
-        case 'auth/unauthorized-domain':
-          return `โดเมนนี้ยังไม่ถูกอนุญาตใน Firebase Authentication\n` +
-                 `ไปที่ Firebase Console → Authentication → Settings → Authorized domains\n` +
-                 `แล้วเพิ่ม: ${location.hostname}\nจากนั้นรีโหลดหน้าเว็บอีกครั้ง`;
-        case 'auth/popup-blocked':
-        case 'auth/popup-closed-by-user':
-          return 'เบราว์เซอร์บล็อกป๊อปอัพไว้ ลองใหม่ หรือระบบจะใช้โหมด Redirect ให้อัตโนมัติ';
-        case 'auth/network-request-failed':
-          return 'เครือข่ายมีปัญหา หรือเบราว์เซอร์บล็อก cookies/storage กรุณาลองใหม่';
-        case 'auth/invalid-credential':
-        case 'auth/invalid-login-credentials':
-          return 'อีเมลหรือรหัสผ่านไม่ถูกต้อง';
-        default: return null;
+    // ---------- Email Login ----------
+    $('loginBtn').addEventListener('click', async ()=>{
+      clearErr();
+      const email = $('email').value.trim();
+      const pass  = $('password').value;
+      if(!email || !pass){ showErr('กรอกอีเมลและรหัสผ่าน'); return; }
+      try{
+        // ใช้ signIn อย่างเดียว (ห้าม create ในปุ่มล็อกอิน)
+        await signInWithEmailAndPassword(auth, email, pass);
+        gotoHome();
+      }catch(e){
+        // mapping ข้อความให้เข้าใจง่าย
+        if(e.code==='auth/user-not-found'){ showErr('ไม่พบบัญชีนี้ โปรดกด "สมัคร" หรือใช้ Google'); }
+        else if(e.code==='auth/wrong-password' || e.code==='auth/invalid-credential'){ showErr('รหัสผ่านไม่ถูกต้อง'); }
+        else if(e.code==='auth/too-many-requests'){ showErr('พยายามบ่อยเกินไป โปรดลองใหม่หรือตั้งรหัสผ่านใหม่'); }
+        else { showErr(`ผิดพลาด: ${e.code}`); console.error(e); }
       }
-    }
+    });
 
-    function showErr(e){
-      const friendly = explainAuthError(e);
-      msgErr.textContent = friendly || (e?.message || "เกิดข้อผิดพลาด");
-      msgErr.style.display = "block";
-      msgOk.style.display = "none";
-      console.error(e);
-    }
-    function showOk(t){
-      msgOk.textContent = t;
-      msgOk.style.display = "block";
-      msgErr.style.display = "none";
-    }
-
-    // หากเปิดจาก in-app browser ให้เตือนและปิดปุ่ม Google
-    let blockedByInApp = false;
-    if (isInAppBrowser()){
-      warn.style.display = 'block';
-      blockedByInApp = true;
-    }
-
-    // ===== Google Sign-In =====
-    $("#googleBtn").addEventListener("click", async ()=>{
-      try {
-        if (blockedByInApp){
-          warn.scrollIntoView({behavior:'smooth'});
-          return; // กัน 403: disallowed_useragent
+    // ---------- Sign Up ----------
+    $('signupBtn').addEventListener('click', async ()=>{
+      clearErr();
+      const email = $('email').value.trim();
+      const pass  = $('password').value;
+      if(!email || !pass){ showErr('กรอกอีเมลและตั้งรหัสผ่าน'); return; }
+      try{
+        // ตรวจว่ามีวิธีลงทะเบียนอยู่แล้วหรือไม่
+        const methods = await fetchSignInMethodsForEmail(auth, email);
+        if(methods.length){
+          // มีบัญชีอยู่แล้ว
+          if(methods.includes('password')){
+            showErr('อีเมลนี้มีบัญชีอยู่แล้ว โปรดกด "ล็อกอิน" หรือใช้เมนู "ลืมรหัสผ่าน"');
+            return;
+          }
+          if(methods.includes('google.com')){
+            showErr('อีเมลนี้เคยสมัครด้วย Google โปรดกด "เข้าสู่ระบบด้วย Google"');
+            return;
+          }
         }
-        if (isMobile()) {
-          await signInWithRedirect(auth, provider);   // มือถือใช้ Redirect
-        } else {
-          await signInWithPopup(auth, provider);      // เดสก์ท็อปใช้ Popup
-        }
-      } catch (e) {
-        // ถ้าไม่ใช่ unauthorized-domain ให้ลอง redirect เป็นสำรอง
-        if (e?.code !== 'auth/unauthorized-domain') {
-          try { await signInWithRedirect(auth, provider); return; }
-          catch (e2) { showErr(e2); }
-        } else {
-          showErr(e);
+        await createUserWithEmailAndPassword(auth, email, pass);
+        gotoHome();
+      }catch(e){
+        if(e.code==='auth/email-already-in-use'){
+          showErr('อีเมลนี้ถูกใช้แล้ว โปรดล็อกอิน หรือกด "ลืมรหัสผ่าน"');
+        } else if(e.code==='auth/weak-password'){
+          showErr('รหัสผ่านสั้นเกินไป (อย่างน้อย 6 ตัวอักษร)');
+        } else{
+          showErr(`ผิดพลาด: ${e.code}`); console.error(e);
         }
       }
     });
 
-    // รับผลลัพธ์หลัง redirect (มือถือ)
-    getRedirectResult(auth).then(result=>{
-      if (result?.user) goHome(result.user);
+    // ---------- Reset Password ----------
+    $('resetBtn').addEventListener('click', async ()=>{
+      clearErr();
+      const email = $('email').value.trim();
+      if(!email){ showErr('พิมพ์อีเมลที่จะรีเซ็ตรหัสผ่านก่อน'); return; }
+      try{
+        await sendPasswordResetEmail(auth, email);
+        alert('ส่งลิงก์ตั้งรหัสผ่านใหม่ไปที่อีเมลแล้ว');
+      }catch(e){
+        if(e.code==='auth/user-not-found'){ showErr('ไม่พบอีเมลนี้ในระบบ ลองสมัครใหม่'); }
+        else{ showErr(`ผิดพลาด: ${e.code}`); console.error(e); }
+      }
+    });
+
+    // ---------- Google Sign-in (popup เดสก์ท็อป / redirect มือถือ) ----------
+    $('googleBtn').addEventListener('click', async ()=>{
+      clearErr();
+      if(isInAppBrowser()){ $('inAppWarning').scrollIntoView({behavior:'smooth'}); return; }
+      try{
+        if(isMobile) await signInWithRedirect(auth, provider);
+        else await signInWithPopup(auth, provider);
+      }catch(e){
+        // ถ้าอีเมลนี้เคยสมัครแบบ password มาก่อน → แนะนำให้ล็อกอินด้วยอีเมล
+        if(e.code==='auth/account-exists-with-different-credential'){
+          const email = e.customData?.email;
+          if(email){
+            const methods = await fetchSignInMethodsForEmail(auth, email);
+            showErr(`อีเมลนี้ลงทะเบียนด้วย: ${methods.join(', ')} กรุณาใช้วิธีนั้นในการเข้าสู่ระบบ`);
+          } else showErr('บัญชีนี้ลงทะเบียนด้วยวิธีอื่น กรุณาใช้วิธีเดิมในการเข้าสู่ระบบ');
+        } else {
+          showErr(`ผิดพลาด: ${e.code}`); console.error(e);
+        }
+      }
+    });
+
+    // รับผลหลัง redirect (มือถือ)
+    getRedirectResult(auth).then((res)=>{
+      if(res?.user) gotoHome();
     }).catch(err=>console.error(err));
 
-    // ===== Email/Password: ล็อกอิน =====
-    $("#emailForm").addEventListener("submit", async (ev)=>{
-      ev.preventDefault();
-      const email = $("#email").value.trim();
-      const pass  = $("#password").value;
-      try{
-        const cred = await signInWithEmailAndPassword(auth, email, pass);
-        goHome(cred.user);
-      }catch(e){ showErr(e); }
-    });
-
-    // ===== Email/Password: สมัคร =====
-    $("#signupBtn").addEventListener("click", async ()=>{
-      const email = $("#email").value.trim();
-      const pass  = $("#password").value;
-      if(!email || !pass){ return showErr({message:"กรอกอีเมลและรหัสผ่านก่อนสมัคร"}); }
-      try{
-        const cred = await createUserWithEmailAndPassword(auth, email, pass);
-        const nick = email.split("@")[0];
-        await updateProfile(cred.user, { displayName: nick });
-        showOk("สมัครสำเร็จ! กำลังพาไปหน้า Home...");
-        goHome(cred.user);
-      }catch(e){ showErr(e); }
-    });
-
-    // ถ้าล็อกอินอยู่แล้วให้เด้งเลย
-    onAuthStateChanged(auth, (user)=>{ if(user) goHome(user); });
+    // (ทางเลือก) ฟังก์ชันเพิ่มรหัสผ่านให้ผู้ใช้ที่ล็อกอินด้วย Google แล้ว
+    // เรียกหลังล็อกอินสำเร็จ ถ้าต้องการผูก Email/Password เข้ากับบัญชี Google เดิม
+    async function addPasswordToGoogleUser(email, newPassword){
+      const cred = EmailAuthProvider.credential(email, newPassword);
+      await linkWithCredential(auth.currentUser, cred);
+    }
   </script>
 </body>
 </html>

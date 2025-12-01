@@ -48,120 +48,10 @@
     .news-summary{ background:#f8fafc; border:1px solid #e5e7eb; border-radius:12px; padding:10px 12px }
     .hl{ background:#fde68a }
 
-    .button-container-bottom {
-    position: fixed;
-    bottom: 0;
-    left: 0; /* ตั้งค่าใหม่ */
-    width: 100%; /* ให้เต็มหน้าจอ */
-    display: flex;
-    justify-content: space-around; /* กระจายปุ่มให้เท่าๆ กัน */
-    gap: 10px; /* ระยะห่างระหว่างปุ่ม */
-    background-color: white;
-    padding: 8px 0;
-    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-}
-
-.btn-bottom {
-    background-color: transparent; /* ทำให้พื้นหลังโปร่งใส */
-    border: none;                 /* ลบขอบ */
-    cursor: pointer;
-    flex: 1;                     /* ขยายปุ่มให้เต็มพื้นที่ */
-    height: 60px;                /* กำหนดความสูงของปุ่ม */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    padding: 0;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    box-shadow: none;             /* ลบเงา */
-}
-
-.btn-bottom img {
-    width: 80px;                 /* ปรับขนาดไอคอนให้เหมาะสม */
-    height: auto;
-    object-fit: contain;
-    display: block;
-}
-
-.btn-bottom:hover {
-    transform: scale(1.05);
-}
-
-.btn-bottom:active {
-    transform: scale(0.98);
-}
-        /* สีปุ่มล่าง */
-        
-        .btn-bottom.home {
-            background-color: #ffffff;
-        }
-        
-        .btn-bottom.ai {
-            background-color: #ffffff;
-        }
-        
-        .btn-bottom.plant {
-            background-color: #ffffff;
-        }
-        
-        .btn-bottom.menu {
-            background-color: #ffffff;
-        }
-        
-        .btn-bottom {
-            background-color: white;
-            color: #333;
-            padding: 0;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: none;
-            border-radius: 0;
-            box-shadow: none;
-        }
-        
-        .btn-bottom img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .btn-bottom:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-        }
-        
-        .btn-bottom:active {
-            transform: scale(0.98);
-        }
-        
-        .btn-bottom.home {
-            background-color: #e74c3c;
-            color: white;
-        }
-        
-        .btn-bottom.ai {
-            background-color: #2ecc71;
-            color: white;
-        }
-        
-        .btn-bottom.plant {
-            background-color: #007bff;
-            color: white;
-        }
-        
-        .btn-bottom.menu {
-            background-color: #ff9900;
-            color: white;
-        }
+    .button-container-bottom{position:fixed;bottom:0;left:0;width:100%;display:flex;justify-content:space-around;gap:10px;background:#fff;padding:8px 0;box-shadow:0 -2px 6px rgba(0,0,0,.1);z-index:20}
+    .btn-bottom{background:transparent;border:none;cursor:pointer;flex:1;height:60px;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:0;transition:.3s}
+    .btn-bottom img{width:80px;height:auto;object-fit:contain;display:block}
+    .btn-bottom:hover{transform:scale(1.05)}
 
     .chat-fab{position:fixed;right:16px;bottom:84px;width:56px;height:56px;border-radius:50%;background:#22c55e;display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;box-shadow:0 10px 24px rgba(34,197,94,.35);cursor:pointer;z-index:30}
     .chat-box{position:fixed;right:16px;bottom:150px;width:320px;height:450px;background:#fff;border:1px solid #eee;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.15);display:none;flex-direction:column;overflow:hidden;z-index:35}
@@ -215,6 +105,8 @@
 
     <section class="card big">
       <div class="title">🌤️ สภาพอากาศ <span class="badge" id="placeBadge">ระบุตำแหน่ง…</span></div>
+      <div>📍 จังหวัด/เมือง: <b id="placeName">กำลังดึง…</b></div>
+
       <div class="rows">
         <div>🌡️ อุณหภูมิ: <b id="temp">--</b>°C</div>
         <div>☁️ สภาพอากาศ: <span id="desc" class="muted">--</span></div>
@@ -247,24 +139,13 @@
     </div>
   </div>
 
-
   <div class="button-container-bottom">
-    <a href="Home999.html" class="btn-bottom">
-      <img src="60.png" alt="Home">
-    </a>
-    <a href="shop.html" class="btn-bottom">
-      <img src="333222.png" alt="เมนู">
-    </a>
-    <a href="Home.html" class="btn-bottom">
-      <img src="61.png" alt="AI">
-    </a>
-    <a href="Home555.html" class="btn-bottom">
-      <img src="62.png" alt="วิธีปลูก">
-    </a>
-    <a href="menu.html" class="btn-bottom">
-      <img src="1000.png" alt="เมนู">
-    </a>
+    <a href="Home999.html" class="btn-bottom"><img src="60.png" alt="Home" /></a>
+    <a href="Home.html"   class="btn-bottom"><img src="61.png" alt="AI" /></a>
+    <a href="Home555.html" class="btn-bottom"><img src="62.png" alt="วิธีปลูก" /></a>
+    <a href="menu.html"   class="btn-bottom"><img src="1000.png" alt="MENU" /></a>
   </div>
+
 <script>
 /* ===== basic UI ===== */
 const $=s=>document.querySelector(s);
@@ -465,6 +346,18 @@ async function getCoordsWithFallback(){
     return {lat:j.latitude, lon:j.longitude};
   }
 }
+// ดึงชื่อจังหวัด/เมือง แล้วใส่ลง #placeName
+async function setProvinceName() {
+  try {
+    const res = await fetch('https://ipapi.co/json/');
+    const j = await res.json();
+    const name = [j.city, j.region].filter(Boolean).join(' • ');
+    document.getElementById('placeName').textContent = name || 'ตำแหน่งของคุณ';
+  } catch (e) {
+    document.getElementById('placeName').textContent = 'ตำแหน่งของคุณ';
+  }
+}
+setProvinceName();
 
 /* ===== main aggregate ===== */
 async function aggregateNow(){

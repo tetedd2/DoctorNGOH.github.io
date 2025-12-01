@@ -4,64 +4,361 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>เกษตร Now + AI</title>
+
+  <!-- Leaflet แผนที่ -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
   <style>
-    :root{--bg:#f5f7fb;--card:#fff;--text:#1f2937;--muted:#6b7280;--brand:#10b981;--brand2:#3b82f6;--radius:18px;--shadow:0 8px 24px rgba(0,0,0,.06)}
+    :root{
+      --bg:#f5f7fb;
+      --card:#fff;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --brand:#10b981;
+      --brand2:#3b82f6;
+      --radius:18px;
+      --shadow:0 8px 24px rgba(0,0,0,.06)
+    }
     *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--text);font-family:ui-rounded,"Segoe UI",system-ui,-apple-system,"Kanit",sans-serif}
-    header.appbar{position:sticky;top:0;background:rgba(245,247,251,.8);backdrop-filter:blur(8px);border-bottom:1px solid #eee;z-index:20}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:ui-rounded,"Segoe UI",system-ui,-apple-system,"Kanit",sans-serif
+    }
+    header.appbar{
+      position:sticky;
+      top:0;
+      background:rgba(245,247,251,.8);
+      backdrop-filter:blur(8px);
+      border-bottom:1px solid #eee;
+      z-index:20
+    }
     .wrap{max-width:1100px;margin:0 auto;padding:14px 20px}
-    .hello{display:inline-flex;align-items:center;gap:10px;background:var(--card);padding:10px 14px;border-radius:999px;box-shadow:var(--shadow);border:1px solid #eee;font-weight:600}
-    .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;background:#f1f5f9;border-radius:999px;font-size:12px}
-    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:22px;max-width:1100px;margin:0 auto;padding:18px 20px 90px}
-    .card{grid-column:span 4;background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;border:1px solid #eee}
+    .hello{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      background:var(--card);
+      padding:8px 12px;
+      border-radius:999px;
+      box-shadow:var(--shadow);
+      border:1px solid #eee;
+      font-weight:600
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:4px 8px;
+      background:#f1f5f9;
+      border-radius:999px;
+      font-size:12px
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(12,1fr);
+      gap:20px;
+      max-width:1100px;
+      margin:0 auto;
+      padding:16px 20px 86px
+    }
+    .card{
+      grid-column:span 4;
+      background:var(--card);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:14px 16px;
+      border:1px solid #eee
+    }
     .big{grid-column:span 8}
-    @media(max-width:980px){.card{grid-column:span 6}.big{grid-column:span 12}}
-    @media(max-width:680px){.card{grid-column:span 12}}
-    .title{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;margin-bottom:8px}
-    .badge{margin-left:auto;font-size:12px;color:#fff;background:#16a34a;padding:2px 8px;border-radius:999px}
-    .rows{display:flex;flex-direction:column;gap:6px}
+    @media(max-width:980px){
+      .card{grid-column:span 6}
+      .big{grid-column:span 12}
+    }
+    @media(max-width:680px){
+      .card{grid-column:span 12}
+    }
+    .title{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:800;
+      font-size:17px;
+      margin-bottom:6px
+    }
+    .badge{
+      margin-left:auto;
+      font-size:11px;
+      color:#fff;
+      background:#16a34a;
+      padding:2px 8px;
+      border-radius:999px
+    }
+    .rows{
+      display:flex;
+      flex-direction:column;
+      gap:6px
+    }
     .muted{color:var(--muted)}
-    .divider{height:1px;background:#eee;margin:12px 0}
-    .stack{display:flex;gap:10px;flex-wrap:wrap}
-    input,button,select,textarea{font:inherit;border-radius:12px;border:1px solid #e5e7eb;padding:10px 12px;background:#fff}
-    button{background:var(--brand2);color:#fff;border:none;font-weight:700;cursor:pointer}
-    button.ghost{background:#eef2ff;color:#374151}
-    .btn-link{background:#eef2ff;color:#1f2937;border:1px solid #e5e7eb;border-radius:999px;padding:6px 10px;font-weight:600;cursor:pointer}
-    .list{display:flex;flex-direction:column;gap:10px}
+    .divider{height:1px;background:#eee;margin:10px 0}
+    .stack{display:flex;gap:8px;flex-wrap:wrap}
+    input,button,select,textarea{
+      font:inherit;
+      border-radius:12px;
+      border:1px solid #e5e7eb;
+      padding:8px 10px;
+      background:#fff
+    }
+    button{
+      background:var(--brand2);
+      color:#fff;
+      border:none;
+      font-weight:700;
+      cursor:pointer
+    }
+    button.ghost{
+      background:#eef2ff;
+      color:#374151
+    }
+    .btn-link{
+      background:#eef2ff;
+      color:#1f2937;
+      border:1px solid #e5e7eb;
+      border-radius:999px;
+      padding:6px 10px;
+      font-weight:600;
+      cursor:pointer;
+      font-size:12px
+    }
+    .list{display:flex;flex-direction:column;gap:8px}
 
     .clamp{display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden}
     .clamp-2{-webkit-line-clamp:2}
     .clamp-6{-webkit-line-clamp:6}
 
-    .table{width:100%;border-collapse:separate;border-spacing:0 8px}
-    .tr{display:grid;grid-template-columns:1.2fr .8fr .8fr;gap:10px;align-items:center;background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:10px 12px}
-    .chip{font-size:12px;background:#e2e8f0;border-radius:999px;padding:2px 8px}
+    .tr{
+      display:grid;
+      grid-template-columns:1.2fr .8fr .9fr;
+      gap:8px;
+      align-items:center;
+      background:#f8fafc;
+      border:1px solid #e5e7eb;
+      border-radius:12px;
+      padding:8px 10px
+    }
+    .chip{
+      font-size:11px;
+      background:#e2e8f0;
+      border-radius:999px;
+      padding:2px 8px
+    }
 
-    .news-wrap{ max-height:520px; overflow:auto; padding-right:6px }
-    .news-grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px }
+    .news-wrap{ max-height:520px; overflow:auto; padding-right:4px }
+    .news-grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px }
     @media (max-width:980px){ .news-grid{ grid-template-columns:1fr } }
-    .news-item{ background:#f8fafc; border:1px solid #e5e7eb; border-radius:12px; padding:10px 12px; display:flex; gap:8px; align-items:flex-start }
-    .news-title{ font-weight:700 }
+    .news-item{
+      background:#f8fafc;
+      border:1px solid #e5e7eb;
+      border-radius:12px;
+      padding:8px 10px;
+      display:flex;
+      gap:8px;
+      align-items:flex-start
+    }
+    .news-title{ font-weight:700; font-size:14px }
     .news-desc{ color:#6b7280; font-size:13px }
-    .news-controls{ display:flex; gap:8px; justify-content:flex-end; margin-top:10px }
-    .news-toolbar{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:10px }
-    .news-summary{ background:#f8fafc; border:1px solid #e5e7eb; border-radius:12px; padding:10px 12px }
+    .news-controls{ display:flex; gap:8px; justify-content:flex-end; margin-top:8px }
+    .news-toolbar{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:8px }
+    .news-summary{ background:#f8fafc; border:1px solid #e5e7eb; border-radius:12px; padding:8px 10px; font-size:13px }
     .hl{ background:#fde68a }
 
-    .button-container-bottom{position:fixed;bottom:0;left:0;width:100%;display:flex;justify-content:space-around;gap:10px;background:#fff;padding:8px 0;box-shadow:0 -2px 6px rgba(0,0,0,.1);z-index:20}
-    .btn-bottom{background:transparent;border:none;cursor:pointer;flex:1;height:60px;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:0;transition:.3s}
-    .btn-bottom img{width:80px;height:auto;object-fit:contain;display:block}
-    .btn-bottom:hover{transform:scale(1.05)}
+    .button-container-bottom {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      gap: 10px;
+      background-color: white;
+      padding: 8px 0;
+      box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
 
-    .chat-fab{position:fixed;right:16px;bottom:84px;width:56px;height:56px;border-radius:50%;background:#22c55e;display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;box-shadow:0 10px 24px rgba(34,197,94,.35);cursor:pointer;z-index:30}
-    .chat-box{position:fixed;right:16px;bottom:150px;width:320px;height:450px;background:#fff;border:1px solid #eee;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.15);display:none;flex-direction:column;overflow:hidden;z-index:35}
-    .chat-header{background:#eafff2;color:#065f46;padding:12px 14px;font-weight:700}
-    .chat-body{flex:1;padding:12px;overflow:auto;background:linear-gradient(180deg,#f8fafc,#fff)}
-    .message{margin:8px 0;padding:8px 12px;border-radius:12px;max-width:85%}
-    .message.user{margin-left:auto;background:#22c55e;color:#fff;border-bottom-right-radius:6px}
-    .message.ai{background:#eef2ff;color:#111827;border-bottom-left-radius:6px}
-    .chat-footer{display:flex;gap:8px;padding:10px;background:#fff;border-top:1px solid #eee}
-    .chat-footer textarea{flex:1;border:1px solid #e5e7eb;border-radius:12px;padding:10px;resize:none}
+    .btn-bottom {
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      flex: 1;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 0;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      box-shadow: none;
+    }
+
+    .btn-bottom img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .btn-bottom:hover { transform: scale(1.05); }
+    .btn-bottom:active { transform: scale(0.98); }
+
+    .btn-bottom.home      { background-color:#e74c3c; color:white; }
+    .btn-bottom.ai        { background-color:#2ecc71; color:white; }
+    .btn-bottom.plant     { background-color:#007bff; color:white; }
+    .btn-bottom.menu      { background-color:#ff9900; color:white; }
+
+    .chat-fab{
+      position:fixed;
+      right:16px;
+      bottom:84px;
+      width:52px;
+      height:52px;
+      border-radius:50%;
+      background:#22c55e;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+      font-size:24px;
+      box-shadow:0 10px 24px rgba(34,197,94,.35);
+      cursor:pointer;
+      z-index:30
+    }
+    .chat-box{
+      position:fixed;
+      right:16px;
+      bottom:150px;
+      width:320px;
+      height:430px;
+      background:#fff;
+      border:1px solid #eee;
+      border-radius:16px;
+      box-shadow:0 20px 60px rgba(0,0,0,.15);
+      display:none;
+      flex-direction:column;
+      overflow:hidden;
+      z-index:35
+    }
+    .chat-header{
+      background:#eafff2;
+      color:#065f46;
+      padding:10px 12px;
+      font-weight:700;
+      font-size:14px
+    }
+    .chat-body{
+      flex:1;
+      padding:10px;
+      overflow:auto;
+      background:linear-gradient(180deg,#f8fafc,#fff);
+      font-size:13px
+    }
+    .message{
+      margin:6px 0;
+      padding:6px 10px;
+      border-radius:12px;
+      max-width:85%
+    }
+    .message.user{
+      margin-left:auto;
+      background:#22c55e;
+      color:#fff;
+      border-bottom-right-radius:6px
+    }
+    .message.ai{
+      background:#eef2ff;
+      color:#111827;
+      border-bottom-left-radius:6px
+    }
+    .chat-footer{
+      display:flex;
+      gap:8px;
+      padding:8px;
+      background:#fff;
+      border-top:1px solid #eee
+    }
+    .chat-footer textarea{
+      flex:1;
+      border:1px solid #e5e7eb;
+      border-radius:12px;
+      padding:8px;
+      resize:none;
+      font-size:13px
+    }
+
+    #map{
+      width:100%;
+      height:240px;
+      margin-top:10px;
+      border-radius:14px;
+      overflow:hidden;
+    }
+
+    /* ===== โหมดกะทัดรัด: ทำให้ทุกกล่องเตี้ยลง + แสดงแค่บางส่วน ===== */
+
+    body.compact .card{
+      padding:10px 12px;
+    }
+    body.compact .card.big{
+      padding:12px 14px;
+    }
+    body.compact .rows{
+      gap:4px;
+    }
+    body.compact .grid{
+      gap:14px;
+      padding-bottom:78px;
+    }
+
+    /* ราคาผลไม้: แสดงแค่ 2 รายการบนสุด ซ่อนคำอธิบาย + เพิ่มราคา */
+    body.compact #priceCard .rows > .muted{
+      display:none;
+    }
+    body.compact #priceCard .divider,
+    body.compact #priceCard .stack{
+      display:none;
+    }
+    body.compact #priceTable .tr:nth-of-type(n+3){
+      display:none;
+    }
+
+    /* ข่าว: ซ่อนค้นหา + ปุ่มเปลี่ยนหน้า เหลือ 2 ข่าวบนสุด */
+    body.compact #newsCard .news-toolbar,
+    body.compact #newsCard #newsControls{
+      display:none;
+    }
+    body.compact #newsCard #newsList .news-item:nth-of-type(n+3){
+      display:none;
+    }
+
+    /* แผนที่เตี้ยลงในโหมดกะทัดรัด */
+    body.compact #map{
+      height:190px;
+    }
+
+    /* สรุป AI: ให้ preview สั้นลงในโหมดกะทัดรัด */
+    body.compact #aiSummary-preview.clamp-6{
+      -webkit-line-clamp:4;
+    }
+
+    body.compact .tr{
+      padding:6px 8px;
+    }
+    body.compact .news-item{
+      padding:6px 8px;
+    }
   </style>
 </head>
 <body>
@@ -69,17 +366,26 @@
     <div class="wrap">
       <div class="hello">
         👋🏻 สวัสดี, เกษตรกร!
-        <span class="pill"><span id="clock">--:--</span> • วันนี้ <span id="today"></span></span>
+        <span class="pill">
+          <span id="clock">--:--</span> • วันนี้ <span id="today"></span>
+        </span>
         <button id="compactBtn" class="btn-link" style="margin-left:12px">โหมดกะทัดรัด</button>
       </div>
     </div>
   </header>
 
   <main class="grid" id="appContent">
+    <!-- ราคาผลไม้ -->
     <section class="card" id="priceCard">
-      <div class="title">💰 ราคาผลไม้ <span class="badge" id="priceBadge">อัปเดตอัตโนมัติ</span></div>
+      <div class="title">
+        💰 ราคาผลไม้
+        <span class="badge" id="priceBadge">อัปเดตอัตโนมัติ</span>
+      </div>
       <div class="rows">
-        <div class="muted">ระบบจะพยายามประเมินจากข่าว หากไม่เจอให้กรอกเองได้</div>
+        <div class="muted">
+          แหล่งอ้างอิงเบื้องต้น: ตลาดไท (คลองหลวง, ปทุมธานี) • ตลาดสี่มุมเมือง (ลำลูกกา, ปทุมธานี)<br>
+          ระบบจะพยายามอัปเดตราคาจากข่าว และสามารถแก้ไขได้เอง
+        </div>
         <div id="priceTable" class="list"></div>
       </div>
       <div class="divider"></div>
@@ -90,43 +396,60 @@
       </div>
     </section>
 
-    <section class="card">
-      <div class="title">📰 ข่าวสารเกษตร (ทุเรียน • มังคุด • เงาะ)</div>
+    <!-- ข่าวเกษตร -->
+    <section class="card" id="newsCard">
+      <div class="title">
+        📰 ข่าวสารเกษตร (ทุเรียน • มังคุด • เงาะ)
+      </div>
       <div class="news-toolbar">
-        <input id="newsSearch" placeholder="ค้นหาในข่าว (เช่น ราคา, ผลผลิต, ทุเรียน)" style="min-width:280px" />
+        <input id="newsSearch" placeholder="ค้นหาในข่าว (เช่น ราคา, ผลผลิต, ทุเรียน)" style="min-width:260px" />
         <span class="muted" id="newsCount">—</span>
       </div>
       <div id="newsSummary" class="news-summary muted">สรุปข่าวจะปรากฏที่นี่หลังดึงข่าว</div>
       <div id="newsScroll" class="news-wrap">
-        <div id="newsList" class="news-grid"><div class="muted">กำลังดึงข่าว…</div></div>
+        <div id="newsList" class="news-grid">
+          <div class="muted">กำลังดึงข่าว…</div>
+        </div>
       </div>
       <div id="newsControls" class="news-controls"></div>
     </section>
 
+    <!-- สภาพอากาศ + แผนที่ -->
     <section class="card big">
-      <div class="title">🌤️ สภาพอากาศ <span class="badge" id="placeBadge">ระบุตำแหน่ง…</span></div>
-      <div>📍 จังหวัด/เมือง: <b id="placeName">กำลังดึง…</b></div>
-
+      <div class="title">
+        🌤️ สภาพอากาศ
+        <span class="badge" id="placeBadge">ระบุตำแหน่ง…</span>
+      </div>
       <div class="rows">
         <div>🌡️ อุณหภูมิ: <b id="temp">--</b>°C</div>
         <div>☁️ สภาพอากาศ: <span id="desc" class="muted">--</span></div>
         <div>💧 ความชื้น: <b id="rh">--</b>%</div>
         <div>☔ ฝน 3 ชม.: <b id="rain">--</b> มม.</div>
+        <div>🌧️ พยากรณ์ฝนอีก 1 ชั่วโมง: <b id="rainNext1h">--</b> มม.</div>
       </div>
       <div class="divider"></div>
+      <div id="map"></div>
+      <div class="divider"></div>
       <div class="stack" id="tokenRow" style="display:none">
-        <input id="hfKey" type="password" placeholder="HF Token (hf_…)" style="min-width:280px" autocomplete="off" />
+        <input id="hfKey" type="password" placeholder="HF Token (hf_…)" style="min-width:260px" autocomplete="off" />
         <button onclick="aggregateNow()">สรุปรวม (ตำแหน่งปัจจุบัน)</button>
         <button class="ghost" onclick="saveKey()">บันทึก Token (ซ่อน)</button>
       </div>
     </section>
 
+    <!-- สรุปโดย AI -->
     <section class="card big">
-      <div class="title">🧠 สรุปโดย AI (Ling-1T) <span class="badge">อ่านเพิ่มเติมได้</span></div>
-      <div id="aiBox" class="list"><div class="muted">กำลังเตรียมข้อมูล…</div></div>
+      <div class="title">
+        🧠 สรุปโดย AI (Ling-1T)
+        <span class="badge">ช่วยวางแผนออกนอกบ้าน + เพาะปลูก</span>
+      </div>
+      <div id="aiBox" class="list">
+        <div class="muted">กำลังเตรียมข้อมูล…</div>
+      </div>
     </section>
   </main>
 
+  <!-- ปุ่มแชท -->
   <div class="chat-fab" id="chatFab">💬</div>
   <div class="chat-box" id="chatBox">
     <div class="chat-header">ผู้ช่วยส่วนตัว</div>
@@ -134,43 +457,80 @@
       <div class="message ai">ฉันคือผู้ช่วยส่วนตัวของคุณ สอบถามมาได้เลย 😊</div>
     </div>
     <div class="chat-footer">
-      <textarea id="chatInput" placeholder="พิมพ์ข้อความของคุณ..." rows="1" onkeypress="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage();}"></textarea>
+      <textarea id="chatInput" placeholder="พิมพ์ข้อความของคุณ..." rows="1"
+        onkeypress="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage();}"></textarea>
       <button onclick="sendMessage()">ส่ง</button>
     </div>
   </div>
 
+  <!-- ปุ่มล่าง -->
   <div class="button-container-bottom">
-    <a href="Home999.html" class="btn-bottom"><img src="60.png" alt="Home" /></a>
-    <a href="Home.html"   class="btn-bottom"><img src="61.png" alt="AI" /></a>
-    <a href="Home555.html" class="btn-bottom"><img src="62.png" alt="วิธีปลูก" /></a>
-    <a href="menu.html"   class="btn-bottom"><img src="1000.png" alt="MENU" /></a>
+    <a href="Home999.html" class="btn-bottom home">
+      <img src="60.png" alt="Home">
+    </a>
+    <a href="shop.html" class="btn-bottom menu">
+      <img src="333222.png" alt="เมนู">
+    </a>
+    <a href="Home.html" class="btn-bottom ai">
+      <img src="61.png" alt="AI">
+    </a>
+    <a href="Home555.html" class="btn-bottom plant">
+      <img src="62.png" alt="วิธีปลูก">
+    </a>
+    <a href="menu.html" class="btn-bottom menu">
+      <img src="1000.png" alt="เมนู">
+    </a>
   </div>
 
 <script>
 /* ===== basic UI ===== */
 const $=s=>document.querySelector(s);
 const pad=n=>String(n).padStart(2,'0');
-function setClock(){const d=new Date();$('#clock').textContent=`${pad(d.getHours())}:${pad(d.getMinutes())}`;$('#today').textContent=d.toLocaleDateString('th-TH',{weekday:'long',day:'2-digit',month:'short',year:'numeric'})}
-setClock(); setInterval(setClock,30_000);
+function setClock(){
+  const d=new Date();
+  $('#clock').textContent=`${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  $('#today').textContent=d.toLocaleDateString('th-TH',{
+    weekday:'long',day:'2-digit',month:'short',year:'numeric'
+  });
+}
+setClock();
+setInterval(setClock,30_000);
 
-function codeToDesc(c){const m={0:'ท้องฟ้าใส',1:'มีเมฆบางส่วน',2:'ครึ้ม',3:'เมฆมาก',45:'หมอก',51:'ฝนปรอย',61:'ฝนเบา',63:'ฝนปานกลาง',65:'ฝนหนัก',95:'พายุฝนฟ้าคะนอง'};return m[c]||'แปรปรวน'}
-function seasonTH(m){return (m>=5&&m<=10)?'ฝน':(m===3||m===4)?'ร้อน':'หนาว'}
-function setLoading(on){document.querySelectorAll('button').forEach(b=>b.disabled=!!on); if(on) $('#aiBox').innerHTML='<div>⏳ กำลังรวบรวมข้อมูล…</div>'}
-
-const USE_HF = false; // << ปิดการเรียก HF เพื่อไม่ให้คอนโซลขึ้น 401 (เปิดเป็น true ถ้าจะทดสอบ)
-
-/* ===== compact mode ===== */
-(function(){
-  const saved=localStorage.getItem('COMPACT_MODE')==='1';
-  document.body.classList.toggle('compact',saved);
-  const btn=$('#compactBtn');
-  btn.textContent=saved?'โหมดปกติ':'โหมดกะทัดรัด';
-  btn.onclick=()=>{
-    const on=!document.body.classList.contains('compact');
-    document.body.classList.toggle('compact',on);
-    localStorage.setItem('COMPACT_MODE',on?'1':'0');
-    btn.textContent=on?'โหมดปกติ':'โหมดกะทัดรัด';
+function codeToDesc(c){
+  const m={
+    0:'ท้องฟ้าใส',1:'มีเมฆบางส่วน',2:'ครึ้ม',3:'เมฆมาก',
+    45:'หมอก',51:'ฝนปรอย',61:'ฝนเบา',63:'ฝนปานกลาง',
+    65:'ฝนหนัก',95:'พายุฝนฟ้าคะนอง'
   };
+  return m[c]||'แปรปรวน';
+}
+function seasonTH(m){
+  return (m>=5&&m<=10)?'ฝน':(m===3||m===4)?'ร้อน':'หนาว';
+}
+function setLoading(on){
+  document.querySelectorAll('button').forEach(b=>b.disabled=!!on);
+  if(on) $('#aiBox').innerHTML='<div>⏳ กำลังรวบรวมข้อมูล…</div>';
+}
+
+const USE_HF = false; // เปลี่ยนเป็น true ถ้าอยากลองเรียก HF จริง
+
+/* ===== compact mode (เริ่มที่โหมดกะทัดรัด) ===== */
+(function(){
+  let saved = localStorage.getItem('COMPACT_MODE');
+  let on = saved ? (saved === '1') : true; // ถ้ายังไม่เคยเซฟ -> กะทัดรัด
+
+  document.body.classList.toggle('compact', on);
+
+  const btn = $('#compactBtn');
+  if(btn){
+    btn.textContent = on ? 'โหมดปกติ' : 'โหมดกะทัดรัด';
+    btn.onclick = () => {
+      on = !on;
+      document.body.classList.toggle('compact', on);
+      localStorage.setItem('COMPACT_MODE', on ? '1' : '0');
+      btn.textContent = on ? 'โหมดปกติ' : 'โหมดกะทัดรัด';
+    };
+  }
 })();
 
 /* ===== token provisioning (ซ่อน UI และใช้ในระบบเอง) ===== */
@@ -181,7 +541,10 @@ const SYS_HF_TOKEN='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';
     if(cur!==SYS_HF_TOKEN) localStorage.setItem('HF_TOKEN',SYS_HF_TOKEN);
     const row=$('#tokenRow'), inp=$('#hfKey');
     if(row) row.style.display='none';
-    if(inp){inp.value='••••••••';inp.dataset.masked='1';}
+    if(inp){
+      inp.value='••••••••';
+      inp.dataset.masked='1';
+    }
   }catch(e){}
 })();
 function readToken(){return SYS_HF_TOKEN}
@@ -190,24 +553,43 @@ function saveKey(){}
 /* ===== weather ===== */
 async function getWeatherByCoords(lat,lon){
   const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code&hourly=precipitation&forecast_days=1&timezone=auto`;
-  const r=await fetch(url); const j=await r.json();
+  const r=await fetch(url);
+  const j=await r.json();
   const cur=j.current, h=j.hourly;
   const nowHour=new Date().toISOString().slice(0,13);
   const idx=h.time.findIndex(t=>t.startsWith(nowHour));
-  let sum=0; for(let i=idx;i<Math.min(idx+3,h.precipitation.length);i++){ sum+=h.precipitation[i]||0; }
-  return { temp:cur.temperature_2m, rh:cur.relative_humidity_2m, desc:codeToDesc(cur.weather_code), rain:+sum.toFixed(1) };
+  let sum=0;
+  for(let i=idx;i<Math.min(idx+3,h.precipitation.length);i++){
+    sum+=h.precipitation[i]||0;
+  }
+  return {
+    temp:cur.temperature_2m,
+    rh:cur.relative_humidity_2m,
+    desc:codeToDesc(cur.weather_code),
+    rain:+sum.toFixed(1)
+  };
 }
-function renderWeather(wx,label){ $('#temp').textContent=wx.temp; $('#rh').textContent=wx.rh; $('#rain').textContent=wx.rain; $('#desc').textContent=wx.desc; $('#placeBadge').textContent=label; }
+function renderWeather(wx,label){
+  $('#temp').textContent=wx.temp;
+  $('#rh').textContent=wx.rh;
+  $('#rain').textContent=wx.rain;
+  $('#desc').textContent=wx.desc;
+  $('#placeBadge').textContent=label;
+}
 
-/* ===== province name: ใช้ ipapi เสมอ (เลี่ยง CORS/400 ของ reverse geocode) ===== */
+/* ===== province + amphoe from IP ===== */
 async function getProvinceFromIP(){
   try{
     const j=await (await fetch('https://ipapi.co/json/')).json();
-    return j?.region || j?.city || 'ตำแหน่งของคุณ';
-  }catch{ return 'ตำแหน่งของคุณ'; }
+    let province=j.region || "จังหวัดไม่ระบุ";
+    let amphoe=j.city || "อำเภอไม่ระบุ";
+    return province+" • "+amphoe;
+  }catch{
+    return "ตำแหน่งไม่ระบุ";
+  }
 }
 
-/* ===== news ===== */
+/* ===== NEWS ===== */
 async function parseGoogleNewsRSS(rssUrl){
   const prox=`https://r.jina.ai/http/${rssUrl.replace(/^https?:\/\//,'')}`;
   const txt=await (await fetch(prox)).text();
@@ -223,42 +605,78 @@ async function fetchNewsTop(kw,max=12){
   const rss=`https://news.google.com/rss/search?q=${encodeURIComponent(kw)}&hl=th&gl=TH&ceid=TH:th`;
   try{
     const api=`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rss)}`;
-    const r=await fetch(api); if(!r.ok) throw 0;
-    const j=await r.json(); if(!j?.items) throw 0;
-    return j.items.slice(0,max).map(x=>({title:x.title,pubDate:x.pubDate,link:x.link,desc:x.description||''}));
+    const r=await fetch(api);
+    if(!r.ok) throw 0;
+    const j=await r.json();
+    if(!j?.items) throw 0;
+    return j.items.slice(0,max).map(x=>({
+      title:x.title,
+      pubDate:x.pubDate,
+      link:x.link,
+      desc:x.description||''
+    }));
   }catch{
     return await parseGoogleNewsRSS(rss);
   }
 }
 let _newsAll=[], _newsQuery='';
-function markHL(text,q){ if(!q) return text; try{const re=new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`,'ig'); return text.replace(re,'<span class="hl">$1</span>');}catch{return text;} }
+function markHL(text,q){
+  if(!q) return text;
+  try{
+    const re=new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`,'ig');
+    return text.replace(re,'<span class="hl">$1</span>');
+  }catch{return text;}
+}
 function newsItemHTML(item,i){
-  const d=new Date(item.pubDate).toLocaleDateString('th-TH',{day:'2-digit',month:'short'}), id=`news${i}`;
+  const d=new Date(item.pubDate).toLocaleDateString('th-TH',{day:'2-digit',month:'short'});
+  const id=`news${i}`;
   const clean=(item.desc||'').replace(/<[^>]*>/g,'').trim();
-  return `<div class="news-item"><i>🟢</i><div style="flex:1">
-    <div class="news-title clamp clamp-2">${markHL(item.title,_newsQuery)}</div>
-    <div id="${id}" class="news-desc clamp clamp-2" style="margin-top:4px">${markHL(clean,_newsQuery)}</div>
-    <div style="margin-top:6px;display:flex;gap:8px;flex-wrap:wrap">
-      <button class="btn-link" onclick="toggleClamp('${id}')">อ่านเพิ่มเติม</button>
-      <a class="btn-link" href="${item.link}" target="_blank" rel="noopener">ไปที่ข่าว</a>
+  return `<div class="news-item">
+    <i>🟢</i>
+    <div style="flex:1">
+      <div class="news-title clamp clamp-2">${markHL(item.title,_newsQuery)}</div>
+      <div id="${id}" class="news-desc clamp clamp-2" style="margin-top:4px">${markHL(clean,_newsQuery)}</div>
+      <div style="margin-top:6px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn-link" onclick="toggleClamp('${id}')">อ่านเพิ่มเติม</button>
+        <a class="btn-link" href="${item.link}" target="_blank" rel="noopener">ไปที่ข่าว</a>
+      </div>
+      <div class="muted" style="margin-top:4px">${d}</div>
     </div>
-    <div class="muted" style="margin-top:4px">${d}</div></div></div>`;
+  </div>`;
 }
 function toggleClamp(id){
-  const el=document.getElementById(id); if(!el) return;
+  const el=document.getElementById(id);
+  if(!el) return;
   if(el.classList.contains('clamp-2')) el.classList.replace('clamp-2','clamp-6');
   else if(el.classList.contains('clamp-6')) el.classList.remove('clamp');
   else el.classList.add('clamp','clamp-2');
 }
 const NEWS_PAGE_SIZE=10;
-function getFilteredNews(){ if(!_newsQuery) return _newsAll; const q=_newsQuery.toLowerCase(); return _newsAll.filter(n=>(n.title+' '+(n.desc||'')).toLowerCase().includes(q)); }
+function getFilteredNews(){
+  if(!_newsQuery) return _newsAll;
+  const q=_newsQuery.toLowerCase();
+  return _newsAll.filter(n=>(n.title+' '+(n.desc||'')).toLowerCase().includes(q));
+}
 function renderNewsSummary(items){
-  const counts={ทุเรียน:0,มังคุด:0,เงาะ:0}; const upW=/(พุ่ง|เพิ่ม|ปรับขึ้น|สูงขึ้น|ขยับขึ้น)/; const downW=/(ลด|ปรับลง|ร่วง|ต่ำลง)/; const price=/(\d{2,4})\s*บาท/;
-  let up=[],down=[],prices={ทุเรียน:[],มังคุด:[],เงาะ:[]};
-  items.forEach(x=>{ const t=x.title, d=(x.desc||'');
-    ['ทุเรียน','มังคุด','เงาะ'].forEach(f=>{ if((t+d).includes(f)) counts[f]++; });
-    if(upW.test(t)||upW.test(d)) up.push(t); if(downW.test(t)||downW.test(d)) down.push(t);
-    ['ทุเรียน','มังคุด','เงาะ'].forEach(f=>{ if((t+d).includes(f)){ const m=(t.match(price)||d.match(price)); if(m) prices[f].push(+m[1]); }});
+  const counts={ทุเรียน:0,มังคุด:0,เงาะ:0};
+  const upW=/(พุ่ง|เพิ่ม|ปรับขึ้น|สูงขึ้น|ขยับขึ้น)/;
+  const downW=/(ลด|ปรับลง|ร่วง|ต่ำลง)/;
+  const price=/(\d{2,4})\s*บาท/;
+  let up=[],down=[];
+  let prices={ทุเรียน:[],มังคุด:[],เงาะ:[]};
+  items.forEach(x=>{
+    const t=x.title, d=(x.desc||'');
+    ['ทุเรียน','มังคุด','เงาะ'].forEach(f=>{
+      if((t+d).includes(f)) counts[f]++;
+    });
+    if(upW.test(t)||upW.test(d)) up.push(t);
+    if(downW.test(t)||downW.test(d)) down.push(t);
+    ['ทุเรียน','มังคุด','เงาะ'].forEach(f=>{
+      if((t+d).includes(f)){
+        const m=(t.match(price)||d.match(price));
+        if(m) prices[f].push(+m[1]);
+      }
+    });
   });
   const avg=a=>a.length?Math.round(a.reduce((x,y)=>x+y,0)/a.length):null;
   $('#newsSummary').innerHTML=[
@@ -270,153 +688,421 @@ function renderNewsSummary(items){
 }
 function renderNewsPage(page=1){
   const grid=$('#newsList'), ctr=$('#newsControls');
-  const data=getFilteredNews(); const start=(page-1)*NEWS_PAGE_SIZE; const items=data.slice(start,start+NEWS_PAGE_SIZE);
+  const data=getFilteredNews();
+  const start=(page-1)*NEWS_PAGE_SIZE;
+  const items=data.slice(start,start+NEWS_PAGE_SIZE);
   grid.innerHTML=items.map((it,i)=>newsItemHTML(it,start+i)).join('') || '<div class="muted">ไม่พบข่าว</div>';
-  renderNewsSummary(data); $('#newsCount').textContent=`พบ ${data.length} ข่าว`;
+  renderNewsSummary(data);
+  $('#newsCount').textContent=`พบ ${data.length} ข่าว`;
   const total=data.length, pages=Math.ceil(total/NEWS_PAGE_SIZE)||1;
   ctr.innerHTML=`<span class="muted" style="align-self:center">หน้า ${Math.min(page,pages)}/${pages}</span>
     ${page>1?`<button class="btn-link" onclick="renderNewsPage(${page-1})">ก่อนหน้า</button>`:''}
     ${page<pages?`<button class="btn-link" onclick="renderNewsPage(${page+1})">ถัดไป</button>`:''}
     ${total>0?`<button class="btn-link" onclick="renderAllNews()">แสดงทั้งหมด</button>`:''}`;
 }
-function renderAllNews(){ const data=getFilteredNews(); $('#newsList').innerHTML=data.map((it,i)=>newsItemHTML(it,i)).join(''); $('#newsControls').innerHTML=`<button class="btn-link" onclick="renderNewsPage(1)">กลับหน้า 1</button>`; renderNewsSummary(data); $('#newsCount').textContent=`พบ ${data.length} ข่าว`; }
-function debounce(fn,ms){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a),ms); }; }
-$('#newsSearch').addEventListener('input',debounce(e=>{ _newsQuery=e.target.value.trim(); renderNewsPage(1); },200));
-async function loadFruitsNews(){ const queries=['ทุเรียน ข่าว วันนี้','มังคุด ข่าว วันนี้','เงาะ ข่าว วันนี้']; const arr=(await Promise.all(queries.map(q=>fetchNewsTop(q,12)))).flat(); _newsAll=arr; renderNewsPage(1); return arr; }
+function renderAllNews(){
+  const data=getFilteredNews();
+  $('#newsList').innerHTML=data.map((it,i)=>newsItemHTML(it,i)).join('');
+  $('#newsControls').innerHTML=`<button class="btn-link" onclick="renderNewsPage(1)">กลับหน้า 1</button>`;
+  renderNewsSummary(data);
+  $('#newsCount').textContent=`พบ ${data.length} ข่าว`;
+}
+function debounce(fn,ms){
+  let t; return (...a)=>{
+    clearTimeout(t);
+    t=setTimeout(()=>fn(...a),ms);
+  };
+}
+$('#newsSearch').addEventListener('input',debounce(e=>{
+  _newsQuery=e.target.value.trim();
+  renderNewsPage(1);
+},200));
+async function loadFruitsNews(){
+  const queries=['ทุเรียน ข่าว วันนี้','มังคุด ข่าว วันนี้','เงาะ ข่าว วันนี้'];
+  const arr=(await Promise.all(queries.map(q=>fetchNewsTop(q,12)))).flat();
+  _newsAll=arr;
+  renderNewsPage(1);
+  return arr;
+}
+
+/* ===== ราคามาตรฐานตลาดใหญ่ ===== */
+const MARKET_PRICES = {
+  "ตลาดไท": {
+    province: "ปทุมธานี",
+    amphoe: "คลองหลวง",
+    prices: {
+      "ทุเรียน": 130,
+      "มังคุด": 55,
+      "เงาะ": 45,
+      "ลองกอง": 42,
+      "ลางสาด": 48,
+      "สับปะรด": 18,
+      "กล้วยน้ำว้า": 28,
+      "มะม่วงน้ำดอกไม้": 75
+    }
+  },
+  "ตลาดสี่มุมเมือง": {
+    province: "ปทุมธานี",
+    amphoe: "ลำลูกกา",
+    prices: {
+      "ทุเรียน": 120,
+      "มังคุด": 50,
+      "เงาะ": 40,
+      "ลองกอง": 38,
+      "ลางสาด": 45,
+      "กล้วยหอม": 32,
+      "ส้มเขียวหวาน": 52
+    }
+  }
+};
+
+/* ===== กลุ่มผลไม้หลัก ===== */
+const FRUITS = [
+  "ทุเรียน","มังคุด","เงาะ","ลองกอง","ลางสาด",
+  "สับปะรด","กล้วยน้ำว้า","กล้วยหอม","มะม่วงน้ำดอกไม้",
+  "ส้มเขียวหวาน","ฝรั่ง","ชมพู่","แตงโม"
+];
 
 /* ===== prices ===== */
-const FRUITS=['ทุเรียน','มังคุด','เงาะ'];
 function estimatePricesFromNews(items){
-  const map={ทุเรียน:null,มังคุด:null,เงาะ:null}; const re=/(\d{2,4})\s*บาท/;
-  items.forEach(it=>{ FRUITS.forEach(f=>{ if(it.title.includes(f)){ const m=it.title.match(re)||(it.desc||'').match(re); const v=m?Number(m[1]):null; if(v&&!map[f]) map[f]=v; } }); });
-  const saved=JSON.parse(localStorage.getItem('FRUIT_PRICE_MAP')||'{}'); FRUITS.forEach(f=>{ if(saved[f]) map[f]=saved[f]; }); return map;
-}
-function renderPriceTable(pmap){
-  const table=$('#priceTable'); table.innerHTML='';
+  const re=/(\d{2,4})\s*บาท/;
+  const map={};
+
+  // 1) ราคามาตรฐานจากตลาดใหญ่
   FRUITS.forEach(f=>{
-    const val=pmap[f]?`${pmap[f]} บาท/กก.`:'<span class="muted">ยังไม่ชัด</span>';
-    table.insertAdjacentHTML('beforeend', `<div class="tr"><div><b>${f}</b><span class="chip" style="margin-left:8px">ผลไม้หลัก</span></div><div>${val}</div><div style="text-align:right"><button class="btn-link" onclick="editPrice('${f}')">แก้ไขราคา</button></div></div>`);
+    let base=null;
+    Object.values(MARKET_PRICES).forEach(mkt=>{
+      if(mkt.prices[f] && base==null){
+        base=mkt.prices[f];
+      }
+    });
+    map[f]=base;
   });
+
+  // 2) ถ้าข่าวมีราคา → ทับฐานตลาด
+  items.forEach(it=>{
+    FRUITS.forEach(fruit=>{
+      if(it.title.includes(fruit)){
+        const m = (it.title.match(re) || it.desc.match(re));
+        if(m){
+          map[fruit] = Number(m[1]);
+        }
+      }
+    });
+  });
+
+  // 3) ถ้าผู้ใช้ตั้งเอง → ทับทั้งหมด
+  const saved=JSON.parse(localStorage.getItem('FRUIT_PRICE_MAP')||'{}');
+  Object.keys(saved).forEach(k=>{
+    map[k]=saved[k];
+  });
+
+  return map;
+}
+
+function renderPriceTable(pmap){
+  const table=$('#priceTable');
+  table.innerHTML='';
+  const mainSet=new Set(FRUITS);
+  const keys=Object.keys(pmap||{});
+  const ordered=[...FRUITS, ...keys.filter(k=>!mainSet.has(k))];
+
+  ordered.forEach(name=>{
+    const val=pmap[name];
+    const priceText = val ? `${val} บาท/กก.` : '<span class="muted">ยังไม่ชัด</span>';
+    let chip='';
+    if(FRUITS.includes(name)){
+      chip='<span class="chip" style="margin-left:8px">ผลไม้หลัก</span>';
+    }else{
+      chip='<span class="chip" style="margin-left:8px;background:#dbeafe">เพิ่มโดยผู้ใช้</span>';
+    }
+    table.insertAdjacentHTML('beforeend', `
+      <div class="tr">
+        <div><b>${name}</b>${chip}</div>
+        <div>${priceText}</div>
+        <div style="text-align:right">
+          <button class="btn-link" onclick="editPrice('${name}')">แก้ไขราคา</button>
+        </div>
+      </div>
+    `);
+  });
+
+  if(!ordered.length){
+    table.innerHTML='<div class="muted">ยังไม่มีข้อมูลราคา</div>';
+  }
 }
 function editPrice(fruit){
-  const current=prompt(`ใส่ราคา ${fruit} (บาท/กก.)`,''); if(current===null) return;
-  const val=Number(current); if(!val){ alert('กรุณากรอกตัวเลข'); return; }
-  const saved=JSON.parse(localStorage.getItem('FRUIT_PRICE_MAP')||'{}'); saved[fruit]=val; localStorage.setItem('FRUIT_PRICE_MAP',JSON.stringify(saved)); renderPriceTable(saved);
+  const current=prompt(`ใส่ราคา ${fruit} (บาท/กก.)`,'');
+  if(current===null) return;
+  const val=Number(current);
+  if(!val){
+    alert('กรุณากรอกตัวเลข');
+    return;
+  }
+  const saved=JSON.parse(localStorage.getItem('FRUIT_PRICE_MAP')||'{}');
+  saved[fruit]=val;
+  localStorage.setItem('FRUIT_PRICE_MAP',JSON.stringify(saved));
+  renderPriceTable(saved);
 }
 function addPrice(){
-  const n=$('#pName').value.trim(), p=Number($('#pPrice').value.trim());
-  if(!n||!p) return; const saved=JSON.parse(localStorage.getItem('FRUIT_PRICE_MAP')||'{}'); saved[n]=p; localStorage.setItem('FRUIT_PRICE_MAP',JSON.stringify(saved));
-  $('#pName').value=''; $('#pPrice').value='';
-  $('#priceTable').insertAdjacentHTML('beforeend', `<div class="tr"><div><b>${n}</b></div><div>${p} บาท/กก.</div><div style="text-align:right"></div></div>`);
+  const n=$('#pName').value.trim();
+  const p=Number($('#pPrice').value.trim());
+  if(!n||!p) return;
+  const saved=JSON.parse(localStorage.getItem('FRUIT_PRICE_MAP')||'{}');
+  saved[n]=p;
+  localStorage.setItem('FRUIT_PRICE_MAP',JSON.stringify(saved));
+  $('#pName').value='';
+  $('#pPrice').value='';
+  renderPriceTable(saved);
 }
 
 /* ===== AI summary (with fallback) ===== */
 function renderAI(text){
-  const id='aiSummary', pretty=text.replace(/^[-*] /gm,'• '), preview=pretty.split('\n').slice(0,8).join('\n');
-  $('#aiBox').innerHTML=`<div id="${id}-preview" class="clamp clamp-6" style="white-space:pre-wrap">${preview}</div>
+  const id='aiSummary';
+  const pretty=text.replace(/^[-*] /gm,'• ');
+  const preview=pretty.split('\n').slice(0,8).join('\n');
+  $('#aiBox').innerHTML=`
+    <div id="${id}-preview" class="clamp clamp-6" style="white-space:pre-wrap">${preview}</div>
     <div id="${id}-full" style="white-space:pre-wrap; display:none; margin-top:8px">${pretty}</div>
-    <div style="margin-top:8px"><button class="btn-link" onclick="(function(pv,full){const show=full.style.display==='none';full.style.display=show?'block':'none';pv.style.display=show?'none':'block';})($('#${id}-preview'),$('#${id}-full'))">อ่านเพิ่มเติม</button></div>`;
+    <div style="margin-top:8px">
+      <button class="btn-link"
+        onclick="(function(pv,full){const show=full.style.display==='none';full.style.display=show?'block':'none';pv.style.display=show?'none':'block';})($('#${id}-preview'),$('#${id}-full'))">
+        อ่านเพิ่มเติม
+      </button>
+    </div>`;
 }
-function heuristicSummary(wx, province, news, priceMap){
-  const season=(m=> (m>=5&&m<=10)?'ฝน':(m===3||m===4)?'ร้อน':'หนาว')(new Date().getMonth()+1);
-  const prices=['ทุเรียน','มังคุด','เงาะ'].map(n=>`${n}: ${priceMap[n]?priceMap[n]+' บ./กก.':'ยังไม่ชัด'}`).join(' | ');
-  const heads=news.slice(0,5).map((n,i)=>`• (${i+1}) ${n.title}`).join('\n');
+function heuristicSummary(wx, province, news, priceMap, rain1h){
+  const season = seasonTH(new Date().getMonth()+1);
+
+  const rainNow  = Number(wx.rain || 0);
+  const rainNext = typeof rain1h === 'number' ? rain1h : null;
+
+  // 1) คำแนะนำออกนอกบ้าน
+  let outdoorAdvice;
+  if (rainNext >= 15 || rainNow >= 20){
+    outdoorAdvice = 'ฝนค่อนข้างหนัก/มีโอกาสน้ำท่วมขัง ควรเลี่ยงออกนอกบ้านถ้าไม่จำเป็น เตรียมเก็บของไม่ให้โดนน้ำ และตรวจเส้นทางน้ำท่วมก่อนเดินทาง';
+  } else if (rainNext >= 5 || rainNow >= 10){
+    outdoorAdvice = 'ฝนปานกลาง–ค่อนข้างหนัก ควรพกร่มหรือเสื้อกันฝน เผื่อเวลาเดินทาง ถนนลื่น ระวังพื้นที่ลุ่มต่ำและใกล้ลำคลอง/แม่น้ำ';
+  } else if (rainNext > 0 || rainNow > 0){
+    outdoorAdvice = 'มีฝนเล็กน้อย สามารถออกนอกบ้านได้ แต่ควรพกร่ม เผื่อฝนเพิ่มขึ้นกะทันหัน';
+  } else {
+    outdoorAdvice = 'ยังไม่พบสัญญาณฝนชัดเจน สามารถออกนอกบ้านได้ตามปกติ แต่ควรเช็กพยากรณ์ซ้ำใกล้เวลาเดินทาง';
+  }
+
+  // 2) คำแนะนำพืชที่ควรปลูก
+  let cropAdvice, fertilizerAdvice;
+  if (season === 'ฝน'){
+    cropAdvice = 'เหมาะกับพืชที่ชอบน้ำ เช่น ข้าว ผักกินใบ (คะน้า ผักบุ้ง ผักชี) กล้วย และไม้ผลที่ตั้งตัวแล้ว พืชที่ไม่ชอบน้ำขังควรยกร่องหรือทำทางระบายน้ำให้ดี';
+    fertilizerAdvice = 'ใช้ปุ๋ยไนโตรเจนสูงเล็กน้อยกับผักใบ (เช่น 46-0-0 หรือ 21-0-0) แต่แบ่งใส่หลายครั้งเพราะฝนชะล้างง่าย เสริมปุ๋ยคอก/ปุ๋ยหมัก และเลี่ยงใส่ปุ๋ยเคมีจำนวนมากก่อนฝนใหญ่';
+  } else if (season === 'ร้อน'){
+    cropAdvice = 'เหมาะกับพืชที่ทนร้อนและแสงจัด เช่น พริก มะเขือ แตงกวา ฟัก แฟง ข้าวโพดหวาน และไม้ผลหลายชนิด แต่ต้องจัดการน้ำสม่ำเสมอและคลุมโคนเพื่อลดการระเหยของน้ำ';
+    fertilizerAdvice = 'เน้นปุ๋ยสูตรเสมอ (15-15-15 หรือ 16-16-16) และเสริมโพแทสเซียม (0-0-60) เพื่อให้พืชทนร้อน ควรให้น้ำทีละน้อยแต่บ่อยครั้ง ไม่ปล่อยให้ดินแห้งแตกระแหง';
+  } else { // หนาว
+    cropAdvice = 'อากาศเย็น เหมาะกับผักเมืองหนาว เช่น กะหล่ำปลี บร็อกโคลี แครอท ผักสลัด และสตรอว์เบอร์รีในบางพื้นที่ พืชเขตร้อนบางชนิดอาจโตช้าลงเล็กน้อย';
+    fertilizerAdvice = 'ใช้ปุ๋ยเสมอร่วมกับปุ๋ยคอก/ปุ๋ยหมัก เพื่อให้ดินร่วนซุยและอุ่นขึ้น ลดการใส่ไนโตรเจนมากเกินไปเพื่อป้องกันโรคจากอากาศเย็นชื้น และควรดูการระบายน้ำในแปลง';
+  }
+
+  const priceEntries = Object.entries(priceMap || {})
+    .filter(([,v]) => v)
+    .slice(0,6)
+    .map(([n,v]) => `${n}: ${v} บ./กก.`)
+    .join(' | ') || 'ยังไม่มีข้อมูล';
+
+  const riskWords = /(น้ำท่วม|น้ำป่า|ฝนตกหนัก|ฝนถล่ม|พายุ|พายุฝนฟ้าคะนอง|ถนนปิด|ดินถล่ม)/;
+  const riskNews = (news || []).filter(n => riskWords.test((n.title||'') + (n.desc||''))).slice(0,3);
+  const riskText = riskNews.length
+    ? riskNews.map((n,i)=>`• (${i+1}) ${n.title}`).join('\n')
+    : '• ยังไม่พบข่าวน้ำท่วมหรือฝนหนักเด่นชัดในช่วงนี้ (ควรเช็กข่าวท้องถิ่นประกอบ)';
+
   return [
-    `ภาพรวม: สภาพอากาศที่ ${province} ${wx.desc} อุณหภูมิ ~${wx.temp}°C ความชื้น ${wx.rh}% ฝน 3 ชม. ${wx.rain} มม. (ฤดูกาล: ${season})`,
-    `ราคาประเมิน/มีข้อมูล ▸ ${prices}`,
-    '', 'เช็กลิสต์การตัดสินใจ:',
-    '• เฝ้าดูฝน/ความชื้นสูง ปรับให้น้ำ-คลุมโคน',
-    '• ตรวจโรค/ศัตรูพืชหลังฝน',
-    '• ถ้าใกล้ตัด วางแผนตลาด-ขนส่งตามราคาล่าสุด',
-    '', 'หัวข้อข่าวล่าสุด:', heads
+    `สรุปอากาศที่ ${province}`,
+    `• อุณหภูมิ ~${wx.temp}°C ความชื้น ${wx.rh}% สภาพ: ${wx.desc}`,
+    `• ฝนสะสม 3 ชม.ที่ผ่านมา ${rainNow} มม. | คาดว่าฝน 1 ชม.ข้างหน้า ~${rainNext ?? 'ไม่ทราบ'} มม.`,
+    '',
+    'คำแนะนำการออกนอกบ้าน:',
+    `• ${outdoorAdvice}`,
+    '',
+    'คำแนะนำเพาะปลูกช่วงนี้:',
+    `• ฤดูกาลโดยรวม: ${season}`,
+    `• พืชที่เหมาะ / จุดที่ควรระวัง: ${cropAdvice}`,
+    '',
+    'แนวทางเลือกปุ๋ยตอนนี้:',
+    `• ${fertilizerAdvice}`,
+    '',
+    'ราคาพืชผลสำคัญ (ประมาณ):',
+    `• ${priceEntries}`,
+    '',
+    'ข่าวที่เกี่ยวข้องกับฝนหนัก / น้ำท่วม / ความเสี่ยงการเดินทาง:',
+    riskText
   ].join('\n');
 }
 
-/* ===== geolocation with IP fallback (สำหรับ lat/lon ใช้แผน A/B) ===== */
+/* ===== geolocation with IP fallback ===== */
 async function getCoordsWithFallback(){
   try{
     const coords=await new Promise((res,rej)=>{
       if(!navigator.geolocation) return rej(new Error('no geo'));
-      navigator.geolocation.getCurrentPosition(p=>res(p.coords),e=>rej(e),{enableHighAccuracy:true,timeout:7000});
+      navigator.geolocation.getCurrentPosition(
+        p=>res(p.coords),
+        e=>rej(e),
+        {enableHighAccuracy:true,timeout:7000}
+      );
     });
     return {lat:coords.latitude, lon:coords.longitude};
   }catch{
-    // ถ้าหาไม่ได้ก็ใช้ค่าโดยประมาณจาก IP (เฉพาะอากาศอาจเพี้ยนเล็กน้อย แต่ใช้งานได้)
     const j=await (await fetch('https://ipapi.co/json/')).json();
     return {lat:j.latitude, lon:j.longitude};
   }
 }
-// ดึงชื่อจังหวัด/เมือง แล้วใส่ลง #placeName
-async function setProvinceName() {
-  try {
-    const res = await fetch('https://ipapi.co/json/');
-    const j = await res.json();
-    const name = [j.city, j.region].filter(Boolean).join(' • ');
-    document.getElementById('placeName').textContent = name || 'ตำแหน่งของคุณ';
-  } catch (e) {
-    document.getElementById('placeName').textContent = 'ตำแหน่งของคุณ';
+
+/* ===== แผนที่ + ฝนอีก 1 ชั่วโมง ===== */
+let MAP = null;
+function initMap(lat,lon){
+  if(!MAP){
+    MAP = L.map('map').setView([lat,lon], 12);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18
+    }).addTo(MAP);
+    L.marker([lat,lon]).addTo(MAP)
+      .bindPopup("ตำแหน่งของคุณ")
+      .openPopup();
+  }else{
+    MAP.setView([lat,lon],12);
   }
 }
-setProvinceName();
+
+async function getNextHourRain(lat,lon){
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=precipitation&forecast_days=1&timezone=auto`;
+  const r = await fetch(url);
+  const j = await r.json();
+
+  const now = new Date();
+  const nextHour = new Date(now.getTime() + 60*60*1000).toISOString().slice(0,13);
+
+  const i = j.hourly.time.findIndex(t=>t.startsWith(nextHour));
+  const value = j.hourly.precipitation[i] || 0;
+
+  return Number(value.toFixed(1));
+}
 
 /* ===== main aggregate ===== */
 async function aggregateNow(){
   setLoading(true);
   try{
-    const {lat,lon}=await getCoordsWithFallback();
-    const wx=await getWeatherByCoords(lat,lon);
-    const province=await getProvinceFromIP(); // ใช้ ipapi เสมอ (กัน error)
-    renderWeather(wx,province);
+    // 1) พิกัด + อากาศ
+    const {lat,lon} = await getCoordsWithFallback();
+    const wx       = await getWeatherByCoords(lat,lon);
+    const province = await getProvinceFromIP();
+    renderWeather(wx, province);
 
-    const news=await loadFruitsNews();
-    const priceMap=estimatePricesFromNews(news);
+    // 2) แผนที่ + ฝน 1 ชม.หน้า
+    initMap(lat,lon);
+    const rain1h = await getNextHourRain(lat,lon);
+    $('#rainNext1h').textContent = rain1h;
+
+    // 3) ข่าว + ราคา
+    const news     = await loadFruitsNews();
+    const priceMap = estimatePricesFromNews(news);
     renderPriceTable(priceMap);
 
+    // 4) สรุป AI / heuristic
     let aiText='';
     if (USE_HF){
       try{
-        const payload={model:"inclusionAI/Ling-1T:featherless-ai",temperature:0.25,max_tokens:900,
-          messages:[
-            {role:"system",content:"คุณคือผู้ช่วยเกษตรไทย ให้คำตอบสั้น กระชับ ปฏิบัติได้จริง"},
-            {role:"user",content:`สรุปสถานการณ์เพาะปลูก ณ ${province}
-[อากาศ] อุณหภูมิ ${wx.temp}°C • ความชื้น ${wx.rh}% • ฝน 3 ชม. ${wx.rain} มม. • ${wx.desc}
-[ข่าวสำคัญ]\n${news.slice(0,8).map((n,i)=>`- (${i+1}) ${n.title}`).join('\n') || '- (ไม่มี)'}
-[ราคาประเมิน] ทุเรียน ${priceMap['ทุเรียน']||'—'} | มังคุด ${priceMap['มังคุด']||'—'} | เงาะ ${priceMap['เงาะ']||'—'}`}
-          ]};
-        const resp=await fetch('https://router.huggingface.co/v1/chat/completions',{method:'POST',headers:{'Authorization':'Bearer '+readToken(),'Content-Type':'application/json'},body:JSON.stringify(payload)});
+        const payload = {
+          model: "inclusionAI/Ling-1T:featherless-ai",
+          temperature: 0.25,
+          max_tokens: 900,
+          messages: [
+            {
+              role: "system",
+              content: "คุณคือผู้ช่วยเกษตรและการเดินทางของคนไทย ให้สรุปสภาพอากาศ ข่าวน้ำท่วม/ฝนหนัก และแนะนำการออกนอกบ้าน พืชที่ควรปลูก และปุ๋ยที่เหมาะในช่วงนั้น"
+            },
+            {
+              role: "user",
+              content: `ช่วยสรุปเป็นหัวข้อสั้น ๆ 4 ส่วน:
+
+1) ภาพรวมอากาศและความเสี่ยงฝน/น้ำท่วม ณ ${province}
+   - อุณหภูมิ ${wx.temp}°C ความชื้น ${wx.rh}% สภาพ ${wx.desc}
+   - ฝนสะสม 3 ชม. ${wx.rain} มม. ฝน 1 ชม.ข้างหน้า ~${rain1h} มม.
+
+2) คำแนะนำออกนอกบ้าน
+   - ระบุชัด ๆ ว่าควรเลี่ยงออกนอกบ้านไหม / ควรพกร่มไหม / ต้องระวังจุดน้ำท่วม จุดลื่น หรือพื้นที่ลุ่มต่ำอย่างไร
+
+3) พืชที่ช่วงนี้เหมาะจะปลูก หรือควรระวัง
+   - แนะนำชนิดพืชที่เหมาะกับสภาพอากาศตอนนี้ (ฝน/ร้อน/หนาว)
+   - ถ้ามีฝนเยอะให้เตือนเรื่องโรคและน้ำขัง
+   - ถ้าฝนน้อยให้เตือนเรื่องการให้น้ำและคลุมดิน
+
+4) แนวทางเลือกปุ๋ยที่ควรใช้ในช่วงนี้
+   - เน้นบอกว่าใช้ปุ๋ยสูตรอะไร (เช่น เสมอ/เน้นใบ/เน้นดอกผล)
+   - ให้เหตุผลแบบเข้าใจง่าย ไม่ต้องใช้ศัพท์วิชาการเยอะ
+
+ข่าวที่เกี่ยวข้องกับน้ำท่วม/ฝน/การเกษตร:
+${news.slice(0,8).map((n,i)=>`- (${i+1}) ${n.title}`).join('\n') || '- (ไม่มีข่าวเด่น)'}
+
+ราคาพืชผลบางชนิด (บาท/กก.):
+${Object.entries(priceMap).filter(([,v])=>v).slice(0,6).map(([n,v])=>`${n} ${v} บ./กก.`).join(' | ') || '—'}`
+            }
+          ]
+        };
+
+        const resp = await fetch('https://router.huggingface.co/v1/chat/completions',{
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + readToken(),
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
         if(!resp.ok) throw new Error('HF '+resp.status);
-        const data=await resp.json();
-        aiText=data?.choices?.[0]?.message?.content?.trim()||'';
+        const data = await resp.json();
+        aiText = data?.choices?.[0]?.message?.content?.trim() || '';
       }catch{
-        aiText=heuristicSummary(wx,province,news,priceMap);
+        aiText = heuristicSummary(wx, province, news, priceMap, rain1h);
       }
     }else{
-      aiText=heuristicSummary(wx,province,news,priceMap);
+      aiText = heuristicSummary(wx, province, news, priceMap, rain1h);
     }
+
     renderAI(aiText);
   }catch(e){
-    renderAI('⚠️ '+(e?.message||'ไม่สามารถสรุปได้')+'\n(ตรวจสอบอินเทอร์เน็ตหรืออนุญาตตำแหน่ง)');
-  }finally{ setLoading(false); }
+    renderAI('⚠️ '+(e?.message || 'ไม่สามารถสรุปได้')+'\n(ตรวจสอบอินเทอร์เน็ตหรืออนุญาตตำแหน่ง)');
+  }finally{
+    setLoading(false);
+  }
 }
 
 /* ===== mini chat ===== */
 const chatFab=$('#chatFab'), chatBox=$('#chatBox');
-chatFab.onclick=()=>{ chatBox.style.display = (chatBox.style.display==='flex'?'none':'flex'); };
+chatFab.onclick=()=>{
+  chatBox.style.display = (chatBox.style.display==='flex'?'none':'flex');
+};
 function appendMsg(sender, text){
-  const div=document.createElement('div'); div.className='message '+sender; div.textContent=text; $('#chatBody').appendChild(div); $('#chatBody').scrollTop=$('#chatBody').scrollHeight;
+  const div=document.createElement('div');
+  div.className='message '+sender;
+  div.textContent=text;
+  $('#chatBody').appendChild(div);
+  $('#chatBody').scrollTop=$('#chatBody').scrollHeight;
 }
 async function sendMessage(){
-  const inp=$('#chatInput'); const text=inp.value.trim(); if(!text) return;
-  appendMsg('user',text); inp.value='';
+  const inp=$('#chatInput');
+  const text=inp.value.trim();
+  if(!text) return;
+  appendMsg('user',text);
+  inp.value='';
   appendMsg('ai','กำลังคิด…');
-  setTimeout(()=>{ $('#chatBody').lastChild.textContent='(เดโมแชทภายในหน้า) ฉันรับข้อความแล้ว: '+text; },700);
+  setTimeout(()=>{
+    $('#chatBody').lastChild.textContent='(เดโมแชทภายในหน้า) ฉันรับข้อความแล้ว: '+text;
+  },700);
 }
 
 /* ===== boot ===== */
 document.addEventListener('DOMContentLoaded', ()=>{
   $('#newsList').innerHTML='<div class="muted">กำลังดึงข่าว…</div>';
   $('#priceTable').innerHTML='<div class="muted">กำลังประเมินราคา…</div>';
-  aggregateNow(); // เริ่มอัตโนมัติ
+  aggregateNow();
 });
 </script>
 </body>

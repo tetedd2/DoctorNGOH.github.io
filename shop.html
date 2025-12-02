@@ -7,93 +7,572 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
-  :root{ --green:#1f9d47; --green-dark:#0f7a32; --bg:#e9f8ee; --card:#fff; --shadow:0 4px 10px rgba(0,0,0,.1) }
+  :root{
+    --green:#1f9d47;
+    --green-dark:#0f7a32;
+    --bg:#e9f8ee;
+    --card:#fff;
+    --shadow:0 4px 10px rgba(0,0,0,.1);
+  }
   *{box-sizing:border-box}
-  body{ font-family:'Prompt',system-ui,-apple-system,Segoe UI,Roboto,sans-serif; background:var(--bg); margin:0; color:#123}
+  body{
+    font-family:'Prompt',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    background:var(--bg);
+    margin:0;
+    color:#123;
+  }
   h1{ text-align:center; color:var(--green); margin:20px 10px 8px}
   .sub{ text-align:center; color:#456; margin-bottom:8px; font-size:14px}
 
-  .container{ display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:15px; padding:20px; max-width:900px; margin:auto }
-  .product{ background:var(--card); border-radius:15px; box-shadow:var(--shadow); text-align:center; padding:15px; transition:transform .1s ease }
+  .container{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+    gap:15px;
+    padding:20px;
+    max-width:900px;
+    margin:auto;
+  }
+  .product{
+    background:var(--card);
+    border-radius:15px;
+    box-shadow:var(--shadow);
+    text-align:center;
+    padding:15px;
+    transition:transform .1s ease;
+  }
   .product:hover{ transform:translateY(-2px)}
   .product img{ width:100px; height:100px; object-fit:contain}
   .price{ font-weight:600; color:#2b6; margin:6px 0 10px}
   .muted{ color:#678; font-size:12px}
-  button{ background:var(--green); color:#fff; border:none; padding:8px 14px; border-radius:10px; cursor:pointer; font-size:14px}
+
+  button{
+    background:var(--green);
+    color:#fff;
+    border:none;
+    padding:8px 14px;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:14px;
+  }
   button:hover{ background:var(--green-dark)}
 
-  .cart-icon{ position:fixed; top:15px; right:15px; background:#28a745; color:#fff; padding:10px 12px; border-radius:999px; cursor:pointer; font-size:20px; box-shadow:0 3px 8px rgba(0,0,0,.2); display:flex; align-items:center; gap:8px; user-select:none }
-  .badge{ background:#fff; color:#28a745; font-weight:700; min-width:22px; height:22px; border-radius:999px; display:inline-flex; align-items:center; justify-content:center; font-size:12px; padding:0 6px }
-  .cart-toast{ position:absolute; right:100%; margin-right:10px; top:50%; transform:translateY(-50%); background:#1f9d47; color:#fff; font-size:12px; padding:6px 10px; border-radius:999px; box-shadow:0 3px 8px rgba(0,0,0,.2); opacity:0; pointer-events:none; transition:opacity .25s ease, transform .25s ease; white-space:nowrap }
-  .cart-toast.show{ opacity:1; transform:translateY(-50%) translateX(-2px) }
+  /* ปุ่มสลับหน้า ร้านปุ๋ย / ตลาดผู้ใช้ */
+  .view-switch{
+    position:fixed;
+    top:15px;
+    left:15px;
+    display:flex;
+    gap:8px;
+    z-index:1100;
+  }
+  .view-switch button{
+    background:#ffffff;
+    color:var(--green-dark);
+    border:1px solid rgba(0,0,0,.08);
+    border-radius:999px;
+    padding:8px 14px;
+    font-size:13px;
+    box-shadow:var(--shadow);
+    cursor:pointer;
+  }
+  .view-switch button.active{
+    background:var(--green);
+    color:#fff;
+  }
 
-  .modal,.popup{ display:none; position:fixed; z-index:1000; inset:0; background:rgba(0,0,0,.4); padding:16px }
-  .modal-content,.popup-content{ background:#fff; margin:6% auto 0; padding:20px; border-radius:15px; width:100%; max-width:520px; box-shadow:var(--shadow); text-align:center; position:relative }
-  .close{ position:absolute; right:12px; top:10px; font-size:22px; cursor:pointer; color:#678}
+  .cart-icon{
+    position:fixed;
+    top:15px;
+    right:15px;
+    background:#28a745;
+    color:#fff;
+    padding:10px 12px;
+    border-radius:999px;
+    cursor:pointer;
+    font-size:20px;
+    box-shadow:0 3px 8px rgba(0,0,0,.2);
+    display:flex;
+    align-items:center;
+    gap:8px;
+    user-select:none;
+    z-index:1090;
+  }
+  .badge{
+    background:#fff;
+    color:#28a745;
+    font-weight:700;
+    min-width:22px;
+    height:22px;
+    border-radius:999px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-size:12px;
+    padding:0 6px;
+  }
+  .cart-toast{
+    position:absolute;
+    right:100%;
+    margin-right:10px;
+    top:50%;
+    transform:translateY(-50%);
+    background:#1f9d47;
+    color:#fff;
+    font-size:12px;
+    padding:6px 10px;
+    border-radius:999px;
+    box-shadow:0 3px 8px rgba(0,0,0,.2);
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .25s ease, transform .25s ease;
+    white-space:nowrap;
+  }
+  .cart-toast.show{
+    opacity:1;
+    transform:translateY(-50%) translateX(-2px);
+  }
 
-  .cart-item{ display:grid; grid-template-columns:1fr auto auto; gap:10px; align-items:center; margin:10px 0; text-align:left }
+  .modal,.popup{
+    display:none;
+    position:fixed;
+    z-index:1000;
+    inset:0;
+    background:rgba(0,0,0,.4);
+    padding:16px;
+  }
+  .modal-content,.popup-content{
+    background:#fff;
+    margin:6% auto 0;
+    padding:20px;
+    border-radius:15px;
+    width:100%;
+    max-width:520px;
+    box-shadow:var(--shadow);
+    text-align:center;
+    position:relative;
+  }
+  .close{
+    position:absolute;
+    right:12px;
+    top:10px;
+    font-size:22px;
+    cursor:pointer;
+    color:#678;
+  }
+
+  .cart-item{
+    display:grid;
+    grid-template-columns:1fr auto auto;
+    gap:10px;
+    align-items:center;
+    margin:10px 0;
+    text-align:left;
+  }
   .cart-name{ font-weight:600}
-  .ctrl{ display:inline-flex; align-items:center; gap:6px; border:1px solid #dde; border-radius:8px; padding:4px 6px; background:#f9fbfa }
-  .ctrl input{ width:56px; padding:6px 4px; border:1px solid #ccd; border-radius:6px; text-align:center; font-size:14px }
-  .ctrl button{ padding:6px 10px; border-radius:8px; background:#eaf7ef; color:#177a3a }
+  .ctrl{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    border:1px solid #dde;
+    border-radius:8px;
+    padding:4px 6px;
+    background:#f9fbfa;
+  }
+  .ctrl input{
+    width:56px;
+    padding:6px 4px;
+    border:1px solid #ccd;
+    border-radius:6px;
+    text-align:center;
+    font-size:14px;
+  }
+  .ctrl button{
+    padding:6px 10px;
+    border-radius:8px;
+    background:#eaf7ef;
+    color:#177a3a;
+  }
   .ctrl button:hover{ background:#d9f1e2}
-  .remove-btn{ background:#ff4d4f; padding:6px 10px; border-radius:8px; font-size:12px; color:#fff}
+  .remove-btn{
+    background:#ff4d4f;
+    padding:6px 10px;
+    border-radius:8px;
+    font-size:12px;
+    color:#fff;
+  }
   .remove-btn:hover{ background:#d9363e}
-  .checkout{ background:var(--green); color:#fff; padding:12px 20px; border-radius:12px; display:block; text-align:center; margin:15px auto 0; width:100%; font-size:16px}
-  .clear-cart{ background:#f1f3f5; color:#345; margin-top:10px }
-  .btn-secondary{ background:#eef1f5; color:#234 }
+  .checkout{
+    background:var(--green);
+    color:#fff;
+    padding:12px 20px;
+    border-radius:12px;
+    display:block;
+    text-align:center;
+    margin:15px auto 0;
+    width:100%;
+    font-size:16px;
+  }
+  .clear-cart{
+    background:#f1f3f5;
+    color:#345;
+    margin-top:10px;
+  }
+  .btn-secondary{
+    background:#eef1f5;
+    color:#234;
+  }
 
-  .popup-content .row{ text-align:left; margin:10px auto; max-width:320px}
-  .popup-content label{ font-size:14px; color:#456}
-  .popup-content input[type="number"], .popup-content select{ width:100%; padding:10px; margin-top:8px; border-radius:8px; border:1px solid #ccd; font-size:16px; background:#fff }
-  .popup-actions{ display:flex; gap:10px; margin-top:14px}
+  .popup-content .row{
+    text-align:left;
+    margin:10px auto;
+    max-width:320px;
+  }
+  .popup-content label{
+    font-size:14px;
+    color:#456;
+  }
+  .popup-content input[type="number"],
+  .popup-content select{
+    width:100%;
+    padding:10px;
+    margin-top:8px;
+    border-radius:8px;
+    border:1px solid #ccd;
+    font-size:16px;
+    background:#fff;
+  }
+  .popup-actions{
+    display:flex;
+    gap:10px;
+    margin-top:14px;
+  }
   .popup-actions button{ flex:1 }
-  .total-row{ display:flex; justify-content:space-between; align-items:center; font-weight:700; font-size:16px; margin-top:8px}
-  .hr{ height:1px; background:#eee; margin:12px 0}
+  .total-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-weight:700;
+    font-size:16px;
+    margin-top:8px;
+  }
+  .hr{
+    height:1px;
+    background:#eee;
+    margin:12px 0;
+  }
 
-  .pay-methods{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin:10px 0 6px }
-  .radio-card{ border:1px solid #dde; border-radius:12px; padding:10px; cursor:pointer; user-select:none; display:flex; align-items:center; gap:8px; justify-content:center; background:#fafdfb }
+  .pay-methods{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:10px;
+    margin:10px 0 6px;
+  }
+  .radio-card{
+    border:1px solid #dde;
+    border-radius:12px;
+    padding:10px;
+    cursor:pointer;
+    user-select:none;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    justify-content:center;
+    background:#fafdfb;
+  }
   .radio-card input{ accent-color:#1f9d47 }
-  .radio-card.active{ border-color:#1f9d47; background:#f0fbf4 }
-  .pay-pane{ display:none; text-align:left } .pay-pane.active{ display:block }
-  .qr-wrap{ display:flex; flex-direction:column; align-items:center; gap:8px; margin-top:10px}
-  .qr-box{ background:#fff; padding:10px; border-radius:12px; box-shadow:var(--shadow) }
-  .copy-btn{ background:#f1f3f5; color:#345 }
-  .sum-line{ display:flex; justify-content:space-between; margin:6px 0 }
-  .addr-area{ width:100%; min-height:86px; padding:10px; border-radius:10px; border:1px solid #ccd; resize:vertical }
-  .file-row{ display:flex; align-items:center; gap:10px; flex-wrap:wrap }
-  .thumb{ width:120px; height:120px; border-radius:12px; object-fit:cover; background:#f5f7f9; display:none }
-  .success-box{ background:#f0fbf4; border:1px solid #cfead6; border-radius:12px; padding:12px; margin-top:10px; color:#135a2c; display:none }
+  .radio-card.active{
+    border-color:#1f9d47;
+    background:#f0fbf4;
+  }
+  .pay-pane{ display:none; text-align:left }
+  .pay-pane.active{ display:block }
+  .qr-wrap{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    margin-top:10px;
+  }
+  .qr-box{
+    background:#fff;
+    padding:10px;
+    border-radius:12px;
+    box-shadow:var(--shadow);
+  }
+  .copy-btn{
+    background:#f1f3f5;
+    color:#345;
+  }
+  .sum-line{
+    display:flex;
+    justify-content:space-between;
+    margin:6px 0;
+  }
+  .addr-area{
+    width:100%;
+    min-height:86px;
+    padding:10px;
+    border-radius:10px;
+    border:1px solid #ccd;
+    resize:vertical;
+  }
+  .file-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .thumb{
+    width:120px;
+    height:120px;
+    border-radius:12px;
+    object-fit:cover;
+    background:#f5f7f9;
+    display:none;
+  }
+  .success-box{
+    background:#f0fbf4;
+    border:1px solid #cfead6;
+    border-radius:12px;
+    padding:12px;
+    margin-top:10px;
+    color:#135a2c;
+    display:none;
+  }
 
-  .history-list{ text-align:left; max-height:55vh; overflow:auto; padding-right:6px }
-  .order-card{ border:1px solid #edf; border-radius:12px; padding:12px; margin:10px 0; background:#fbfdff }
-  .order-head{ display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap }
-  .order-items{ margin-top:8px; color:#345; font-size:14px }
+  .history-list{
+    text-align:left;
+    max-height:55vh;
+    overflow:auto;
+    padding-right:6px;
+  }
+  .order-card{
+    border:1px solid #edf;
+    border-radius:12px;
+    padding:12px;
+    margin:10px 0;
+    background:#fbfdff;
+  }
+  .order-head{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .order-items{
+    margin-top:8px;
+    color:#345;
+    font-size:14px;
+  }
   .order-items li{ margin:3px 0 }
 
-  .eta{ background:#f5fff7; border:1px dashed #9ed3b1; padding:10px; border-radius:10px; color:#165b2e; margin:8px 0 }
+  .eta{
+    background:#f5fff7;
+    border:1px dashed #9ed3b1;
+    padding:10px;
+    border-radius:10px;
+    color:#165b2e;
+    margin:8px 0;
+  }
 
-  .button-container-bottom { position: fixed; bottom: 0; left: 0; width: 100%; display: flex; justify-content: space-around; gap: 10px; background-color: white; padding: 8px 0; box-shadow: 0 -2px 6px rgba(0,0,0,.1); z-index: 1000; }
-  .btn-bottom { background-color: transparent; border: none; cursor: pointer; flex: 1; height: 60px; display:flex; align-items:center; justify-content:center; overflow:hidden; padding:0; text-decoration:none; transition:.3s; box-shadow:none; }
-  .btn-bottom img { width: 80px; height: auto; object-fit: contain; display: block; }
+  .button-container-bottom {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+    background-color: white;
+    padding: 8px 0;
+    box-shadow: 0 -2px 6px rgba(0,0,0,.1);
+    z-index: 1000;
+  }
+  .btn-bottom {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    flex: 1;
+    height: 60px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    padding:0;
+    text-decoration:none;
+    transition:.3s;
+    box-shadow:none;
+  }
+  .btn-bottom img {
+    width: 80px;
+    height: auto;
+    object-fit: contain;
+    display: block;
+  }
   .btn-bottom:hover { transform: scale(1.05); }
   .btn-bottom:active { transform: scale(0.98); }
   .btn-bottom img { width: 100%; height: 100%; object-fit: cover; }
   .btn-bottom:hover { box-shadow: 0 6px 16px rgba(0,0,0,.15); }
-  .btn-bottom.home{ background:#e74c3c; color:#fff } .btn-bottom.ai{ background:#2ecc71; color:#fff } .btn-bottom.plant{ background:#007bff; color:#fff } .btn-bottom.menu{ background:#ff9900; color:#fff }
+
+  /* ===== ตลาดผลไม้ของผู้ใช้ ===== */
+  #marketSection{ padding-bottom:80px; }
+  .market-layout{
+    max-width:1000px;
+    margin:0 auto;
+    padding:20px;
+    display:grid;
+    grid-template-columns:minmax(0,340px) minmax(0,1fr);
+    gap:20px;
+    align-items:flex-start;
+  }
+  .market-form{
+    background:#fff;
+    border-radius:15px;
+    box-shadow:var(--shadow);
+    padding:16px;
+  }
+  .market-form h3{ margin-top:0; margin-bottom:6px; }
+  .market-form .muted{ font-size:11px; }
+  .market-form label{
+    display:block;
+    margin-top:10px;
+    margin-bottom:4px;
+    font-size:13px;
+    color:#345;
+  }
+  .market-form input,
+  .market-form textarea{
+    width:100%;
+    padding:10px;
+    border-radius:8px;
+    border:1px solid #ccd;
+    font-size:14px;
+  }
+  .market-form textarea{ min-height:80px; resize:vertical; }
+  .market-form .market-row-2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+  .market-form button[type="submit"]{
+    width:100%;
+    margin-top:14px;
+  }
+
+  .market-list-empty{
+    padding:25px;
+    text-align:center;
+    background:#f5faf7;
+    border-radius:15px;
+    border:1px dashed #cdebd5;
+    color:#456;
+    font-size:13px;
+  }
+  .market-card{
+    text-align:left;
+  }
+  .market-card h3{
+    margin-top:0;
+    margin-bottom:4px;
+  }
+  .market-card .muted{
+    display:block;
+    margin-top:3px;
+  }
+  .market-card .market-contact{
+    margin-top:8px;
+    font-size:12px;
+  }
+  .market-card .market-contact a{
+    color:#1f7bd8;
+    text-decoration:none;
+    word-break:break-all;
+  }
+  .market-card .market-contact a:hover{text-decoration:underline;}
+  .market-card .remove-btn{
+    margin-top:10px;
+  }
+
+  @media (max-width:768px){
+    .market-layout{
+      grid-template-columns:1fr;
+    }
+  }
 </style>
 </head>
 <body>
 
-<h1>🛒 ร้านขายปุ๋ยออนไลน์</h1>
-<p class="sub">เลือกซื้อได้ทั้งแบบ “กิโลกรัม” และ “ถุง” — ระบบคำนวณราคาให้อัตโนมัติ</p>
-
-<div class="cart-icon" onclick="openCart()" aria-label="เปิดตะกร้าสินค้า" role="button">
-  <span class="cart-toast" id="cartToast" aria-live="polite">เพิ่มแล้ว</span>
-  🛍️ <span class="badge" id="cartBadge">0</span>
+<!-- ปุ่มสลับหน้า -->
+<div class="view-switch">
+  <button id="btnViewShop" type="button" onclick="setView('shop')">ร้านปุ๋ยหลัก</button>
+  <button id="btnViewMarket" type="button" onclick="setView('market')">ตลาดออนไลน์ผู้ใช้</button>
 </div>
 
-<div class="container" id="productList"></div>
+<!-- ร้านปุ๋ยหลัก -->
+<div id="shopSection">
+  <h1>🛒 ร้านขายปุ๋ยออนไลน์</h1>
+  <p class="sub">เลือกซื้อได้ทั้งแบบ “กิโลกรัม” และ “ถุง” — ระบบคำนวณราคาให้อัตโนมัติ</p>
+
+  <div class="cart-icon" onclick="openCart()" aria-label="เปิดตะกร้าสินค้า" role="button">
+    <span class="cart-toast" id="cartToast" aria-live="polite">เพิ่มแล้ว</span>
+    🛍️ <span class="badge" id="cartBadge">0</span>
+  </div>
+
+  <div class="container" id="productList"></div>
+</div>
+
+<!-- ตลาดออนไลน์ของผู้ใช้ -->
+<div id="marketSection" style="display:none">
+  <h1>🍋 ตลาดผลไม้ของผู้ใช้</h1>
+  <p class="sub">พื้นที่ให้ผู้ใช้ที่ล็อกอินเข้ามาลงขายผลไม้ บอกราคา ที่อยู่จัดส่ง และช่องทางติดต่อ</p>
+
+  <div class="market-layout">
+    <!-- ฟอร์มลงขาย -->
+    <form id="marketForm" class="market-form">
+      <h3>เพิ่มประกาศขายผลไม้ของคุณ</h3>
+      <p class="muted">ประกาศจะถูกเก็บใน Firebase ทำให้ผู้ใช้คนอื่นเห็นได้เหมือนกันทุกเครื่อง</p>
+
+      <label for="fruitName">ชื่อผลไม้ *</label>
+      <input id="fruitName" required placeholder="เช่น ทุเรียนหมอนทอง, มังคุด, เงาะ">
+
+      <div class="market-row-2">
+        <div>
+          <label for="price">ราคา *</label>
+          <input id="price" type="number" min="0" step="1" required placeholder="เช่น 120">
+        </div>
+        <div>
+          <label for="unit">หน่วย *</label>
+          <input id="unit" required placeholder="เช่น บาท/กก., บาท/กล่อง">
+        </div>
+      </div>
+
+      <label for="location">พื้นที่/จังหวัดที่ขาย *</label>
+      <input id="location" required placeholder="เช่น อ.บ้านนา จ.นครนายก">
+
+      <label for="shipping">การจัดส่ง *</label>
+      <input id="shipping" required placeholder="เช่น ส่งในอำเภอ, J&T, Kerry, นัดรับ">
+
+      <div class="market-row-2">
+        <div>
+          <label for="phone">เบอร์ติดต่อ *</label>
+          <input id="phone" required placeholder="0XXXXXXXXX">
+        </div>
+        <div>
+          <label for="contact">ช่องทางอื่น</label>
+          <input id="contact" placeholder="ลิงก์ LINE / Facebook / IG (ถ้ามี)">
+        </div>
+      </div>
+
+      <label for="note">รายละเอียดเพิ่มเติม</label>
+      <textarea id="note" placeholder="เช่น ปลูกเอง ใช้ปุ๋ยอินทรีย์ มีบริการคัดเกรด"></textarea>
+
+      <button type="submit">บันทึกประกาศขายผลไม้</button>
+    </form>
+
+    <!-- รายการประกาศ -->
+    <div id="marketList"></div>
+  </div>
+</div>
 
 <!-- Popup เลือกซื้อ -->
 <div id="popup" class="popup" aria-hidden="true">
@@ -101,27 +580,44 @@
     <span class="close" onclick="closePopup()" aria-label="ปิด">&times;</span>
     <h3>🧮 เลือกรูปแบบการสั่งซื้อ</h3>
     <p class="muted">เลือกรูปแบบและใส่จำนวน</p>
-    <div class="row"><label>สินค้า</label><div id="popupProductName" style="font-weight:600; margin-top:6px;">-</div></div>
-    <div class="row"><label for="typeSelect">รูปแบบ</label>
-      <select id="typeSelect"><option value="kg">น้ำหนัก (กก.)</option><option value="bag">จำนวนถุง</option></select>
+    <div class="row">
+      <label>สินค้า</label>
+      <div id="popupProductName" style="font-weight:600; margin-top:6px;">-</div>
     </div>
-    <div class="row"><label for="quantityInput">จำนวน</label>
+    <div class="row">
+      <label for="typeSelect">รูปแบบ</label>
+      <select id="typeSelect">
+        <option value="kg">น้ำหนัก (กก.)</option>
+        <option value="bag">จำนวนถุง</option>
+      </select>
+    </div>
+    <div class="row">
+      <label for="quantityInput">จำนวน</label>
       <input type="number" id="quantityInput" placeholder="ใส่จำนวน" min="0.1" step="0.1" />
       <div id="unitHint" class="muted" style="margin-top:6px;">หน่วยเป็น กก.</div>
     </div>
-    <div class="row total-row"><span>ราคารวม:</span><span id="popupTotal">฿0.00</span></div>
-    <div class="popup-actions"><button class="clear-cart" onclick="closePopup()">ยกเลิก</button><button onclick="confirmAdd()">เพิ่มลงตะกร้า</button></div>
+    <div class="row total-row">
+      <span>ราคารวม:</span>
+      <span id="popupTotal">฿0.00</span>
+    </div>
+    <div class="popup-actions">
+      <button class="clear-cart" onclick="closePopup()">ยกเลิก</button>
+      <button onclick="confirmAdd()">เพิ่มลงตะกร้า</button>
+    </div>
   </div>
 </div>
 
-<!-- ตะกร้า -->
+<!-- ตะกร้าสินค้า -->
 <div id="cartModal" class="modal" aria-hidden="true">
   <div class="modal-content" role="dialog" aria-modal="true">
     <span class="close" onclick="closeCart()" aria-label="ปิด">&times;</span>
     <h2>🧺 ตะกร้าสินค้า</h2>
     <div id="cartItems"></div>
     <div class="hr"></div>
-    <div class="total-row"><span>รวมทั้งหมด</span><span id="total">฿0.00</span></div>
+    <div class="total-row">
+      <span>รวมทั้งหมด</span>
+      <span id="total">฿0.00</span>
+    </div>
     <button class="checkout" onclick="openPayment()">💳 จ่ายเงิน</button>
     <div style="display:flex; gap:10px; justify-content:center; margin-top:10px">
       <button class="clear-cart" onclick="clearCart()">ล้างตะกร้า</button>
@@ -135,36 +631,70 @@
   <div class="modal-content" role="dialog" aria-modal="true">
     <span class="close" onclick="closePayment()" aria-label="ปิด">&times;</span>
     <h2>💳 เลือกวิธีชำระเงิน</h2>
-    <div class="sum-line"><span>หมายเลขสั่งซื้อ</span><strong id="orderId">-</strong></div>
-    <div class="sum-line"><span>ยอดที่ต้องชำระ</span><strong id="payTotal">฿0.00</strong></div>
-    <div class="pay-methods" id="payMethods">
-      <label class="radio-card active"><input type="radio" name="payMethod" value="qr" checked> PromptPay QR</label>
-      <label class="radio-card"><input type="radio" name="payMethod" value="slip"> อัปโหลดสลิป</label>
-      <label class="radio-card"><input type="radio" name="payMethod" value="cod"> เก็บเงินปลายทาง (COD)</label>
+    <div class="sum-line">
+      <span>หมายเลขสั่งซื้อ</span>
+      <strong id="orderId">-</strong>
+    </div>
+    <div class="sum-line">
+      <span>ยอดที่ต้องชำระ</span>
+      <strong id="payTotal">฿0.00</strong>
     </div>
 
+    <div class="pay-methods" id="payMethods">
+      <label class="radio-card active">
+        <input type="radio" name="payMethod" value="qr" checked> PromptPay QR
+      </label>
+      <label class="radio-card">
+        <input type="radio" name="payMethod" value="slip"> อัปโหลดสลิป
+      </label>
+      <label class="radio-card">
+        <input type="radio" name="payMethod" value="cod"> เก็บเงินปลายทาง (COD)
+      </label>
+    </div>
+
+    <!-- QR -->
     <div id="paneQR" class="pay-pane active">
       <div class="qr-wrap">
-        <div class="qr-box"><canvas id="qrCanvas" width="240" height="240"></canvas></div>
+        <div class="qr-box">
+          <canvas id="qrCanvas" width="240" height="240"></canvas>
+        </div>
         <div>โอนเข้า PromptPay: <b id="ppIdText">-</b></div>
         <div class="file-row">
           <button class="copy-btn" onclick="copyText(PROMPTPAY_ID)">คัดลอกเบอร์พร้อมเพย์</button>
           <button class="copy-btn" onclick="copyAmount()">คัดลอกยอดโอน</button>
         </div>
-        <label style="display:flex; gap:8px; align-items:center; margin-top:8px"><input type="checkbox" id="qrConfirmed"><span>ฉันโอนแล้ว</span></label>
+        <label style="display:flex; gap:8px; align-items:center; margin-top:8px">
+          <input type="checkbox" id="qrConfirmed">
+          <span>ฉันโอนแล้ว</span>
+        </label>
       </div>
     </div>
 
+    <!-- Slip -->
     <div id="paneSlip" class="pay-pane">
-      <div class="row"><label>อัปโหลดสลิปโอน (jpg/png)</label>
-        <div class="file-row"><input type="file" id="slipInput" accept="image/*" /><img id="slipThumb" class="thumb" alt="สลิปตัวอย่าง"></div>
+      <div class="row">
+        <label>อัปโหลดสลิปโอน (jpg/png)</label>
+        <div class="file-row">
+          <input type="file" id="slipInput" accept="image/*" />
+          <img id="slipThumb" class="thumb" alt="สลิปตัวอย่าง">
+        </div>
       </div>
     </div>
 
+    <!-- COD -->
     <div id="paneCOD" class="pay-pane">
-      <div class="row"><label>ชื่อ-นามสกุลผู้รับ</label><input type="text" id="codName" placeholder="ชื่อ-นามสกุล" /></div>
-      <div class="row"><label>เบอร์โทร</label><input type="tel" id="codPhone" placeholder="0XXXXXXXXX" /></div>
-      <div class="row"><label>ที่อยู่จัดส่ง</label><textarea id="codAddr" class="addr-area" placeholder="บ้านเลขที่ / ถนน / ตำบล / อำเภอ / จังหวัด / รหัสไปรษณีย์"></textarea></div>
+      <div class="row">
+        <label>ชื่อ-นามสกุลผู้รับ</label>
+        <input type="text" id="codName" placeholder="ชื่อ-นามสกุล" />
+      </div>
+      <div class="row">
+        <label>เบอร์โทร</label>
+        <input type="tel" id="codPhone" placeholder="0XXXXXXXXX" />
+      </div>
+      <div class="row">
+        <label>ที่อยู่จัดส่ง</label>
+        <textarea id="codAddr" class="addr-area" placeholder="บ้านเลขที่ / ถนน / ตำบล / อำเภอ / จังหวัด / รหัสไปรษณีย์"></textarea>
+      </div>
     </div>
 
     <div class="hr"></div>
@@ -173,7 +703,7 @@
   </div>
 </div>
 
-<!-- ประวัติ -->
+<!-- ประวัติการซื้อ -->
 <div id="historyModal" class="modal" aria-hidden="true">
   <div class="modal-content" role="dialog" aria-modal="true">
     <span class="close" onclick="closeHistory()" aria-label="ปิด">&times;</span>
@@ -187,15 +717,24 @@
   </div>
 </div>
 
-<!-- Popup ระบุที่อยู่หลังจ่าย + ETA ภายใน 30 นาที -->
+<!-- Popup ที่อยู่จัดส่งหลังชำระ -->
 <div id="deliveryModal" class="modal" aria-hidden="true">
   <div class="modal-content" role="dialog" aria-modal="true">
     <span class="close" onclick="closeDelivery()" aria-label="ปิด">&times;</span>
     <h2>🚚 ยืนยันที่อยู่จัดส่ง</h2>
     <p class="eta"><b id="etaMsg">คนส่งกำลังเตรียมของ...</b></p>
-    <div class="row"><label>ชื่อ-นามสกุลผู้รับ</label><input type="text" id="shipName" placeholder="ชื่อ-นามสกุล" /></div>
-    <div class="row"><label>เบอร์โทร</label><input type="tel" id="shipPhone" placeholder="0XXXXXXXXX" /></div>
-    <div class="row"><label>ที่อยู่จัดส่ง</label><textarea id="shipAddr" class="addr-area" placeholder="บ้านเลขที่ / ถนน / ตำบล / อำเภอ / จังหวัด / รหัสไปรษณีย์"></textarea></div>
+    <div class="row">
+      <label>ชื่อ-นามสกุลผู้รับ</label>
+      <input type="text" id="shipName" placeholder="ชื่อ-นามสกุล" />
+    </div>
+    <div class="row">
+      <label>เบอร์โทร</label>
+      <input type="tel" id="shipPhone" placeholder="0XXXXXXXXX" />
+    </div>
+    <div class="row">
+      <label>ที่อยู่จัดส่ง</label>
+      <textarea id="shipAddr" class="addr-area" placeholder="บ้านเลขที่ / ถนน / ตำบล / อำเภอ / จังหวัด / รหัสไปรษณีย์"></textarea>
+    </div>
     <div class="hr"></div>
     <button class="checkout" onclick="saveDelivery()">บันทึกที่อยู่ & เสร็จสิ้น</button>
   </div>
@@ -204,27 +743,45 @@
 <!-- ปุ่มล่าง -->
 <div class="button-container-bottom">
   <a href="Home999.html" class="btn-bottom"><img src="60.png" alt="Home"></a>
-  <a href="shop.html" class="btn-bottom"><img src="333222.png" alt="Shop"></a>
-  <a href="Home.html" class="btn-bottom"><img src="61.png" alt="AI"></a>
+  <a href="shop.html"   class="btn-bottom"><img src="333222.png" alt="Shop"></a>
+  <a href="Home.html"   class="btn-bottom"><img src="61.png" alt="AI"></a>
   <a href="Home555.html" class="btn-bottom"><img src="62.png" alt="วิธีปลูก"></a>
-  <a href="menu.html" class="btn-bottom"><img src="1000.png" alt="เมนู"></a>
+  <a href="menu.html"   class="btn-bottom"><img src="1000.png" alt="เมนู"></a>
 </div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 <script>
   /* ===== Config ===== */
-  const PROMPTPAY_ID = '0812345678'; // เปลี่ยนเป็นเบอร์ขึ้นต้น 0 หรือเลขบัตร 13 หลัก
+  const firebaseConfig = {
+    apiKey: "AIzaSyDq60nePWYn2AXt4gkJSqnTlpR84ZfkTUw",
+    authDomain: "beneficial-applications.firebaseapp.com",
+    projectId: "beneficial-applications",
+    storageBucket: "beneficial-applications.firebasestorage.app",
+    messagingSenderId: "614255728005",
+    appId: "1:614255728005:web:69d167f6033ed3e452e0ec",
+    measurementId: "G-N8RKQSHP94"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  const marketRef = db.collection('fruit_market');
+
+  const PROMPTPAY_ID = '0812345678'; // แก้เป็นเบอร์/เลขพร้อมเพย์จริงได้
   const THB = new Intl.NumberFormat('th-TH', { style:'currency', currency:'THB' });
   const DT  = new Intl.DateTimeFormat('th-TH', { dateStyle:'medium', timeStyle:'short' });
   const $   = s => document.querySelector(s);
 
-  const CART_KEY='fertilizer_cart', HIST_KEY='fertilizer_order_history', ADDR_KEY='fertilizer_last_address';
+  const CART_KEY='fertilizer_cart',
+        HIST_KEY='fertilizer_order_history',
+        ADDR_KEY='fertilizer_last_address';
 
-  /* ใส่รูปของคุณเองตรงนี้ (วางไฟล์ไว้ที่โฟลเดอร์ images/ หรือปรับพาธเอง) */
   const PRODUCTS = [
-    { id:'organic',  name:'0-0-60', img:'444333.png',  pricePerKg:120, pricePerBag:95,  bagUnit:'ถุง 1 กก.' },
-    { id:'chemical', name:'15-15-15',     img:'444222.png', pricePerKg:150, pricePerBag:135, bagUnit:'ถุง 1 กก.' },
-    { id:'mix',      name:'15-5-20',     img:'444555.png',      pricePerKg:180, pricePerBag:160, bagUnit:'ถุง 1 กก.' }
+    { id:'organic',  name:'0-0-60',   img:'444333.png', pricePerKg:120, pricePerBag:95,  bagUnit:'ถุง 1 กก.' },
+    { id:'chemical', name:'15-15-15', img:'444222.png', pricePerKg:150, pricePerBag:135, bagUnit:'ถุง 1 กก.' },
+    { id:'mix',      name:'15-5-20',  img:'444555.png', pricePerKg:180, pricePerBag:160, bagUnit:'ถุง 1 กก.' }
   ];
 
   function saveCartLS(){ localStorage.setItem(CART_KEY, JSON.stringify(cart)); }
@@ -234,14 +791,52 @@
   function saveLastAddr(obj){ localStorage.setItem(ADDR_KEY, JSON.stringify(obj)); }
   function loadLastAddr(){ try{ return JSON.parse(localStorage.getItem(ADDR_KEY)||'{}'); }catch{ return {}; } }
 
+  // client id สำหรับตลาดผลไม้ (ใช้เช็คว่าใครเป็นคนโพสต์)
+  const CLIENT_ID_KEY = 'fruit_market_client_id';
+  function getClientId(){
+    let id = localStorage.getItem(CLIENT_ID_KEY);
+    if(!id){
+      id = 'client_' + Date.now().toString(36) + Math.random().toString(36).slice(2,8);
+      localStorage.setItem(CLIENT_ID_KEY, id);
+    }
+    return id;
+  }
+  const CLIENT_ID = getClientId();
+
   let cart = loadCartLS();
   let currentProduct = null;
   let toastTimer = null;
   let lastOrderIdForDelivery = null;
+  let marketUnsubscribe = null;
 
-  /* ===== Render ===== */
+  /* ===== สลับหน้า ร้านปุ๋ย / ตลาดผู้ใช้ ===== */
+function setView(view){
+  const shop = document.getElementById('shopSection');
+  const market = document.getElementById('marketSection');
+  const btnShop = document.getElementById('btnViewShop');
+  const btnMarket = document.getElementById('btnViewMarket');
+
+  if(view === 'market'){
+    // แสดงเฉพาะตลาดผู้ใช้
+    shop.style.display = 'none';
+    market.style.display = 'block';
+    btnShop.classList.remove('active');
+    btnMarket.classList.add('active');
+  } else {
+    // แสดงเฉพาะร้านปุ๋ย
+    shop.style.display = 'block';
+    market.style.display = 'none';
+    btnShop.classList.add('active');
+    btnMarket.classList.remove('active');
+  }
+}
+
+
+  /* ===== Render สินค้าปุ๋ย ===== */
   function renderProducts(){
-    $('#productList').innerHTML = PRODUCTS.map(p=>`
+    const list = $('#productList');
+    if(!list) return;
+    list.innerHTML = PRODUCTS.map(p=>`
       <div class="product">
         <img src="${p.img}" alt="">
         <h3>${p.name}</h3>
@@ -249,127 +844,354 @@
         <div class="muted">หรือแบบถุง: ฿${p.pricePerBag.toLocaleString()} (${p.bagUnit})</div>
         <div style="height:10px"></div>
         <button onclick="openPopup('${p.id}')">เพิ่มลงตะกร้า</button>
-      </div>`).join('');
+      </div>
+    `).join('');
   }
 
   /* ===== Popup สั่งซื้อ ===== */
   function openPopup(id){
-    const p = PRODUCTS.find(x=>x.id===id); if(!p) return;
+    const p = PRODUCTS.find(x=>x.id===id);
+    if(!p) return;
     currentProduct = p;
-    $('#typeSelect').value='kg'; $('#quantityInput').value='';
-    $('#unitHint').textContent='หน่วยเป็น กก.'; $('#popupProductName').textContent=p.name;
+    $('#typeSelect').value='kg';
+    $('#quantityInput').value='';
+    $('#unitHint').textContent='หน่วยเป็น กก.';
+    $('#popupProductName').textContent=p.name;
     $('#popupTotal').textContent=THB.format(0);
-    $('#popup').style.display='block'; $('#popup').setAttribute('aria-hidden','false'); $('#quantityInput').focus();
+    $('#popup').style.display='block';
+    $('#popup').setAttribute('aria-hidden','false');
+    $('#quantityInput').focus();
   }
-  function closePopup(){ $('#popup').style.display='none'; $('#popup').setAttribute('aria-hidden','true'); currentProduct=null; }
-  $('#typeSelect').addEventListener('change', ()=>{ $('#unitHint').textContent=$('#typeSelect').value==='kg'?'หน่วยเป็น กก.':'หน่วยเป็น ถุง'; updatePopupTotal(); });
+  function closePopup(){
+    $('#popup').style.display='none';
+    $('#popup').setAttribute('aria-hidden','true');
+    currentProduct = null;
+  }
+  $('#typeSelect').addEventListener('change', ()=>{
+    $('#unitHint').textContent = $('#typeSelect').value==='kg' ? 'หน่วยเป็น กก.' : 'หน่วยเป็น ถุง';
+    updatePopupTotal();
+  });
   $('#quantityInput').addEventListener('input', updatePopupTotal);
+
   function updatePopupTotal(){
     if(!currentProduct) return;
-    const type=$('#typeSelect').value, qty=parseFloat($('#quantityInput').value);
-    const unit= type==='kg'? currentProduct.pricePerKg : currentProduct.pricePerBag;
-    $('#popupTotal').textContent = THB.format((!isNaN(qty)&&qty>0)? unit*qty:0);
+    const type = $('#typeSelect').value;
+    const qty = parseFloat($('#quantityInput').value);
+    const unit = type==='kg' ? currentProduct.pricePerKg : currentProduct.pricePerBag;
+    $('#popupTotal').textContent = THB.format((!isNaN(qty) && qty>0) ? unit * qty : 0);
   }
 
-  function showCartToast(t='เพิ่มแล้ว'){ const el=$('#cartToast'); el.textContent=t; el.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>el.classList.remove('show'),1500); }
+  function showCartToast(t='เพิ่มแล้ว'){
+    const el = $('#cartToast');
+    el.textContent=t;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=>el.classList.remove('show'),1500);
+  }
+
   function confirmAdd(){
     if(!currentProduct) return;
-    const type=$('#typeSelect').value, qty=parseFloat($('#quantityInput').value);
-    if(isNaN(qty)||qty<=0){ alert('กรุณากรอกจำนวนให้ถูกต้อง'); return; }
-    const unit = type==='kg'? currentProduct.pricePerKg : currentProduct.pricePerBag;
+    const type = $('#typeSelect').value;
+    const qty = parseFloat($('#quantityInput').value);
+    if(isNaN(qty) || qty<=0){
+      alert('กรุณากรอกจำนวนให้ถูกต้อง');
+      return;
+    }
+    const unit = type==='kg' ? currentProduct.pricePerKg : currentProduct.pricePerBag;
     const i = cart.findIndex(x=>x.id===currentProduct.id && x.type===type);
-    if(i>=0) cart[i].qty = parseFloat((cart[i].qty+qty).toFixed(2)); else cart.push({id:currentProduct.id,name:currentProduct.name,type,qty,unitPrice:unit});
-    saveCartLS(); closePopup(); updateCart(); showCartToast(`เพิ่มแล้ว (${cart.length} รายการ)`);
+    if(i>=0){
+      cart[i].qty = parseFloat((cart[i].qty + qty).toFixed(2));
+    }else{
+      cart.push({id:currentProduct.id,name:currentProduct.name,type,qty,unitPrice:unit});
+    }
+    saveCartLS();
+    closePopup();
+    updateCart();
+    showCartToast(`เพิ่มแล้ว (${cart.length} รายการ)`);
   }
 
-  function openCart(){ $('#cartModal').style.display='block'; $('#cartModal').setAttribute('aria-hidden','false'); updateCart(); }
-  function closeCart(){ $('#cartModal').style.display='none'; $('#cartModal').setAttribute('aria-hidden','true'); }
-  function clearCart(){ if(!cart.length)return; if(confirm('ล้างตะกร้าทั้งหมดหรือไม่?')){ cart=[]; saveCartLS(); updateCart(); } }
-  function removeItem(i){ cart.splice(i,1); saveCartLS(); updateCart(); }
-  function setQty(i,v){ const q=parseFloat(v); if(isNaN(q)||q<=0)return; cart[i].qty=parseFloat(q.toFixed(2)); saveCartLS(); updateCart(); }
-  function stepQty(i,d){ const v=Math.max(0.1, cart[i].qty+d); cart[i].qty=parseFloat(v.toFixed(2)); saveCartLS(); updateCart(); }
-  function itemLabel(it){ return it.type==='kg'? `${it.qty} กก.` : `${it.qty} ถุง`; }
+  /* ===== ตะกร้า ===== */
+  function openCart(){
+    $('#cartModal').style.display='block';
+    $('#cartModal').setAttribute('aria-hidden','false');
+    updateCart();
+  }
+  function closeCart(){
+    $('#cartModal').style.display='none';
+    $('#cartModal').setAttribute('aria-hidden','true');
+  }
+  function clearCart(){
+    if(!cart.length) return;
+    if(confirm('ล้างตะกร้าทั้งหมดหรือไม่?')){
+      cart=[];
+      saveCartLS();
+      updateCart();
+    }
+  }
+  function removeItem(i){
+    cart.splice(i,1);
+    saveCartLS();
+    updateCart();
+  }
+  function setQty(i,v){
+    const q=parseFloat(v);
+    if(isNaN(q) || q<=0) return;
+    cart[i].qty = parseFloat(q.toFixed(2));
+    saveCartLS();
+    updateCart();
+  }
+  function stepQty(i,d){
+    const v = Math.max(0.1, cart[i].qty + d);
+    cart[i].qty = parseFloat(v.toFixed(2));
+    saveCartLS();
+    updateCart();
+  }
+  function itemLabel(it){ return it.type==='kg' ? `${it.qty} กก.` : `${it.qty} ถุง`; }
+
   function updateCart(){
-    const items=$('#cartItems'), totalEl=$('#total'), badge=$('#cartBadge');
-    if(!cart.length){ items.innerHTML='<p class="muted">ยังไม่มีสินค้าในตะกร้า</p>'; totalEl.textContent=THB.format(0); badge.textContent=0; return; }
+    const items = $('#cartItems');
+    const totalEl = $('#total');
+    const badge = $('#cartBadge');
+    if(!cart.length){
+      items.innerHTML='<p class="muted">ยังไม่มีสินค้าในตะกร้า</p>';
+      totalEl.textContent=THB.format(0);
+      badge.textContent=0;
+      return;
+    }
     let total=0;
-    items.innerHTML=cart.map((it,i)=>{ const sub=it.unitPrice*it.qty; total+=sub; const unitTxt=it.type==='kg'?'บาท/กก.':'บาท/ถุง';
-      return `<div class="cart-item">
-        <div><div class="cart-name">${it.name} <span class="muted">(${itemLabel(it)})</span></div><div class="muted">฿${it.unitPrice.toLocaleString()} / ${unitTxt}</div></div>
-        <div class="ctrl"><button onclick="stepQty(${i},-0.1)">−</button><input type="number" step="0.1" min="0.1" value="${it.qty}" onchange="setQty(${i},this.value)"><button onclick="stepQty(${i},+0.1)">+</button></div>
-        <div style="text-align:right"><div><strong>${THB.format(sub)}</strong></div><button class="remove-btn" onclick="removeItem(${i})">ลบ</button></div>
-      </div>`; }).join('');
-    totalEl.textContent=THB.format(total); badge.textContent=cart.length;
+    items.innerHTML = cart.map((it,i)=>{
+      const sub = it.unitPrice * it.qty;
+      total += sub;
+      const unitTxt = it.type==='kg' ? 'บาท/กก.' : 'บาท/ถุง';
+      return `
+        <div class="cart-item">
+          <div>
+            <div class="cart-name">${it.name} <span class="muted">(${itemLabel(it)})</span></div>
+            <div class="muted">฿${it.unitPrice.toLocaleString()} / ${unitTxt}</div>
+          </div>
+          <div class="ctrl">
+            <button onclick="stepQty(${i},-0.1)">−</button>
+            <input type="number" step="0.1" min="0.1" value="${it.qty}" onchange="setQty(${i},this.value)">
+            <button onclick="stepQty(${i},+0.1)">+</button>
+          </div>
+          <div style="text-align:right">
+            <div><strong>${THB.format(sub)}</strong></div>
+            <button class="remove-btn" onclick="removeItem(${i})">ลบ</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+    totalEl.textContent = THB.format(total);
+    badge.textContent = cart.length;
   }
 
-  /* ===== EMV PromptPay (Offline) ===== */
+  /* ===== EMV PromptPay ===== */
   function tlv(id,val){ const len=val.length.toString().padStart(2,'0'); return id+len+val; }
-  function crc16ccitt(str){ let crc=0xFFFF; for(let i=0;i<str.length;i++){ crc^=(str.charCodeAt(i)<<8); for(let j=0;j<8;j++){ crc=(crc&0x8000)?((crc<<1)^0x1021):(crc<<1); crc&=0xFFFF; } } return crc.toString(16).toUpperCase().padStart(4,'0'); }
-  function normalizePP(id){ const d=(id||'').replace(/\D/g,''); if(/^0\d{9}$/.test(d)) return '66'+d.slice(1); return d; }
+  function crc16ccitt(str){
+    let crc=0xFFFF;
+    for(let i=0;i<str.length;i++){
+      crc ^= (str.charCodeAt(i) << 8);
+      for(let j=0;j<8;j++){
+        if(crc & 0x8000) crc = (crc<<1) ^ 0x1021;
+        else crc <<= 1;
+        crc &= 0xFFFF;
+      }
+    }
+    return crc.toString(16).toUpperCase().padStart(4,'0');
+  }
+  function normalizePP(id){
+    const d=(id||'').replace(/\D/g,'');
+    if(/^0\d{9}$/.test(d)) return '66' + d.slice(1);
+    return d;
+  }
   function buildPromptPayEMV(opt={}){
-    const pp=normalizePP(opt.id||''); const isMobile=/^66\d{9}$/.test(pp), isNat=/^\d{13}$/.test(pp);
+    const pp = normalizePP(opt.id||'');
+    const isMobile = /^66\d{9}$/.test(pp);
+    const isNat = /^\d{13}$/.test(pp);
     if(!isMobile && !isNat) throw new Error('PromptPay ID ไม่ถูกต้อง');
-    const payloadFormat='01', poi=opt.amount?'12':'11', gui='A000000677010111';
-    const acct = tlv('00',gui) + (isMobile? tlv('01',pp) : tlv('02',pp));
-    let p=''; p+=tlv('00',payloadFormat); p+=tlv('01',poi); p+=tlv('26',acct); p+=tlv('52','0000'); p+=tlv('53','764');
+
+    const payloadFormat='01';
+    const poi = opt.amount ? '12':'11';
+    const gui='A000000677010111';
+
+    const acct = tlv('00',gui) + (isMobile ? tlv('01',pp) : tlv('02',pp));
+    let p='';
+    p+=tlv('00',payloadFormat);
+    p+=tlv('01',poi);
+    p+=tlv('26',acct);
+    p+=tlv('52','0000');
+    p+=tlv('53','764');
     if(opt.amount){ p+=tlv('54',(+opt.amount).toFixed(2)); }
-    p+=tlv('58','TH'); p+=tlv('59',(opt.name||'FERTILIZER SHOP').slice(0,25)||'NA'); p+=tlv('60',(opt.city||'BANGKOK').slice(0,15)||'BANGKOK');
-    if(opt.billNumber){ p+=tlv('62', tlv('01', String(opt.billNumber).slice(0,25))); }
-    const toCRC=p+'6304'; const crc=crc16ccitt(toCRC); return p+tlv('63',crc);
+    p+=tlv('58','TH');
+    p+=tlv('59',(opt.name||'FERTILIZER SHOP').slice(0,25)||'NA');
+    p+=tlv('60',(opt.city||'BANGKOK').slice(0,15)||'BANGKOK');
+    if(opt.billNumber){
+      p+=tlv('62', tlv('01', String(opt.billNumber).slice(0,25)));
+    }
+    const toCRC = p + '6304';
+    const crc = crc16ccitt(toCRC);
+    return p + tlv('63', crc);
   }
   function renderQR(){
-    const canvas=$('#qrCanvas'); if(!canvas || !window.QRCode) return;
-    const payload=buildPromptPayEMV({ id:PROMPTPAY_ID, amount:getCartTotal(), name:'FERTILIZER', city:'BANGKOK', billNumber: $('#orderId')?.textContent||'' });
-    QRCode.toCanvas(canvas, payload, {width:240, margin:1}, err=>{ if(err) console.error(err); });
+    const canvas = $('#qrCanvas');
+    if(!canvas || !window.QRCode) return;
+    const payload = buildPromptPayEMV({
+      id:PROMPTPAY_ID,
+      amount:getCartTotal(),
+      name:'FERTILIZER',
+      city:'BANGKOK',
+      billNumber: $('#orderId')?.textContent || ''
+    });
+    QRCode.toCanvas(canvas, payload, {width:240, margin:1}, err=>{
+      if(err) console.error(err);
+    });
   }
 
   /* ===== Payment ===== */
-  function getCartTotal(){ return cart.reduce((s,i)=>s+i.unitPrice*i.qty,0); }
-  function genOrderId(){ const n=new Date().toISOString().replace(/\D/g,'').slice(0,14), r=Math.floor(Math.random()*1000).toString().padStart(3,'0'); return `ORD-${n}-${r}`; }
-  function openPayment(){
-    if(!cart.length){ alert('ยังไม่มีสินค้าในตะกร้า'); return; }
-    $('#orderId').textContent=genOrderId(); $('#payTotal').textContent=THB.format(getCartTotal()); $('#ppIdText').textContent=PROMPTPAY_ID;
-    selectPayPane('qr'); renderQR(); $('#paymentModal').style.display='block'; $('#paymentModal').setAttribute('aria-hidden','false');
+  function getCartTotal(){ return cart.reduce((s,i)=>s + i.unitPrice*i.qty, 0); }
+  function genOrderId(){
+    const n = new Date().toISOString().replace(/\D/g,'').slice(0,14);
+    const r = Math.floor(Math.random()*1000).toString().padStart(3,'0');
+    return `ORD-${n}-${r}`;
   }
-  function closePayment(){ $('#paymentModal').style.display='none'; $('#paymentModal').setAttribute('aria-hidden','true'); }
-  document.getElementById('payMethods').addEventListener('change',e=>{ if(e.target.name==='payMethod'){ selectPayPane(e.target.value); if(e.target.value==='qr') renderQR(); } });
-  function selectPayPane(v){ document.querySelectorAll('.radio-card').forEach(el=>{ const c=el.querySelector('input')?.value===v; el.classList.toggle('active',c); el.querySelector('input').checked=c; }); ['QR','Slip','COD'].forEach(k=>{ const p=document.getElementById('pane'+k); p.classList.toggle('active', k.toLowerCase()===v); }); }
+
+  function openPayment(){
+    if(!cart.length){
+      alert('ยังไม่มีสินค้าในตะกร้า');
+      return;
+    }
+    $('#orderId').textContent = genOrderId();
+    $('#payTotal').textContent = THB.format(getCartTotal());
+    $('#ppIdText').textContent = PROMPTPAY_ID;
+    selectPayPane('qr');
+    renderQR();
+    $('#paymentModal').style.display='block';
+    $('#paymentModal').setAttribute('aria-hidden','false');
+  }
+  function closePayment(){
+    $('#paymentModal').style.display='none';
+    $('#paymentModal').setAttribute('aria-hidden','true');
+  }
+
+  $('#payMethods').addEventListener('change', e=>{
+    if(e.target.name==='payMethod'){
+      selectPayPane(e.target.value);
+      if(e.target.value==='qr') renderQR();
+    }
+  });
+
+  function selectPayPane(v){
+    document.querySelectorAll('.radio-card').forEach(el=>{
+      const checked = el.querySelector('input')?.value === v;
+      el.classList.toggle('active', checked);
+      if(el.querySelector('input')) el.querySelector('input').checked = checked;
+    });
+    ['QR','Slip','COD'].forEach(k=>{
+      const p = $('#pane'+k);
+      if(p) p.classList.toggle('active', k.toLowerCase()===v);
+    });
+  }
+
   function copyText(t){ navigator.clipboard.writeText(t).then(()=>alert('คัดลอกแล้ว')); }
   function copyAmount(){ navigator.clipboard.writeText(getCartTotal().toFixed(2)).then(()=>alert('คัดลอกยอดแล้ว')); }
-  document.getElementById('slipInput').addEventListener('change', e=>{ const f=e.target.files?.[0], img=$('#slipThumb'); if(f){ img.src=URL.createObjectURL(f); img.style.display='block'; } else { img.src=''; img.style.display='none'; } });
+
+  $('#slipInput').addEventListener('change', e=>{
+    const f = e.target.files?.[0];
+    const img = $('#slipThumb');
+    if(f){
+      img.src = URL.createObjectURL(f);
+      img.style.display='block';
+    }else{
+      img.src='';
+      img.style.display='none';
+    }
+  });
 
   function confirmPayment(){
-    const method=document.querySelector('input[name="payMethod"]:checked')?.value;
-    const total=getCartTotal(), orderId=$('#orderId').textContent||genOrderId();
-    if(method==='qr'){ if(!$('#qrConfirmed').checked){ alert('กรุณาติ๊ก “ฉันโอนแล้ว”'); return; } finishOrder({method:'PromptPay QR', total, orderId}); }
-    else if(method==='slip'){ const f=$('#slipInput').files?.[0]; if(!f){ alert('กรุณาอัปโหลดสลิปโอน'); return; } finishOrder({method:'โอน/สลิป', total, orderId, slipName:f.name}); }
-    else if(method==='cod'){ const name=$('#codName').value.trim(), phone=$('#codPhone').value.trim(), addr=$('#codAddr').value.trim(); if(!name||!phone||!addr){ alert('กรุณากรอก ชื่อ-โทรศัพท์-ที่อยู่ ให้ครบ'); return; } finishOrder({method:'เก็บเงินปลายทาง (COD)', total, orderId, name, phone, addr}); }
+    const method = document.querySelector('input[name="payMethod"]:checked')?.value;
+    const total = getCartTotal();
+    const orderId = $('#orderId').textContent || genOrderId();
+
+    if(method === 'qr'){
+      if(!$('#qrConfirmed').checked){
+        alert('กรุณาติ๊ก “ฉันโอนแล้ว”');
+        return;
+      }
+      finishOrder({method:'PromptPay QR', total, orderId});
+    }else if(method === 'slip'){
+      const f = $('#slipInput').files?.[0];
+      if(!f){
+        alert('กรุณาอัปโหลดสลิปโอน');
+        return;
+      }
+      finishOrder({method:'โอน/สลิป', total, orderId, slipName:f.name});
+    }else if(method === 'cod'){
+      const name = $('#codName').value.trim();
+      const phone = $('#codPhone').value.trim();
+      const addr = $('#codAddr').value.trim();
+      if(!name || !phone || !addr){
+        alert('กรุณากรอก ชื่อ-โทรศัพท์-ที่อยู่ ให้ครบ');
+        return;
+      }
+      finishOrder({method:'เก็บเงินปลายทาง (COD)', total, orderId, name, phone, addr});
+    }
   }
 
-  function snapshotItems(){ return cart.map(i=>({name:i.name,type:i.type,qty:i.qty,unitPrice:i.unitPrice,sub:i.qty*i.unitPrice})); }
+  function snapshotItems(){
+    return cart.map(i=>({
+      name:i.name,
+      type:i.type,
+      qty:i.qty,
+      unitPrice:i.unitPrice,
+      sub:i.qty*i.unitPrice
+    }));
+  }
 
   function finishOrder(info){
-    const box=$('#paySuccess'); let lines=[`วิธีชำระ: ${info.method}`,`หมายเลขสั่งซื้อ: ${info.orderId}`,`ยอดสุทธิ: ${THB.format(info.total)}`];
-    if(info.slipName) lines.push(`ไฟล์สลิป: ${info.slipName}`); box.innerHTML=`<strong>สำเร็จ!</strong><br>${lines.join('<br>')}`; box.style.display='block';
+    const box = $('#paySuccess');
+    let lines = [
+      `วิธีชำระ: ${info.method}`,
+      `หมายเลขสั่งซื้อ: ${info.orderId}`,
+      `ยอดสุทธิ: ${THB.format(info.total)}`
+    ];
+    if(info.slipName) lines.push(`ไฟล์สลิป: ${info.slipName}`);
+    box.innerHTML = `<strong>สำเร็จ!</strong><br>${lines.join('<br>')}`;
+    box.style.display='block';
 
-    const history=loadHistoryLS(); const orderDoc={ orderId:info.orderId, total:info.total, method:info.method, timestamp:new Date().toISOString(), items:snapshotItems() };
-    if(info.name){ orderDoc.name=info.name; orderDoc.phone=info.phone; orderDoc.addr=info.addr; }
-    history.unshift(orderDoc); if(history.length>200) history.length=200; saveHistoryLS(history);
+    const history = loadHistoryLS();
+    const orderDoc = {
+      orderId:info.orderId,
+      total:info.total,
+      method:info.method,
+      timestamp:new Date().toISOString(),
+      items:snapshotItems()
+    };
+    if(info.name){
+      orderDoc.name = info.name;
+      orderDoc.phone = info.phone;
+      orderDoc.addr = info.addr;
+    }
+    history.unshift(orderDoc);
+    if(history.length>200) history.length=200;
+    saveHistoryLS(history);
 
-    cart=[]; saveCartLS(); updateCart();
+    cart=[];
+    saveCartLS();
+    updateCart();
 
     lastOrderIdForDelivery = info.orderId;
     openDelivery(info);
   }
 
-  /* ===== Popup ระบุที่อยู่ + ETA (≤ 30 นาที) ===== */
+  /* ===== Delivery ===== */
   function randomMinutes(max=30){ return Math.floor(Math.random()*max)+1; }
+
   function openDelivery(info){
     closePayment();
-
     const mins = randomMinutes(30);
     const etaDate = new Date(Date.now() + mins*60*1000);
-    $('#etaMsg').innerHTML = `พนักงานกำลังจัดส่งสินค้า ⏱️ คาดว่าจะถึงภายใน <b>${mins} นาที</b> (ประมาณ <b>${DT.format(etaDate)}</b>)`;
+    $('#etaMsg').innerHTML =
+      `พนักงานกำลังจัดส่งสินค้า ⏱️ คาดว่าจะถึงภายใน <b>${mins} นาที</b> (ประมาณ <b>${DT.format(etaDate)}</b>)`;
 
     const last = loadLastAddr();
     const seedName  = info?.name  || last.name  || '';
@@ -379,44 +1201,192 @@
     $('#shipPhone').value = seedPhone;
     $('#shipAddr').value = seedAddr;
 
-    $('#deliveryModal').style.display='block'; $('#deliveryModal').setAttribute('aria-hidden','false');
+    $('#deliveryModal').style.display='block';
+    $('#deliveryModal').setAttribute('aria-hidden','false');
   }
-  function closeDelivery(){ $('#deliveryModal').style.display='none'; $('#deliveryModal').setAttribute('aria-hidden','true'); $('#paySuccess').style.display='none'; alert('ขอบคุณสำหรับการสั่งซื้อ!'); }
+
+  function closeDelivery(){
+    $('#deliveryModal').style.display='none';
+    $('#deliveryModal').setAttribute('aria-hidden','true');
+    $('#paySuccess').style.display='none';
+    alert('ขอบคุณสำหรับการสั่งซื้อ!');
+  }
 
   function saveDelivery(){
-    const name=$('#shipName').value.trim(), phone=$('#shipPhone').value.trim(), addr=$('#shipAddr').value.trim();
-    if(!name||!phone||!addr){ alert('กรุณากรอก ชื่อ-โทรศัพท์-ที่อยู่ ให้ครบ'); return; }
+    const name = $('#shipName').value.trim();
+    const phone = $('#shipPhone').value.trim();
+    const addr = $('#shipAddr').value.trim();
+    if(!name || !phone || !addr){
+      alert('กรุณากรอก ชื่อ-โทรศัพท์-ที่อยู่ ให้ครบ');
+      return;
+    }
     saveLastAddr({name,phone,addr});
 
-    const hist=loadHistoryLS();
-    const idx=hist.findIndex(h=>h.orderId===lastOrderIdForDelivery);
-    if(idx>-1){ hist[idx].name=name; hist[idx].phone=phone; hist[idx].addr=addr; saveHistoryLS(hist); }
-
+    const hist = loadHistoryLS();
+    const idx = hist.findIndex(h=>h.orderId===lastOrderIdForDelivery);
+    if(idx>-1){
+      hist[idx].name = name;
+      hist[idx].phone = phone;
+      hist[idx].addr = addr;
+      saveHistoryLS(hist);
+    }
     closeDelivery();
   }
 
-  /* ===== ประวัติ ===== */
+  /* ===== History ===== */
   function openHistory(){
-    const list=$('#historyList'); const hist=loadHistoryLS();
-    if(!hist.length){ list.innerHTML='<p class="muted">ยังไม่มีประวัติการซื้อบนอุปกรณ์นี้</p>'; }
-    else{
+    const list = $('#historyList');
+    const hist = loadHistoryLS();
+    if(!hist.length){
+      list.innerHTML='<p class="muted">ยังไม่มีประวัติการซื้อบนอุปกรณ์นี้</p>';
+    }else{
       list.innerHTML = hist.map(h=>{
-        const when=DT.format(new Date(h.timestamp));
-        const items=h.items.map(it=>`<li>${it.name} (${it.type==='kg'?it.qty+' กก.':it.qty+' ถุง'}) — ${THB.format(it.sub)}</li>`).join('');
-        const addr = (h.name||h.phone||h.addr) ? `<div class="muted" style="margin-top:6px">📦 ผู้รับ: ${h.name||'-'} | ☎️ ${h.phone||'-'}<br>🏠 ${h.addr||'-'}</div>` : '';
-        return `<div class="order-card">
-          <div class="order-head"><div><strong>${h.orderId}</strong><br><span class="muted">${when}</span></div>
-          <div style="text-align:right"><div><b>${THB.format(h.total)}</b></div><div class="muted">${h.method}</div></div></div>
-          <ul class="order-items">${items}</ul>${addr}
-        </div>`;
+        const when = DT.format(new Date(h.timestamp));
+        const items = h.items.map(it=>`<li>${it.name} (${it.type==='kg'?it.qty+' กก.':it.qty+' ถุง'}) — ${THB.format(it.sub)}</li>`).join('');
+        const addr = (h.name||h.phone||h.addr)
+          ? `<div class="muted" style="margin-top:6px">📦 ผู้รับ: ${h.name||'-'} | ☎️ ${h.phone||'-'}<br>🏠 ${h.addr||'-'}</div>`
+          : '';
+        return `
+          <div class="order-card">
+            <div class="order-head">
+              <div>
+                <strong>${h.orderId}</strong><br>
+                <span class="muted">${when}</span>
+              </div>
+              <div style="text-align:right">
+                <div><b>${THB.format(h.total)}</b></div>
+                <div class="muted">${h.method}</div>
+              </div>
+            </div>
+            <ul class="order-items">${items}</ul>
+            ${addr}
+          </div>
+        `;
       }).join('');
     }
-    $('#historyModal').style.display='block'; $('#historyModal').setAttribute('aria-hidden','false');
+    $('#historyModal').style.display='block';
+    $('#historyModal').setAttribute('aria-hidden','false');
   }
-  function closeHistory(){ $('#historyModal').style.display='none'; $('#historyModal').setAttribute('aria-hidden','true'); }
-  function clearHistory(){ if(confirm('ลบประวัติการซื้อทั้งหมดบนอุปกรณ์นี้หรือไม่?')){ saveHistoryLS([]); openHistory(); } }
+  function closeHistory(){
+    $('#historyModal').style.display='none';
+    $('#historyModal').setAttribute('aria-hidden','true');
+  }
+  function clearHistory(){
+    if(confirm('ลบประวัติการซื้อทั้งหมดบนอุปกรณ์นี้หรือไม่?')){
+      saveHistoryLS([]);
+      openHistory();
+    }
+  }
 
-  /* ===== ฉากหลัง/ESC ===== */
+  /* ===== ตลาดผลไม้ของผู้ใช้ (Firebase) ===== */
+  function renderMarketFromSnapshot(snapshot){
+    const list = $('#marketList');
+    if(!list) return;
+
+    if(snapshot.empty){
+      list.innerHTML =
+        '<div class="market-list-empty">ยังไม่มีประกาศขายผลไม้<br>ลองเพิ่มประกาศจากแบบฟอร์มด้านซ้ายได้เลย</div>';
+      return;
+    }
+
+    let html = '';
+    snapshot.forEach(doc=>{
+      const it = doc.data() || {};
+      const id = doc.id;
+
+      const priceText = (it.price && it.unit) ? `฿${it.price} ${it.unit}` : '';
+      const locText   = it.location ? `พื้นที่ขาย: ${it.location}` : '';
+      const shipText  = it.shipping ? `การจัดส่ง: ${it.shipping}` : '';
+      const phoneText = it.phone
+        ? `เบอร์ติดต่อ: <a href="tel:${it.phone}">${it.phone}</a>` : '';
+      const otherText = it.contact
+        ? `ช่องทางอื่น: <a href="${it.contact}" target="_blank" rel="noopener noreferrer">${it.contact}</a>` : '';
+      const noteText  = it.note ? `หมายเหตุ: ${it.note}` : '';
+      const when = it.createdAt && it.createdAt.toDate ? DT.format(it.createdAt.toDate()) : '';
+
+      const canDelete = it.ownerId === CLIENT_ID;
+
+      html += `
+        <div class="product market-card">
+          <h3>${it.fruitName || '-'}</h3>
+          <div class="price">${priceText}</div>
+          ${locText   ? `<span class="muted">${locText}</span>`   : ''}
+          ${shipText  ? `<span class="muted">${shipText}</span>`  : ''}
+          <div class="market-contact muted">
+            ${phoneText}<br>
+            ${otherText || ''}
+          </div>
+          ${noteText ? `<span class="muted" style="display:block; margin-top:6px;">${noteText}</span>` : ''}
+          ${when ? `<span class="muted" style="display:block; margin-top:4px;">โพสต์เมื่อ ${when}</span>` : ''}
+          ${canDelete ? `<button class="remove-btn" onclick="deleteListing('${id}')">ลบประกาศของฉัน</button>` : ''}
+        </div>
+      `;
+    });
+    list.innerHTML = html;
+  }
+
+  async function deleteListing(id){
+    if(!confirm('ลบประกาศนี้หรือไม่?')) return;
+    try{
+      await marketRef.doc(id).delete();
+    }catch(err){
+      console.error(err);
+      alert('ลบประกาศไม่สำเร็จ');
+    }
+  }
+
+  function initMarket(){
+    const form = $('#marketForm');
+    if(!form || !marketRef) return;
+
+    form.addEventListener('submit', async e=>{
+      e.preventDefault();
+      const fruitName = $('#fruitName').value.trim();
+      const price     = $('#price').value.trim();
+      const unit      = $('#unit').value.trim();
+      const location  = $('#location').value.trim();
+      const shipping  = $('#shipping').value.trim();
+      const phone     = $('#phone').value.trim();
+      const contact   = $('#contact').value.trim();
+      const note      = $('#note').value.trim();
+
+      if(!fruitName || !price || !unit || !location || !shipping || !phone){
+        alert('กรุณากรอกข้อมูลที่มีเครื่องหมาย * ให้ครบ');
+        return;
+      }
+
+      try{
+        await marketRef.add({
+          fruitName,
+          price,
+          unit,
+          location,
+          shipping,
+          phone,
+          contact,
+          note,
+          ownerId: CLIENT_ID,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        form.reset();
+        alert('บันทึกประกาศขายผลไม้เรียบร้อยแล้ว');
+      }catch(err){
+        console.error(err);
+        alert('บันทึกประกาศไม่สำเร็จ');
+      }
+    });
+
+    // ฟังการเปลี่ยนแปลงแบบ realtime
+    marketUnsubscribe = marketRef
+      .orderBy('createdAt','desc')
+      .onSnapshot(renderMarketFromSnapshot, err=>{
+        console.error(err);
+        const list = $('#marketList');
+        if(list) list.innerHTML='<div class="market-list-empty">โหลดข้อมูลตลาดผู้ใช้ไม่สำเร็จ</div>';
+      });
+  }
+
+  /* ===== ฉากหลัง / ESC ===== */
   window.addEventListener('click',e=>{
     if(e.target===$('#cartModal')) closeCart();
     if(e.target===$('#popup')) closePopup();
@@ -434,8 +1404,13 @@
     }
   });
 
-  /* ===== Init ===== */
-  (function init(){ renderProducts(); updateCart(); })();
+  /* ===== Init ทั้งหน้า ===== */
+  (function init(){
+    renderProducts();
+    updateCart();
+    initMarket();
+    setView('shop');   // เริ่มต้นที่หน้าร้านปุ๋ย
+  })();
 </script>
 </body>
 </html>

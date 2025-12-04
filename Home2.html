@@ -1,343 +1,305 @@
 <!DOCTYPE html>
 <html lang="th">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ระบบ AI ของฉัน</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-         body {
-    font-family: 'Helvetica Neue', sans-serif;
-    background-color: #e9f8ee;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* จัดแนวนอนตรงกลาง */
-    justify-content: center; /* จัดแนวตั้งตรงกลาง */
-    padding: 20px;
-    margin: 0;
-   }
-        
-        h1 {
-            color: #333;
-            font-size: 24px;
-            margin-bottom: 60px;
-            text-align: center;
-        }
-                /* กล่องโลโก้ด้านบน */
-        .logo-container {
-            position: fixed;
-            top: -50px; /* ปรับตำแหน่งให้สูงขึ้น */
-            left: 0;
-            right: 0;
-            margin: auto;
-            width: 100%;
-            max-width: 300px; /* กำหนดขนาดสูงสุด */
-            height: 280px; /* กำหนดความสูง */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 12px;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>คู่มือการใช้ระบบ AI ของฉัน</title>
+  <style>
+    :root{
+      --bg:#e9f8ee;
+      --card:#ffffff;
+      --green:#1f9d47;
+      --green-dark:#0f7a32;
+      --shadow:0 4px 10px rgba(0,0,0,.12);
+    }
 
-        }
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
 
-        .logo-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
+    body{
+      font-family:'Helvetica Neue',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+      background-color:var(--bg);
+      color:#123;
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+    }
 
-        .button-container-top {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            width: 100%;
-            max-width: 400px;
-            justify-content: center;
-            align-items: center;
-            
+    /* ส่วนหัว */
+    header{
+      padding:16px 16px 8px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      text-align:center;
+    }
+    .app-logo{
+      width:120px;
+      height:auto;
+      margin-bottom:8px;
+    }
+    h1{
+      font-size:20px;
+      color:var(--green-dark);
+      margin-bottom:4px;
+    }
+    .subtitle{
+      font-size:13px;
+      color:#567;
+    }
 
-        }
-        
-        .btn-top {
-            position: relative;
-            background-color: green;
-            color: white;
-            padding: 0;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-            text-decoration: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            height: 150px;
-            width: 150px;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        
-        .btn-top img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .btn-top span {
-            position: absolute;
-            bottom: 10px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            color: white;
-            font-weight: bold;
-        }
-        
-        .btn-top:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
-        }
-        
-        .btn-top:active {
-            transform: scale(0.98);
-        }
-        
-        .button-container-bottom {
-    position: fixed;
-    bottom: 0;
-    left: 0; /* ตั้งค่าใหม่ */
-    width: 100%; /* ให้เต็มหน้าจอ */
-    display: flex;
-    justify-content: space-around; /* กระจายปุ่มให้เท่าๆ กัน */
-    gap: 10px; /* ระยะห่างระหว่างปุ่ม */
-    background-color: white;
-    padding: 8px 0;
-    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-}
+    /* เนื้อหา */
+    main{
+      flex:1;
+      padding:12px 12px 90px; /* เว้นที่ให้ปุ่มล่าง */
+      max-width:480px;
+      width:100%;
+      margin:0 auto;
+    }
 
-.btn-bottom {
-    background-color: transparent; /* ทำให้พื้นหลังโปร่งใส */
-    border: none;                 /* ลบขอบ */
-    cursor: pointer;
-    flex: 1;                     /* ขยายปุ่มให้เต็มพื้นที่ */
-    height: 60px;                /* กำหนดความสูงของปุ่ม */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    padding: 0;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    box-shadow: none;             /* ลบเงา */
-}
+    .card-list{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      margin-top:12px;
+    }
 
-.btn-bottom img {
-    width: 80px;                 /* ปรับขนาดไอคอนให้เหมาะสม */
-    height: auto;
-    object-fit: contain;
-    display: block;
-}
+    .info-card{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      width:100%;
+      border:none;
+      background:var(--card);
+      border-radius:16px;
+      padding:10px 12px;
+      box-shadow:var(--shadow);
+      cursor:pointer;
+      text-align:left;
+      transition:transform .15s ease, box-shadow .15s ease;
+    }
+    .info-card:active{
+      transform:scale(0.98);
+      box-shadow:0 2px 6px rgba(0,0,0,.16);
+    }
 
-.btn-bottom:hover {
-    transform: scale(1.05);
-}
+    .info-thumb{
+      flex-shrink:0;
+      width:72px;
+      height:72px;
+      border-radius:14px;
+      overflow:hidden;
+      background:#f4faf6;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .info-thumb img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+    }
 
-.btn-bottom:active {
-    transform: scale(0.98);
-}
-        /* สีปุ่มล่าง */
-        
-        .btn-bottom.home {
-            background-color: #ffffff;
-        }
-        
-        .btn-bottom.ai {
-            background-color: #ffffff;
-        }
-        
-        .btn-bottom.plant {
-            background-color: #ffffff;
-        }
-        
-        .btn-bottom.menu {
-            background-color: #ffffff;
-        }
-        
-        .btn-bottom {
-            background-color: white;
-            color: #333;
-            padding: 0;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: none;
-            border-radius: 0;
-            box-shadow: none;
-        }
-        
-        .btn-bottom img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .btn-bottom:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-        }
-        
-        .btn-bottom:active {
-            transform: scale(0.98);
-        }
-        
-        .btn-bottom.home {
-            background-color: #e74c3c;
-            color: white;
-        }
-        
-        .btn-bottom.ai {
-            background-color: #2ecc71;
-            color: white;
-        }
-        
-        .btn-bottom.plant {
-            background-color: #007bff;
-            color: white;
-        }
-        
-        .btn-bottom.menu {
-            background-color: #ff9900;
-            color: white;
-        }
-        
-      
-        /* Modal (รูปขยายกลางจอ) */
-        
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 999;
-            top: 40px;
-            bottom: 40px;
-            left: 40px;
-            right: 40px;
-            background-color: rgba(0, 0, 0, 0.8);
-            justify-content: center;
-            align-items: center;
-            padding: 0;
-        }
-        
-        .modal-content {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-            margin: auto;
-            display: block;
-            border-radius: 12px;
-        }
-        
-        .close-btn {
-            position: absolute;
-            top: 20px;
-            right: 40px;
-            color: red;
-            /* เปลี่ยนจาก white เป็น red */
-            font-size: 40px;
-            font-weight: bold;
-            cursor: pointer;
-            z-index: 1000;
-            background-color: white;
-            border-radius: 50%;
-            padding: 0 12px;
-            line-height: 1;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-            transition: transform 0.2s ease;
-        }
-        
-        .close-btn:hover {
-            transform: scale(1.2);
-            background-color: #ffdddd;
-        }
-    </style>
+    .info-text h2{
+      font-size:16px;
+      margin-bottom:3px;
+      color:#123;
+    }
+    .info-text p{
+      font-size:12px;
+      color:#677;
+    }
+
+    /* ปุ่มล่าง */
+    .button-container-bottom {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      gap: 10px;
+      background-color: white;
+      padding: 8px 0;
+      box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+
+    .btn-bottom {
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      flex: 1;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 0;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      box-shadow: none;
+    }
+
+    .btn-bottom img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .btn-bottom:hover { transform: scale(1.05); }
+    .btn-bottom:active { transform: scale(0.98); }
+
+    .btn-bottom.home      { background-color:#e74c3c; color:white; }
+    .btn-bottom.ai        { background-color:#2ecc71; color:white; }
+    .btn-bottom.plant     { background-color:#007bff; color:white; }
+    .btn-bottom.menu      { background-color:#ff9900; color:white; }
+
+    /* Modal แสดงรูปเต็มจอ */
+    .modal{
+      display:none;
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.85);
+      z-index:1200;
+      justify-content:center;
+      align-items:center;
+    }
+    .modal-content{
+      max-width:100%;
+      max-height:100%;
+      object-fit:contain;
+    }
+    .close-btn{
+      position:absolute;
+      top:16px;
+      right:16px;
+      color:#ff4444;
+      font-size:32px;
+      font-weight:bold;
+      cursor:pointer;
+      background:#ffffff;
+      border-radius:50%;
+      padding:0 10px;
+      line-height:1;
+      box-shadow:0 2px 8px rgba(0,0,0,.25);
+      transition:transform .15s ease, background .15s ease;
+    }
+    .close-btn:hover{
+      transform:scale(1.1);
+      background:#ffe5e5;
+    }
+
+    @media (min-width:768px){
+      header{
+        padding-top:20px;
+      }
+      .app-logo{
+        width:140px;
+      }
+      h1{ font-size:22px; }
+    }
+  </style>
 </head>
-
 <body>
 
-    <h1></h1>
-        <!-- กล่องโลโก้ด้านบน -->
-    <div class="logo-container">
-        <img src="2000.png" alt="Logo" />
-    </div>
-    <div class="button-container-top">
-        <div class="btn-top" onclick="openModal('218.png')">
-            <img src="333.png" alt="วิธีปลูก" />
-        </div>
-        <div class="btn-top" onclick="openModal('400.png')">
-            <img src="222.png" alt="การดูแล" />
-        </div>
-        <div class="btn-top" onclick="openModal('215.png')">
-            <img src="111.png" alt="สรรพคุณ" />
-        </div>
-    </div>
+  <header>
+    <img src="2000.png" alt="Logo" class="app-logo" />
+    <h1>คู่มือการดูแลผลผลิต</h1>
+    <p class="subtitle">แตะหัวข้อที่ต้องการเพื่อดูภาพคำอธิบายแบบชัด ๆ</p>
+  </header>
 
-    <div class="button-container-bottom">
-       <a href="Home999.html" class="btn-bottom home">
-            <img src="60.png" alt="Home" />
-        </a>
-        <a href="shop.html" class="btn-bottom">
-      <img src="333222.png" alt="เมนู">
+  <main>
+    <div class="card-list">
+      <!-- การ์ด 1 -->
+      <button class="info-card" onclick="openModal('218.png')">
+        <div class="info-thumb">
+          <img src="333.png" alt="วิธีปลูก">
+        </div>
+        <div class="info-text">
+          <h2>วิธีปลูก</h2>
+          <p>ขั้นตอนการปลูกตั้งแต่เตรียมดิน จนถึงย้ายลงแปลง</p>
+        </div>
+      </button>
+
+      <!-- การ์ด 2 -->
+      <button class="info-card" onclick="openModal('400.png')">
+        <div class="info-thumb">
+          <img src="222.png" alt="การดูแล">
+        </div>
+        <div class="info-text">
+          <h2>การดูแล</h2>
+          <p>การให้น้ำ ปุ๋ย แสงแดด และการป้องกันโรคเบื้องต้น</p>
+        </div>
+      </button>
+
+      <!-- การ์ด 3 -->
+      <button class="info-card" onclick="openModal('215.png')">
+        <div class="info-thumb">
+          <img src="111.png" alt="สรรพคุณ">
+        </div>
+        <div class="info-text">
+          <h2>สรรพคุณ</h2>
+          <p>สรุปประโยชน์เด่น ๆ และการนำผลผลิตไปใช้ให้คุ้มค่า</p>
+        </div>
+      </button>
+    </div>
+  </main>
+
+  <!-- แถบเมนูด้านล่าง -->
+  <div class="button-container-bottom">
+    <a href="Home999.html" class="btn-bottom">
+      <img src="60.png" alt="Home" />
     </a>
-        <a href="Home.html" class="btn-bottom ai">
-            <img src="61.png" alt="AI" />
-        </a>
-        <a href="Home555.html" class="btn-bottom plant">
-            <img src="62.png" alt="วิธีปลูก" />
-        </a>
-        <a href="menu.html" class="btn-bottom menu">
-            <img src="1000.png" alt="MENU" />
-        </a>
-    </div>
+    <a href="shop.html" class="btn-bottom">
+      <img src="333222.png" alt="Shop" />
+    </a>
+    <a href="Home.html" class="btn-bottom">
+      <img src="61.png" alt="AI" />
+    </a>
+    <a href="Home555.html" class="btn-bottom">
+      <img src="62.png" alt="วิธีปลูก" />
+    </a>
+    <a href="menu.html" class="btn-bottom">
+      <img src="1000.png" alt="MENU" />
+    </a>
+  </div>
 
-    <!-- Modal สำหรับดูภาพแบบเต็มจอ -->
-    <div id="imageModal" class="modal">
-        <span class="close-btn" onclick="closeModal()">×</span>
-        <img class="modal-content" id="modalImg" />
-    </div>
+  <!-- Modal สำหรับดูภาพแบบเต็มจอ -->
+  <div id="imageModal" class="modal">
+    <span class="close-btn" onclick="closeModal()">×</span>
+    <img class="modal-content" id="modalImg" />
+  </div>
 
-    <script>
-        function openModal(src) {
-            document.getElementById("imageModal").style.display = "flex";
-            document.getElementById("modalImg").src = src;
+  <script>
+    function openModal(src){
+      const modal = document.getElementById('imageModal');
+      const img   = document.getElementById('modalImg');
+      img.src = src;
+      modal.style.display = 'flex';
+    }
 
-            document.querySelector('.button-container-top').style.display = 'none';
-            document.querySelector('.button-container-bottom').style.display = 'none';
-        }
+    function closeModal(){
+      const modal = document.getElementById('imageModal');
+      modal.style.display = 'none';
+    }
 
-        function closeModal() {
-            document.getElementById("imageModal").style.display = "none";
+    // ปิด modal เมื่อแตะพื้นหลัง
+    document.getElementById('imageModal').addEventListener('click', function(e){
+      if(e.target === this) closeModal();
+    });
 
-            document.querySelector('.button-container-top').style.display = 'flex';
-            document.querySelector('.button-container-bottom').style.display = 'flex';
-        }
-    </script>
+    // ปิดด้วยปุ่ม ESC
+    window.addEventListener('keydown', function(e){
+      if(e.key === 'Escape'){
+        closeModal();
+      }
+    });
+  </script>
 
 </body>
-
 </html>

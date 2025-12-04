@@ -56,30 +56,6 @@
   }
   button:hover{ background:var(--green-dark)}
 
-  /* ปุ่มสลับหน้า ร้านปุ๋ย / ตลาดผู้ใช้ */
-  .view-switch{
-    position:fixed;
-    top:15px;
-    left:15px;
-    display:flex;
-    gap:8px;
-    z-index:1100;
-  }
-  .view-switch button{
-    background:#ffffff;
-    color:var(--green-dark);
-    border:1px solid rgba(0,0,0,.08);
-    border-radius:999px;
-    padding:8px 14px;
-    font-size:13px;
-    box-shadow:var(--shadow);
-    cursor:pointer;
-  }
-  .view-switch button.active{
-    background:var(--green);
-    color:#fff;
-  }
-
   .cart-icon{
     position:fixed;
     top:15px;
@@ -441,7 +417,8 @@
     color:#345;
   }
   .market-form input,
-  .market-form textarea{
+  .market-form textarea,
+  .market-form select{
     width:100%;
     padding:10px;
     border-radius:8px;
@@ -493,19 +470,63 @@
     margin-top:10px;
   }
 
+  /* badge ประเภทประกาศ + เจ้าของโพสต์ */
+  .trade-badge{
+    display:inline-block;
+    padding:2px 8px;
+    border-radius:999px;
+    font-size:11px;
+    margin-bottom:4px;
+  }
+  .trade-sell{
+    background:#e8fff1;
+    color:#1f7a3a;
+  }
+  .trade-buy{
+    background:#e8f4ff;
+    color:#1452a6;
+  }
+  .owner-line{
+    font-size:12px;
+    margin-top:4px;
+  }
+
   @media (max-width:768px){
     .market-layout{
       grid-template-columns:1fr;
     }
   }
+
+  /* ปุ่มสลับหน้าเดียว */
+  .view-toggle{
+    position:fixed;
+    top:10px;
+    left:10px;
+    z-index:1100;
+  }
+  .view-toggle button{
+    background:#ffffff;
+    color:var(--green-dark);
+    border:1px solid rgba(0,0,0,.08);
+    border-radius:999px;
+    padding:6px 14px;
+    font-size:13px;
+    box-shadow:var(--shadow);
+    cursor:pointer;
+  }
+  .view-toggle button:hover{
+    background:var(--green);
+    color:#fff;
+  }
 </style>
 </head>
 <body>
 
-<!-- ปุ่มสลับหน้า -->
-<div class="view-switch">
-  <button id="btnViewShop" type="button" onclick="setView('shop')">ร้านปุ๋ยหลัก</button>
-  <button id="btnViewMarket" type="button" onclick="setView('market')">ตลาดออนไลน์ผู้ใช้</button>
+<!-- ปุ่มสลับหน้าเดียว -->
+<div class="view-toggle">
+  <button id="btnToggleView" type="button" onclick="toggleView()">
+    ตลาดออนไลน์ผู้ใช้
+  </button>
 </div>
 
 <!-- ร้านปุ๋ยหลัก -->
@@ -530,7 +551,19 @@
     <!-- ฟอร์มลงขาย -->
     <form id="marketForm" class="market-form">
       <h3>เพิ่มประกาศขายผลไม้ของคุณ</h3>
-      <p class="muted">ประกาศจะถูกเก็บใน Firebase ทำให้ผู้ใช้คนอื่นเห็นได้เหมือนกันทุกเครื่อง</p>
+      <p class="muted">
+        เลือกว่าคุณต้องการโพสต์ <b>ประกาศขาย</b> หรือ <b>รับซื้อ</b><br>
+        ระบบจะคิดค่าคอมมิชชั่นเมื่อขายสำเร็จอัตโนมัติ
+      </p>
+
+      <label for="tradeType">ประเภทประกาศ *</label>
+      <select id="tradeType" required>
+        <option value="sell">🔥 ประกาศขาย</option>
+        <option value="buy">🛒 รับซื้อ</option>
+      </select>
+
+      <label for="ownerName">ชื่อเจ้าของโพสต์ *</label>
+      <input id="ownerName" required placeholder="เช่น น้องพลอย, ร้านสวนลุงสมชาย">
 
       <label for="fruitName">ชื่อผลไม้ *</label>
       <input id="fruitName" required placeholder="เช่น ทุเรียนหมอนทอง, มังคุด, เงาะ">
@@ -768,8 +801,10 @@
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
   const marketRef = db.collection('fruit_market');
+  const commissionRef = db.collection('fruit_commissions'); // <-- เก็บค่าคอม
 
   const PROMPTPAY_ID = '0812345678'; // แก้เป็นเบอร์/เลขพร้อมเพย์จริงได้
+  const MARKET_COMMISSION_RATE = 0.05; // 5% ค่าคอมตลาดผู้ใช้
   const THB = new Intl.NumberFormat('th-TH', { style:'currency', currency:'THB' });
   const DT  = new Intl.DateTimeFormat('th-TH', { dateStyle:'medium', timeStyle:'short' });
   const $   = s => document.querySelector(s);
@@ -779,9 +814,57 @@
         ADDR_KEY='fertilizer_last_address';
 
   const PRODUCTS = [
-    { id:'organic',  name:'0-0-60',   img:'444333.png', pricePerKg:120, pricePerBag:95,  bagUnit:'ถุง 1 กก.' },
-    { id:'chemical', name:'15-15-15', img:'444222.png', pricePerKg:150, pricePerBag:135, bagUnit:'ถุง 1 กก.' },
-    { id:'mix',      name:'15-5-20',  img:'444555.png', pricePerKg:180, pricePerBag:160, bagUnit:'ถุง 1 กก.' }
+    // 🌱 ปุ๋ย 3 สูตร
+    { 
+      id:'organic',
+      name:'0-0-60',
+      img:'444333.png',
+      pricePerKg:120,
+      pricePerBag:95,
+      bagUnit:'ถุง 1 กก.'
+    },
+    { 
+      id:'chemical',
+      name:'15-15-15',
+      img:'444222.png',
+      pricePerKg:150,
+      pricePerBag:135,
+      bagUnit:'ถุง 1 กก.'
+    },
+    { 
+      id:'mix',
+      name:'15-5-20',
+      img:'444555.png',
+      pricePerKg:180,
+      pricePerBag:160,
+      bagUnit:'ถุง 1 กก.'
+    },
+
+    // 💊 ยารักษาพืช 3 สูตร
+    {
+      id:'fungicide',
+      name:'ยาป้องกันเชื้อรา',
+      img:'GPT01.png',
+      pricePerKg:250,
+      pricePerBag:220,
+      bagUnit:'ขวด 1 ลิตร'
+    },
+    {
+      id:'insecticide',
+      name:'ยากำจัดเพลี้ย-แมลง',
+      img:'GPT03.png',
+      pricePerKg:280,
+      pricePerBag:250,
+      bagUnit:'ขวด 1 ลิตร'
+    },
+    {
+      id:'caterpillar',
+      name:'ยากำจัดหนอน',
+      img:'GPT02.png',
+      pricePerKg:300,
+      pricePerBag:270,
+      bagUnit:'ขวด 1 ลิตร'
+    }
   ];
 
   function saveCartLS(){ localStorage.setItem(CART_KEY, JSON.stringify(cart)); }
@@ -791,7 +874,7 @@
   function saveLastAddr(obj){ localStorage.setItem(ADDR_KEY, JSON.stringify(obj)); }
   function loadLastAddr(){ try{ return JSON.parse(localStorage.getItem(ADDR_KEY)||'{}'); }catch{ return {}; } }
 
-  // client id สำหรับตลาดผลไม้ (ใช้เช็คว่าใครเป็นคนโพสต์)
+  // client id สำหรับตลาดผลไม้ (ใช้เช็คว่าใครเป็นเจ้าของโพสต์)
   const CLIENT_ID_KEY = 'fruit_market_client_id';
   function getClientId(){
     let id = localStorage.getItem(CLIENT_ID_KEY);
@@ -809,30 +892,33 @@
   let lastOrderIdForDelivery = null;
   let marketUnsubscribe = null;
 
-  /* ===== สลับหน้า ร้านปุ๋ย / ตลาดผู้ใช้ ===== */
-function setView(view){
-  const shop = document.getElementById('shopSection');
-  const market = document.getElementById('marketSection');
-  const btnShop = document.getElementById('btnViewShop');
-  const btnMarket = document.getElementById('btnViewMarket');
+  /* ===== สลับหน้า ร้านปุ๋ย/ตลาด ===== */
+  function setView(view){
+    const shop   = document.getElementById('shopSection');
+    const market = document.getElementById('marketSection');
+    const btn    = document.getElementById('btnToggleView');
+    if(!shop || !market || !btn) return;
 
-  if(view === 'market'){
-    // แสดงเฉพาะตลาดผู้ใช้
-    shop.style.display = 'none';
-    market.style.display = 'block';
-    btnShop.classList.remove('active');
-    btnMarket.classList.add('active');
-  } else {
-    // แสดงเฉพาะร้านปุ๋ย
-    shop.style.display = 'block';
-    market.style.display = 'none';
-    btnShop.classList.add('active');
-    btnMarket.classList.remove('active');
+    if(view === 'market'){
+      shop.style.display   = 'none';
+      market.style.display = 'block';
+      btn.textContent      = 'กลับหน้าร้านปุ๋ย';
+      btn.dataset.view     = 'market';
+    } else {
+      shop.style.display   = 'block';
+      market.style.display = 'none';
+      btn.textContent      = 'ตลาดออนไลน์ผู้ใช้';
+      btn.dataset.view     = 'shop';
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
-}
+  function toggleView(){
+    const btn = document.getElementById('btnToggleView');
+    const current = btn?.dataset.view || 'shop';
+    setView(current === 'shop' ? 'market' : 'shop');
+  }
 
-
-  /* ===== Render สินค้าปุ๋ย ===== */
+  /* ===== Render สินค้าปุ๋ย/ยา ===== */
   function renderProducts(){
     const list = $('#productList');
     if(!list) return;
@@ -1278,7 +1364,7 @@ function setView(view){
     }
   }
 
-  /* ===== ตลาดผลไม้ของผู้ใช้ (Firebase) ===== */
+  /* ===== ตลาดผลไม้ของผู้ใช้ (Firebase + ค่าคอม) ===== */
   function renderMarketFromSnapshot(snapshot){
     const list = $('#marketList');
     if(!list) return;
@@ -1294,6 +1380,13 @@ function setView(view){
       const it = doc.data() || {};
       const id = doc.id;
 
+      const tradeType = it.tradeType || 'sell';
+      const ownerName = it.ownerName || '';
+      const tradeBadgeClass = tradeType === 'buy'
+        ? 'trade-badge trade-buy'
+        : 'trade-badge trade-sell';
+      const tradeLabelText = tradeType === 'buy' ? 'รับซื้อ' : 'ประกาศขาย';
+
       const priceText = (it.price && it.unit) ? `฿${it.price} ${it.unit}` : '';
       const locText   = it.location ? `พื้นที่ขาย: ${it.location}` : '';
       const shipText  = it.shipping ? `การจัดส่ง: ${it.shipping}` : '';
@@ -1301,24 +1394,41 @@ function setView(view){
         ? `เบอร์ติดต่อ: <a href="tel:${it.phone}">${it.phone}</a>` : '';
       const otherText = it.contact
         ? `ช่องทางอื่น: <a href="${it.contact}" target="_blank" rel="noopener noreferrer">${it.contact}</a>` : '';
-      const noteText  = it.note ? `หมายเหตุ: ${it.note}` : '';
+      const noteText  = it.note ? `หมายเหตุ: ${it.note}</span>` : '';
       const when = it.createdAt && it.createdAt.toDate ? DT.format(it.createdAt.toDate()) : '';
+
+      const priceNum = parseFloat(it.price || 0);
+      const commissionText = (!isNaN(priceNum) && priceNum>0)
+        ? `ค่าคอมมิชชั่น (${(MARKET_COMMISSION_RATE*100).toFixed(0)}% เมื่อขายสำเร็จ): ฿${(priceNum*MARKET_COMMISSION_RATE).toFixed(2)} ต่อ ${it.unit || 'หน่วย'}`
+        : '';
 
       const canDelete = it.ownerId === CLIENT_ID;
 
       html += `
         <div class="product market-card">
+          <span class="${tradeBadgeClass}">${tradeLabelText}</span>
           <h3>${it.fruitName || '-'}</h3>
           <div class="price">${priceText}</div>
+          ${ownerName ? `<div class="owner-line muted">โดย: ${ownerName}</div>` : ''}
           ${locText   ? `<span class="muted">${locText}</span>`   : ''}
           ${shipText  ? `<span class="muted">${shipText}</span>`  : ''}
           <div class="market-contact muted">
             ${phoneText}<br>
             ${otherText || ''}
           </div>
-          ${noteText ? `<span class="muted" style="display:block; margin-top:6px;">${noteText}</span>` : ''}
+          ${it.note ? `<span class="muted" style="display:block; margin-top:6px;">${it.note}</span>` : ''}
+          ${commissionText ? `<span class="muted" style="display:block; margin-top:4px;">${commissionText}</span>` : ''}
           ${when ? `<span class="muted" style="display:block; margin-top:4px;">โพสต์เมื่อ ${when}</span>` : ''}
-          ${canDelete ? `<button class="remove-btn" onclick="deleteListing('${id}')">ลบประกาศของฉัน</button>` : ''}
+          ${canDelete ? `
+            <div style="margin-top:8px;">
+              <button class="remove-btn" onclick="deleteListing('${id}')">ลบประกาศของฉัน</button>
+              ${priceNum>0 ? `
+                <button class="clear-cart" style="margin-left:6px"
+                  onclick="reportCommission('${id}', ${priceNum}, '${it.unit || ''}')">
+                  ขายสำเร็จ / คิดค่าคอม
+                </button>` : ''}
+            </div>
+          ` : ''}
         </div>
       `;
     });
@@ -1335,12 +1445,59 @@ function setView(view){
     }
   }
 
+  // ฟังก์ชันบันทึกค่าคอมเมื่อขายสำเร็จ
+  async function reportCommission(listingId, pricePerUnit, unit){
+    const qtyStr = prompt(`ขายได้กี่${unit || 'หน่วย'} ?`);
+    if(qtyStr === null) return; // กดยกเลิก
+    const qty = parseFloat(qtyStr);
+    if(isNaN(qty) || qty <= 0){
+      alert('จำนวนไม่ถูกต้อง');
+      return;
+    }
+
+    const totalSale = pricePerUnit * qty;
+    const commission = totalSale * MARKET_COMMISSION_RATE;
+
+    try{
+      // ดึงข้อมูลประกาศเพื่อเก็บชื่อผลไม้และเจ้าของ
+      const docSnap = await marketRef.doc(listingId).get();
+      const data = docSnap.exists ? docSnap.data() : {};
+
+      await commissionRef.add({
+        listingId,
+        ownerId: CLIENT_ID,
+        ownerName: data.ownerName || null,
+        fruitName: data.fruitName || null,
+        qtySold: qty,
+        unit: unit || data.unit || null,
+        pricePerUnit,
+        totalSale,
+        commission,
+        rate: MARKET_COMMISSION_RATE,
+        paid: false, // ไว้ให้แอดมินติ๊กทีหลังว่าเคลียร์ค่าคอมแล้ว
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      alert(
+        `คิดค่าคอมเรียบร้อยแล้ว\n` +
+        `ยอดขายรวม: ${THB.format(totalSale)}\n` +
+        `ค่าคอม (${(MARKET_COMMISSION_RATE*100).toFixed(0)}%): ${THB.format(commission)}\n\n` +
+        `อย่าลืมโอนค่าคอมนี้ให้ผู้ดูแลระบบนะครับ`
+      );
+    }catch(err){
+      console.error(err);
+      alert('บันทึกค่าคอมไม่สำเร็จ');
+    }
+  }
+
   function initMarket(){
     const form = $('#marketForm');
     if(!form || !marketRef) return;
 
     form.addEventListener('submit', async e=>{
       e.preventDefault();
+      const tradeType = $('#tradeType').value || 'sell';
+      const ownerName = $('#ownerName').value.trim();
       const fruitName = $('#fruitName').value.trim();
       const price     = $('#price').value.trim();
       const unit      = $('#unit').value.trim();
@@ -1350,13 +1507,15 @@ function setView(view){
       const contact   = $('#contact').value.trim();
       const note      = $('#note').value.trim();
 
-      if(!fruitName || !price || !unit || !location || !shipping || !phone){
+      if(!ownerName || !fruitName || !price || !unit || !location || !shipping || !phone){
         alert('กรุณากรอกข้อมูลที่มีเครื่องหมาย * ให้ครบ');
         return;
       }
 
       try{
         await marketRef.add({
+          tradeType,
+          ownerName,
           fruitName,
           price,
           unit,
@@ -1369,6 +1528,7 @@ function setView(view){
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
         form.reset();
+        $('#tradeType').value = 'sell';
         alert('บันทึกประกาศขายผลไม้เรียบร้อยแล้ว');
       }catch(err){
         console.error(err);
@@ -1376,7 +1536,6 @@ function setView(view){
       }
     });
 
-    // ฟังการเปลี่ยนแปลงแบบ realtime
     marketUnsubscribe = marketRef
       .orderBy('createdAt','desc')
       .onSnapshot(renderMarketFromSnapshot, err=>{
@@ -1404,12 +1563,12 @@ function setView(view){
     }
   });
 
-  /* ===== Init ทั้งหน้า ===== */
+  /* ===== Init ===== */
   (function init(){
     renderProducts();
     updateCart();
     initMarket();
-    setView('shop');   // เริ่มต้นที่หน้าร้านปุ๋ย
+    setView('shop');   // เริ่มหน้าร้านปุ๋ย
   })();
 </script>
 </body>

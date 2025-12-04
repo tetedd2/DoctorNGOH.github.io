@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ประวัติการซื้อ - ผลดี</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --green:#1f9d47;
+      --green-dark:#0f7a32;
+      --bg:#e9f8ee;
+      --card:#ffffff;
+      --shadow:0 4px 10px rgba(0,0,0,.1);
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{
+      font-family:'Prompt',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+      background:var(--bg);
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+    }
+    .page{
+      flex:1;
+      padding:20px 16px 90px;
+      max-width:900px;
+      margin:0 auto;
+    }
+    h1{
+      font-size:22px;
+      color:var(--green-dark);
+      text-align:center;
+      margin-top:10px;
+      margin-bottom:4px;
+    }
+    .subtitle{
+      font-size:13px;
+      color:#567;
+      text-align:center;
+      margin-bottom:12px;
+    }
+
+    .filter-bar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:12px;
+      flex-wrap:wrap;
+    }
+    .pill{
+      padding:6px 12px;
+      border-radius:999px;
+      border:1px solid rgba(0,0,0,.08);
+      background:#fff;
+      font-size:12px;
+      color:#345;
+    }
+    .btn-back{
+      padding:6px 12px;
+      border-radius:999px;
+      background:#ffffff;
+      border:none;
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+      cursor:pointer;
+      font-size:12px;
+      color:#345;
+      box-shadow:var(--shadow);
+    }
+    .btn-back:hover{ background:#f6fff9; }
+
+    .history-list{
+      margin-top:8px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .order-card{
+      background:var(--card);
+      border-radius:16px;
+      box-shadow:var(--shadow);
+      padding:12px 14px;
+      font-size:13px;
+    }
+    .order-head{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:6px;
+    }
+    .order-head strong{
+      font-size:14px;
+    }
+    .order-meta{
+      font-size:11px;
+      color:#677;
+    }
+    .order-total{
+      text-align:right;
+    }
+    .order-total .amount{
+      font-size:15px;
+      font-weight:600;
+      color:var(--green-dark);
+    }
+    .order-items{
+      margin:6px 0 2px;
+      padding-left:18px;
+    }
+    .order-items li{
+      margin:2px 0;
+    }
+    .order-address{
+      margin-top:4px;
+      font-size:11px;
+      color:#567;
+    }
+    .badge-method{
+      display:inline-flex;
+      padding:2px 8px;
+      border-radius:999px;
+      background:#f0fbf4;
+      color:#1f7d3a;
+      font-size:10px;
+      margin-top:2px;
+    }
+    .empty{
+      text-align:center;
+      font-size:13px;
+      color:#789;
+      margin-top:40px;
+    }
+
+    /* ปุ่มล่างเหมือนหน้าอื่น ๆ */
+    .button-container-bottom {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      gap: 10px;
+      background-color: white;
+      padding: 8px 0;
+      box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+
+    .btn-bottom {
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      flex: 1;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 0;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      box-shadow: none;
+    }
+
+    .btn-bottom img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .btn-bottom:hover { transform: scale(1.05); }
+    .btn-bottom:active { transform: scale(0.98); }
+
+    .btn-bottom.home      { background-color:#e74c3c; color:white; }
+    .btn-bottom.ai        { background-color:#2ecc71; color:white; }
+    .btn-bottom.plant     { background-color:#007bff; color:white; }
+    .btn-bottom.menu      { background-color:#ff9900; color:white; }
+
+    .btn-clear{
+      border:none;
+      background:#f5f6f8;
+      border-radius:999px;
+      padding:6px 10px;
+      font-size:11px;
+      color:#555;
+      cursor:pointer;
+    }
+    .btn-clear:hover{
+      background:#ebedf0;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1>ประวัติการซื้อปุ๋ย & ยาเกษตร</h1>
+    <p class="subtitle">ข้อมูลนี้เก็บจากการสั่งซื้อผ่านร้านปุ๋ยออนไลน์บนอุปกรณ์นี้เท่านั้น</p>
+
+    <div class="filter-bar">
+      <button class="btn-back" onclick="goBack()">
+        ← กลับไปหน้าเมนู
+      </button>
+      <button class="btn-clear" onclick="clearHistory()">
+        ล้างประวัติทั้งหมด
+      </button>
+    </div>
+
+    <div id="historyList" class="history-list"></div>
+    <div id="emptyState" class="empty" style="display:none">
+      ยังไม่มีประวัติการซื้อ<br>ลองสั่งซื้อจากหน้าร้านปุ๋ยดูก่อนนะ 🌱
+    </div>
+  </div>
+
+  <!-- ปุ่มล่าง -->
+  <div class="button-container-bottom">
+    <a href="Home999.html" class="btn-bottom">
+      <img src="60.png" alt="Home" />
+    </a>
+    <a href="shop.html" class="btn-bottom">
+      <img src="333222.png" alt="Shop" />
+    </a>
+    <a href="Home.html" class="btn-bottom">
+      <img src="61.png" alt="AI" />
+    </a>
+    <a href="Home555.html" class="btn-bottom">
+      <img src="62.png" alt="วิธีปลูก" />
+    </a>
+    <a href="menu.html" class="btn-bottom">
+      <img src="1000.png" alt="เมนู" />
+    </a>
+  </div>
+
+  <script>
+    const HIST_KEY = 'fertilizer_order_history';
+
+    function loadHistory(){
+      try{
+        return JSON.parse(localStorage.getItem(HIST_KEY) || '[]');
+      }catch(e){
+        return [];
+      }
+    }
+
+    function saveHistory(arr){
+      localStorage.setItem(HIST_KEY, JSON.stringify(arr));
+    }
+
+    const THB = new Intl.NumberFormat('th-TH',{style:'currency',currency:'THB'});
+    const DT  = new Intl.DateTimeFormat('th-TH',{dateStyle:'medium',timeStyle:'short'});
+
+    function renderHistory(){
+      const listEl  = document.getElementById('historyList');
+      const emptyEl = document.getElementById('emptyState');
+      const hist = loadHistory();
+
+      if(!hist.length){
+        listEl.innerHTML = '';
+        emptyEl.style.display = 'block';
+        return;
+      }
+
+      emptyEl.style.display = 'none';
+      listEl.innerHTML = hist.map(h=>{
+        const when = h.timestamp ? DT.format(new Date(h.timestamp)) : '';
+        const itemsHtml = (h.items || []).map(it=>{
+          const label = it.type === 'kg'
+            ? `${it.qty} กก.`
+            : `${it.qty} ถุง`;
+          const sub = THB.format(it.sub || (it.qty * it.unitPrice));
+          return `<li>${it.name} (${label}) — ${sub}</li>`;
+        }).join('');
+
+        const addrHtml = (h.name || h.phone || h.addr)
+          ? `<div class="order-address">
+              📦 ผู้รับ: ${h.name || '-'} | ☎️ ${h.phone || '-'}<br>
+              🏠 ${h.addr || '-'}
+             </div>`
+          : '';
+
+        return `
+          <div class="order-card">
+            <div class="order-head">
+              <div>
+                <strong>${h.orderId || '-'}</strong><br>
+                <span class="order-meta">${when}</span>
+              </div>
+              <div class="order-total">
+                <div class="amount">${THB.format(h.total || 0)}</div>
+                <div class="badge-method">${h.method || 'ไม่ระบุวิธีชำระ'}</div>
+              </div>
+            </div>
+            <ul class="order-items">${itemsHtml}</ul>
+            ${addrHtml}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function clearHistory(){
+      if(confirm('ลบประวัติการซื้อทั้งหมดบนอุปกรณ์นี้หรือไม่?')){
+        saveHistory([]);
+        renderHistory();
+      }
+    }
+
+    function goBack(){
+      // กลับหน้าเมนู ถ้าเปิดจากที่อื่นก็แค่ history.back()
+      if(document.referrer){
+        // ถ้าหน้าก่อนหน้าเป็นคนละโดเมน อาจไม่กลับได้ แต่ลองก่อน
+        history.back();
+      }else{
+        window.location.href = 'menu.html';
+      }
+    }
+
+    renderHistory();
+  </script>
+</body>
+</html>

@@ -35,6 +35,7 @@
       border-radius:18px; padding:18px;
       box-shadow: 0 20px 50px rgba(44,122,63,.10), 0 1px 0 rgba(255,255,255,.6) inset;
       position:relative; overflow:hidden;
+      margin-bottom:18px;
     }
     .guide::after{
       content:"";
@@ -52,16 +53,21 @@
       border:1px solid rgba(44,122,63,.35);
       padding:12px 14px; border-radius:14px; margin-bottom:14px;
       box-shadow: 0 6px 16px var(--ring);
+      position:relative;
+      z-index:1;
     }
     .badge{
       background:#fff; color:#1a3d22; border:1px solid rgba(44,122,63,.20);
       padding:6px 10px; border-radius:999px; font-size:12px; font-weight:700;
+      white-space:nowrap;
     }
     .hint{ color:#1f3c26; font-size:13px }
 
     .grid{
       display:grid; gap:14px;
       grid-template-columns: repeat(2,1fr);
+      position:relative;
+      z-index:1;
     }
     @media (min-width:860px){ .grid{ grid-template-columns: repeat(4,1fr); } }
 
@@ -85,120 +91,124 @@
     }
     .chip::before{ content:"🌱"; }
 
+    /* VIDEO SECTION */
+    .video-section .banner{
+      background:linear-gradient(180deg, rgba(255,232,191,.45), rgba(250,244,231,.9));
+      border-color:rgba(209,135,34,.5);
+    }
+    .video-section .badge{
+      border-color:rgba(209,135,34,.5);
+      color:#7b4100;
+    }
+    .video-grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:14px;
+      position:relative;
+      z-index:1;
+    }
+    @media (min-width:720px){
+      .video-grid{
+        grid-template-columns:repeat(3, 1fr);
+      }
+    }
+
+    .video-card{
+      background:#fdfbf6;
+      border-radius:14px;
+      border:1px solid rgba(44,122,63,.20);
+      padding:10px;
+      box-shadow:0 10px 24px rgba(0,0,0,.06);
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .video-title{
+      font-size:14px;
+      font-weight:700;
+      color:#2c3a20;
+    }
+    .video-desc{
+      font-size:12px;
+      color:#607259;
+      line-height:1.5;
+    }
+    .video-frame{
+      position:relative;
+      width:100%;
+      border-radius:10px;
+      overflow:hidden;
+      background:#000;
+      aspect-ratio:16/9;
+    }
+    .video-frame video,
+    .video-frame iframe{
+      width:100%;
+      height:100%;
+      border:0;
+      display:block;
+    }
+
+    .video-tag{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      font-size:11px;
+      color:#7a5a22;
+      background:rgba(255,215,158,.4);
+      padding:4px 8px;
+      border-radius:999px;
+      align-self:flex-start;
+    }
+    .video-tag span{
+      font-size:13px;
+    }
+
+    /* BOTTOM BAR */
     .button-container-bottom {
-    position: fixed;
-    bottom: 0;
-    left: 0; /* ตั้งค่าใหม่ */
-    width: 100%; /* ให้เต็มหน้าจอ */
-    display: flex;
-    justify-content: space-around; /* กระจายปุ่มให้เท่าๆ กัน */
-    gap: 10px; /* ระยะห่างระหว่างปุ่ม */
-    background-color: white;
-    padding: 8px 0;
-    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-}
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      gap: 10px;
+      background-color: white;
+      padding: 8px 0;
+      box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
 
-.btn-bottom {
-    background-color: transparent; /* ทำให้พื้นหลังโปร่งใส */
-    border: none;                 /* ลบขอบ */
-    cursor: pointer;
-    flex: 1;                     /* ขยายปุ่มให้เต็มพื้นที่ */
-    height: 60px;                /* กำหนดความสูงของปุ่ม */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    padding: 0;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    box-shadow: none;             /* ลบเงา */
-}
+    .btn-bottom {
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      flex: 1;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 0;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      box-shadow: none;
+    }
 
-.btn-bottom img {
-    width: 80px;                 /* ปรับขนาดไอคอนให้เหมาะสม */
-    height: auto;
-    object-fit: contain;
-    display: block;
-}
+    .btn-bottom img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
 
-.btn-bottom:hover {
-    transform: scale(1.05);
-}
+    .btn-bottom:hover { transform: scale(1.05); }
+    .btn-bottom:active { transform: scale(0.98); }
 
-.btn-bottom:active {
-    transform: scale(0.98);
-}
-        /* สีปุ่มล่าง */
-        
-        .btn-bottom.home {
-            background-color: #ffffff;
-        }
-        
-        .btn-bottom.ai {
-            background-color: #ffffff;
-        }
-        
-        .btn-bottom.plant {
-            background-color: #ffffff;
-        }
-        
-        .btn-bottom.menu {
-            background-color: #ffffff;
-        }
-        
-        .btn-bottom {
-            background-color: white;
-            color: #333;
-            padding: 0;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: none;
-            border-radius: 0;
-            box-shadow: none;
-        }
-        
-        .btn-bottom img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .btn-bottom:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-        }
-        
-        .btn-bottom:active {
-            transform: scale(0.98);
-        }
-        
-        .btn-bottom.home {
-            background-color: #e74c3c;
-            color: white;
-        }
-        
-        .btn-bottom.ai {
-            background-color: #2ecc71;
-            color: white;
-        }
-        
-        .btn-bottom.plant {
-            background-color: #007bff;
-            color: white;
-        }
-        
-        .btn-bottom.menu {
-            background-color: #ff9900;
-            color: white;
-        }
+    .btn-bottom.home      { background-color:#e74c3c; color:white; }
+    .btn-bottom.ai        { background-color:#2ecc71; color:white; }
+    .btn-bottom.plant     { background-color:#007bff; color:white; }
+    .btn-bottom.menu      { background-color:#ff9900; color:white; }
   </style>
 </head>
 <body>
@@ -208,6 +218,7 @@
   </header>
 
   <main class="wrap">
+    <!-- การ์ดพืช -->
     <section class="guide">
       <div class="banner">
         <span class="badge">โหมดชาวสวน</span>
@@ -233,6 +244,71 @@
         </a>
       </div>
     </section>
+
+    <!-- วิดีโอแนะนำ -->
+    <section class="guide video-section">
+      <div class="banner">
+        <span class="badge">วิดีโอสอน</span>
+        <div class="hint">ชมตัวอย่างจริง: การแปรรูปผลไม้ • วิธีปลูก • วิธีใช้ยา/ปุ๋ย อย่างปลอดภัย</div>
+      </div>
+
+      <div class="video-grid">
+        <!-- การแปรรูปผลไม้ -->
+        <article class="video-card">
+          <div class="video-tag">
+            <span>🎬</span> คลิปวิดีโอ
+          </div>
+          <h3 class="video-title">การแปรรูปผลไม้</h3>
+          <p class="video-desc">
+            ตัวอย่างการแปรรูปทุเรียน มังคุด เงาะ ให้เป็นผลิตภัณฑ์เพิ่มมูลค่า เช่น ทุเรียนกวน มังคุดอบแห้ง
+            พร้อมแนวทางการเก็บรักษาให้ปลอดภัยต่อผู้บริโภค
+          </p>
+          <div class="video-frame">
+            <!-- ใช้ไฟล์วิดีโอในโปรเจกต์ -->
+            <video src="video-processing.mp4" controls></video>
+
+            <!-- ถ้าอยากใช้ YouTube แทน ให้ลบ <video> ทิ้ง แล้วใช้แบบนี้
+            <iframe
+              src="https://www.youtube.com/embed/XXXXXXXX"
+              title="การแปรรูปผลไม้"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen>
+            </iframe>
+            -->
+          </div>
+        </article>
+
+        <!-- วิธีการปลูก -->
+        <article class="video-card">
+          <div class="video-tag">
+            <span>🌱</span> เทคนิคปลูก
+          </div>
+          <h3 class="video-title">วิธีการปลูกและดูแลต้นไม้</h3>
+          <p class="video-desc">
+            สอนตั้งแต่ขั้นตอนเตรียมหลุมปลูก ระยะปลูก การให้น้ำ การคลุมโคน การจัดการร่มเงา
+            เพื่อให้ต้นไม้ตั้งตัวได้ดี และโตเร็ว แข็งแรง
+          </p>
+          <div class="video-frame">
+            <video src="video-planting.mp4" controls></video>
+          </div>
+        </article>
+
+        <!-- วิธีการใช้ยา/ปุ๋ย -->
+        <article class="video-card">
+          <div class="video-tag">
+            <span>🧪</span> ความปลอดภัย
+          </div>
+          <h3 class="video-title">วิธีใช้ยาและปุ๋ยอย่างถูกต้อง</h3>
+          <p class="video-desc">
+            แนะนำการอ่านฉลากยา การผสมอัตราส่วนที่ถูกต้อง วิธีฉีดพ่นอย่างปลอดภัย
+            รวมถึงแนวทางการใช้ปุ๋ย 3 สูตรให้เหมาะกับระยะการเจริญเติบโตของพืช
+          </p>
+          <div class="video-frame">
+            <video src="video-medicine.mp4" controls></video>
+          </div>
+        </article>
+      </div>
+    </section>
   </main>
 
   <!-- Unified Bottom Bar -->
@@ -241,7 +317,7 @@
       <img src="60.png" alt="Home">
     </a>
     <a href="shop.html" class="btn-bottom">
-      <img src="333222.png" alt="เมนู">
+      <img src="333222.png" alt="ตลาด">
     </a>
     <a href="Home.html" class="btn-bottom">
       <img src="61.png" alt="AI">

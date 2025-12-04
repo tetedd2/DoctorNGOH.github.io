@@ -1,238 +1,233 @@
 <!DOCTYPE html>
 <html lang="th">
-
-<!DOCTYPE html>
-<html lang="th">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ระบบ AI ของฉัน</title>
-    <style>
-        /* Reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ศูนย์ช่วยเหลือ - ผลดี</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --green:#1f9d47;
+      --green-dark:#0f7a32;
+      --bg:#e9f8ee;
+      --card:#ffffff;
+      --shadow:0 4px 10px rgba(0,0,0,.1);
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{
+      font-family:'Prompt',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+      background:var(--bg);
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+    }
 
-        body {
-            font-family: 'Helvetica Neue', sans-serif;
-            background-color: white;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            margin: 0;
-        }
+    .page{
+      flex:1;
+      padding:24px 16px 90px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+    }
 
-        h1 {
-            color: #333;
-            font-size: 24px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
+    .app-logo{
+      width:120px;
+      height:auto;
+      margin-top:20px;
+      margin-bottom:10px;
+    }
 
-        /* ปรับขนาดปุ่มบนให้เป็นแนวตั้ง */
-        .button-container-top {
-            display: flex;
-            flex-direction: column; /* เปลี่ยนจากแนวนอนเป็นแนวตั้ง */
-            gap: 10px; /* ระยะห่างระหว่างปุ่ม */
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            max-width: 100px; /* ขนาดสูงสุด */
-            margin-bottom: 100px; /* เพิ่มระยะห่างระหว่างปุ่มและด้านล่าง */
-        }
+    h1{
+      font-size:22px;
+      color:var(--green-dark);
+      text-align:center;
+      margin-bottom:4px;
+    }
+    .subtitle{
+      font-size:13px;
+      color:#567;
+      text-align:center;
+      margin-bottom:18px;
+    }
 
-        .btn-top {
-            background-color: rgb(255, 255, 255);
-            padding: 0;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 450px; /* ปรับขนาดปุ่ม */
-            height: 100%; /* ปรับขนาดปุ่ม */
-        }
+    .menu-card-group{
+      width:100%;
+      max-width:420px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
 
-        .btn-top:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 16px rgba(255, 255, 255, 0.15);
-        }
+    .menu-card{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      background:var(--card);
+      border-radius:18px;
+      padding:12px 14px;
+      text-decoration:none;
+      color:#133;
+      box-shadow:var(--shadow);
+      transition:transform .15s ease, box-shadow .15s ease;
+    }
+    .menu-card:hover{
+      transform:translateY(-2px);
+      box-shadow:0 6px 16px rgba(0,0,0,.18);
+    }
 
-        .btn-top:active {
-            transform: scale(0.98);
-        }
+    .menu-icon{
+      flex-shrink:0;
+      width:64px;
+      height:64px;
+      border-radius:16px;
+      overflow:hidden;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:#f4faf6;
+    }
+    .menu-icon img{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+    }
 
-        .btn-top img {
-            width: 60%; /* ปรับขนาดรูปภาพ */
-            height: 60%; /* ปรับขนาดรูปภาพ */
-        }
+    .menu-text h2{
+      font-size:16px;
+      margin-bottom:4px;
+      color:#123;
+    }
+    .menu-text p{
+      font-size:12px;
+      color:#677;
+    }
 
-        /* ปรับขนาดปุ่มล่างให้ติดกับขอบ */
-        .button-container-bottom {
-    position: fixed;
-    bottom: 0;
-    left: 0; /* ตั้งค่าใหม่ */
-    width: 100%; /* ให้เต็มหน้าจอ */
-    display: flex;
-    justify-content: space-around; /* กระจายปุ่มให้เท่าๆ กัน */
-    gap: 10px; /* ระยะห่างระหว่างปุ่ม */
-    background-color: white;
-    padding: 8px 0;
-    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-}
+    .badge-tag{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:2px 8px;
+      border-radius:999px;
+      background:#e9f8ee;
+      color:#1f7d3a;
+      font-size:11px;
+      margin-left:auto;
+    }
 
-.btn-bottom {
-    background-color: transparent; /* ทำให้พื้นหลังโปร่งใส */
-    border: none;                 /* ลบขอบ */
-    cursor: pointer;
-    flex: 1;                     /* ขยายปุ่มให้เต็มพื้นที่ */
-    height: 60px;                /* กำหนดความสูงของปุ่ม */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    padding: 0;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    box-shadow: none;             /* ลบเงา */
-}
+    /* ปุ่มล่างเหมือนหน้าหลัก */
+    .button-container-bottom {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      gap: 10px;
+      background-color: white;
+      padding: 8px 0;
+      box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
 
-.btn-bottom img {
-    width: 80px;                 /* ปรับขนาดไอคอนให้เหมาะสม */
-    height: auto;
-    object-fit: contain;
-    display: block;
-}
+    .btn-bottom {
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      flex: 1;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 0;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      box-shadow: none;
+    }
 
-.btn-bottom:hover {
-    transform: scale(1.05);
-}
+    .btn-bottom img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
 
-.btn-bottom:active {
-    transform: scale(0.98);
-}
-        /* สีปุ่มล่าง */
-        
-        .btn-bottom.home {
-            background-color: #ffffff;
-        }
-        
-        .btn-bottom.ai {
-            background-color: #ffffff;
-        }
-        
-        .btn-bottom.plant {
-            background-color: #ffffff;
-        }
-        
-        .btn-bottom.menu {
-            background-color: #ffffff;
-        }
-        
-        .btn-bottom {
-            background-color: white;
-            color: #333;
-            padding: 0;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: none;
-            border-radius: 0;
-            box-shadow: none;
-        }
-        
-        .btn-bottom img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .btn-bottom:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-        }
-        
-        .btn-bottom:active {
-            transform: scale(0.98);
-        }
-        
-        .btn-bottom.home {
-            background-color: #e74c3c;
-            color: white;
-        }
-        
-        .btn-bottom.ai {
-            background-color: #2ecc71;
-            color: white;
-        }
-        
-        .btn-bottom.plant {
-            background-color: #007bff;
-            color: white;
-        }
-        
-        .btn-bottom.menu {
-            background-color: #ff9900;
-            color: white;
-        }
-    </style>
+    .btn-bottom:hover { transform: scale(1.05); }
+    .btn-bottom:active { transform: scale(0.98); }
+
+    .btn-bottom.home      { background-color:#e74c3c; color:white; }
+    .btn-bottom.ai        { background-color:#2ecc71; color:white; }
+    .btn-bottom.plant     { background-color:#007bff; color:white; }
+    .btn-bottom.menu      { background-color:#ff9900; color:white; }
+
+  </style>
 </head>
-
 <body>
-    <h1></h1>
 
-    <!-- กล่องปุ่มบน (แนวตั้ง) -->
-    <div class="button-container-top">
-        <a href="#.html" class="btn-top">
-            <img src="777.png" class="logo-img" />
-        </a>
+  <div class="page">
+    <!-- โลโก้แอพ -->
+    <img src="777.png" alt="ผลดี" class="app-logo">
 
-        <a href="menu1.html" class="btn-top">
-            <img src="556.png" />
-        </a>
-        <a href="menu2.html" class="btn-top">
-            <img src="889.png" />
-        </a>
+    <h1>ศูนย์ช่วยเหลือ & การใช้งาน</h1>
+    <p class="subtitle">รวมลิงก์สำคัญของระบบ AI ร้านปุ๋ย และตลาดออนไลน์ผู้ใช้</p>
+
+    <div class="menu-card-group">
+      <!-- คู่มือการใช้ -->
+      <a href="menu2.html" class="menu-card">
+        <div class="menu-icon">
+          <img src="889.png" alt="คู่มือการใช้งาน">
+        </div>
+        <div class="menu-text">
+          <h2>คู่มือการใช้งาน</h2>
+          <p>สอนวิธีใช้งานระบบ AI หน้าร้านปุ๋ย และตลาดผลไม้ทีละขั้นตอน</p>
+        </div>
+      </a>
+
+      <!-- Feedback ผู้พัฒนา -->
+      <a href="menu1.html" class="menu-card">
+        <div class="menu-icon">
+          <img src="556.png" alt="ลิงก์ผู้พัฒนา">
+        </div>
+        <div class="menu-text">
+          <h2>ส่งคำแนะนำถึงผู้พัฒนา</h2>
+          <p>แจ้งปัญหา ข้อผิดพลาด หรือไอเดียที่อยากให้เพิ่มในระบบ</p>
+        </div>
+      </a>
+
+      <!-- ประวัติการซื้อ -->
+      <a href="history.html" class="menu-card">
+        <div class="menu-icon">
+          <!-- ถ้ามีไอคอนใหม่สำหรับประวัติการซื้อ แก้ชื่อไฟล์ตรงนี้ได้เลย -->
+          <img src="333222.png" alt="ประวัติการซื้อ">
+        </div>
+        <div class="menu-text">
+          <h2>ประวัติการซื้อปุ๋ย & ยา</h2>
+          <p>ดูรายการสั่งซื้อที่ทำผ่านร้านปุ๋ยออนไลน์บนเครื่องนี้</p>
+        </div>
+        <span class="badge-tag">ใหม่</span>
+      </a>
     </div>
+  </div>
 
-    <!-- กล่องปุ่มล่าง (แนวนอน) -->
-    <div class="button-container-bottom">
-        <a href="Home999.html" class="btn-bottom home">
-            <img src="60.png" alt="Home" />
-        </a>
-        <a href="shop.html" class="btn-bottom">
-      <img src="333222.png" alt="เมนู">
+  <!-- ปุ่มล่างเหมือนหน้าอื่น ๆ -->
+  <div class="button-container-bottom">
+    <a href="Home999.html" class="btn-bottom">
+      <img src="60.png" alt="Home" />
     </a>
-        <a href="Home.html" class="btn-bottom ai">
-            <img src="61.png" alt="AI" />
-        </a>
-        <a href="Home555.html" class="btn-bottom plant">
-            <img src="62.png" alt="วิธีปลูก" />
-        </a>
-        <a href="menu.html" class="btn-bottom menu">
-            <img src="1000.png" alt="MENU" />
-        </a>
-    </div>
+    <a href="shop.html" class="btn-bottom">
+      <img src="333222.png" alt="Shop" />
+    </a>
+    <a href="Home.html" class="btn-bottom">
+      <img src="61.png" alt="AI" />
+    </a>
+    <a href="Home555.html" class="btn-bottom">
+      <img src="62.png" alt="วิธีปลูก" />
+    </a>
+    <a href="menu.html" class="btn-bottom">
+      <img src="1000.png" alt="เมนู" />
+    </a>
+  </div>
+
 </body>
-
 </html>
-
-
-    
